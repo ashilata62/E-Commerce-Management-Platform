@@ -18,6 +18,8 @@ import {
   Package,
   AlertTriangle,
   Radio,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useStore } from '../../context/StoreContext';
@@ -25,7 +27,7 @@ import { useToast } from '../../context/ToastContext';
 import { useCart } from '../../context/CartContext';
 import { CustomerSupportModal } from '../support/CustomerSupportModal';
 
-export const Header = ({ onMenuClick }) => {
+export const Header = ({ onMenuClick, isCollapsed, toggleCollapse }) => {
   const navigate = useNavigate();
   const { user, logout, switchDemoRole } = useAuth();
   const { storeStatus, toggleStoreStatus, unreadNotifications, unreadMessages, notifications, markAllAsRead } = useStore();
@@ -67,8 +69,23 @@ export const Header = ({ onMenuClick }) => {
 
   return (
     <header className="sticky top-0 z-30 h-16 bg-white/95 backdrop-blur-md border-b border-[#E7E0F7] px-4 sm:px-6 flex items-center justify-between gap-4">
-      {/* Left: Mobile hamburger menu toggle & Store status */}
-      <div className="flex items-center gap-3">
+      {/* Left: Desktop Collapse Toggle, Mobile hamburger & Store status */}
+      <div className="flex items-center gap-2.5">
+        {/* Desktop Sidebar Collapse Toggle */}
+        <button
+          type="button"
+          onClick={toggleCollapse}
+          className="hidden lg:flex p-2 rounded-xl text-[#68647A] hover:text-[#6C4DF6] bg-[#F4F0FD] hover:bg-[#E4DAFA] border border-[#E7E0F7] transition-all cursor-pointer shadow-soft-xs"
+          title={isCollapsed ? 'Expand Sidebar' : 'Hide / Collapse Sidebar'}
+        >
+          {isCollapsed ? (
+            <PanelLeftOpen className="w-4 h-4" />
+          ) : (
+            <PanelLeftClose className="w-4 h-4" />
+          )}
+        </button>
+
+        {/* Mobile menu button */}
         <button
           type="button"
           onClick={onMenuClick}
