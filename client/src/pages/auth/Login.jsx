@@ -21,7 +21,7 @@ export const Login = () => {
       const res = await login(email, password);
       if (res.success) {
         toast.success(`Welcome back, ${res.user.name}!`);
-        navigate('/');
+        navigate('/dashboard');
       } else {
         toast.error(res.message || 'Login failed');
       }
@@ -35,7 +35,7 @@ export const Login = () => {
   const handleQuickDemo = (role) => {
     switchDemoRole(role);
     toast.success(`Logged in instantly as ${role}!`);
-    navigate('/');
+    navigate('/dashboard');
   };
 
   return (

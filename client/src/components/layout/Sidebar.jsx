@@ -41,7 +41,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
     {
       title: null,
       items: [
-        { label: 'Dashboard', path: '/', icon: LayoutDashboard },
+        { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
       ],
     },
     {

@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AppLayout } from '../components/layout/AppLayout';
 import { useAuth } from '../context/AuthContext';
+import { LandingPage } from '../pages/public/LandingPage';
 
 // Pages
 import { Dashboard } from '../pages/Dashboard';
@@ -65,6 +66,9 @@ const ProtectedRoute = ({ children }) => {
 export const AppRoutes = () => {
   return (
     <Routes>
+      {/* Public Landing Page */}
+      <Route path="/" element={<LandingPage />} />
+
       {/* Auth Public Routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -72,14 +76,13 @@ export const AppRoutes = () => {
 
       {/* Main Protected Application Layout */}
       <Route
-        path="/"
         element={
           <ProtectedRoute>
             <AppLayout />
           </ProtectedRoute>
         }
       >
-        <Route index element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
 
         {/* Products */}
         <Route path="products" element={<Products />} />
