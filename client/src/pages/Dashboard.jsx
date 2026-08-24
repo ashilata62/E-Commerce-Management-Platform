@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { HeroBanner } from '../components/dashboard/HeroBanner';
-import { ActiveCampaignCard } from '../components/dashboard/ActiveCampaignCard';
+import { AdminQuickAlerts } from '../components/dashboard/AdminQuickAlerts';
 import { KPISection } from '../components/dashboard/KPISection';
-import { FlashSaleSection } from '../components/dashboard/FlashSaleSection';
-import { TopCategories } from '../components/dashboard/TopCategories';
-import { StoreHealthCard } from '../components/dashboard/StoreHealthCard';
+import { RevenueTrendChart } from '../components/dashboard/RevenueTrendChart';
+import { FulfillmentPipelineCard } from '../components/dashboard/FulfillmentPipelineCard';
 import { RecentOrdersTable } from '../components/dashboard/RecentOrdersTable';
-import { BestSellersSection } from '../components/dashboard/BestSellersSection';
+import { TopSellingOutfitsCard } from '../components/dashboard/TopSellingOutfitsCard';
+import { StoreHealthCard } from '../components/dashboard/StoreHealthCard';
 import { AIAssistantCard } from '../components/dashboard/AIAssistantCard';
-import { CommerceBenefits } from '../components/dashboard/CommerceBenefits';
 import { SkeletonLoader } from '../components/common/SkeletonLoader';
 import { productService } from '../services/productService';
 import { orderService } from '../services/orderService';
 import { analyticsService } from '../services/analyticsService';
 import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/AuthContext';
+import { CustomerStorefront } from '../components/storefront/CustomerStorefront';
 
 export const Dashboard = () => {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -57,60 +58,65 @@ export const Dashboard = () => {
     fetchDashboardData();
   }, []);
 
+  // If the logged-in user is a Customer, show the complete Shopping Storefront
+  if (user?.role === 'Customer') {
+    return <CustomerStorefront />;
+  }
+
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-64 rounded-3xl bg-gray-200 animate-pulse" />
+        <div className="h-44 rounded-3xl bg-slate-200 animate-pulse" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           <SkeletonLoader type="stat" count={5} />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 h-96 bg-gray-200 rounded-2xl animate-pulse" />
-          <div className="h-96 bg-gray-200 rounded-2xl animate-pulse" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-7 h-80 bg-slate-200 rounded-3xl animate-pulse" />
+          <div className="lg:col-span-5 h-80 bg-slate-200 rounded-3xl animate-pulse" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-fade-in">
-      {/* 1. Hero & Active Campaign Header Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8">
-          <HeroBanner />
-        </div>
-        <div className="lg:col-span-4">
-          <ActiveCampaignCard />
-        </div>
-      </div>
+    <div className="space-y-6 sm:space-y-7 animate-fade-in pb-8">
+      {/* 1. Executive Priorities & Greeting Banner */}
+      <AdminQuickAlerts />
 
-      {/* 2. Business KPIs Section */}
+      {/* 2. Key Business Metrics (KPI Cards) */}
       <KPISection data={analytics} />
 
-      {/* 3. Flash Sale Section with Live Countdown */}
-      <FlashSaleSection products={products} />
-
-      {/* 4. Top Categories Circular Browser */}
-      <TopCategories categories={categories} />
-
-      {/* 5. Store Health & Recent Orders Grid */}
+      {/* 3. Revenue Trend & Logistics Pipeline Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        <div className="lg:col-span-4 flex flex-col">
-          <StoreHealthCard healthScore={analytics?.overview?.storeHealthScore || 85} />
+        <div className="lg:col-span-7 flex flex-col">
+          <RevenueTrendChart />
         </div>
-        <div className="lg:col-span-8 flex flex-col">
-          <RecentOrdersTable orders={orders} />
+        <div className="lg:col-span-5 flex flex-col">
+          <FulfillmentPipelineCard />
         </div>
       </div>
 
-      {/* 6. Best Selling Products Leaders */}
-      <BestSellersSection products={products} />
+      {/* 4. Live Incoming Orders & Top Outfits Performance */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <div className="lg:col-span-7 flex flex-col">
+          <RecentOrdersTable orders={orders} />
+        </div>
+        <div className="lg:col-span-5 flex flex-col">
+          <TopSellingOutfitsCard products={products} />
+        </div>
+      </div>
 
-      {/* 7. AI Business Assistant Card */}
-      <AIAssistantCard insights={analytics?.aiInsights} />
-
-      {/* 8. Commerce Trust Benefits Footer */}
-      <CommerceBenefits />
+      {/* 5. Store Health & AI Business Insights */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <div className="lg:col-span-4 flex flex-col">
+          <StoreHealthCard healthScore={analytics?.overview?.storeHealthScore || 94} />
+        </div>
+        <div className="lg:col-span-8 flex flex-col">
+          <AIAssistantCard insights={analytics?.aiInsights} />
+        </div>
+      </div>
     </div>
   );
 };
+
+export default Dashboard;

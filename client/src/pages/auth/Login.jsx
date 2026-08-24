@@ -4,6 +4,7 @@ import { ShoppingBag, ArrowRight, Lock, Mail, Shield, Sparkles, CheckCircle2 } f
 import { Button } from '../../components/common/Button';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { KiaanBrandLogo } from '../../components/common/KiaanLogo';
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -42,16 +43,8 @@ export const Login = () => {
     <div className="min-h-screen bg-surface-bg flex items-center justify-center p-4 sm:p-6 selection:bg-brand-100">
       <div className="max-w-md w-full space-y-6">
         {/* Brand Header */}
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-brand-600 via-brand-500 to-coral-500 text-white shadow-soft-md mb-2">
-            <ShoppingBag className="w-7 h-7" />
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slateText-main tracking-tight">
-            Kiaan<span className="text-brand-500">Technology</span>
-          </h1>
-          <p className="text-xs sm:text-sm text-slateText-muted font-medium">
-            Commerce Business Operating System
-          </p>
+        <div className="flex flex-col items-center justify-center text-center space-y-2 mb-2">
+          <KiaanBrandLogo size="lg" showBadge={true} badgeText="ENTERPRISE" />
         </div>
 
         {/* Login Form Card */}

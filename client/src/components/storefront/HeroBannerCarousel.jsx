@@ -1,0 +1,285 @@
+import React, { useState, useEffect } from 'react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Sparkles,
+  Tag,
+  ArrowRight,
+} from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
+
+export const HeroBannerCarousel = ({ onSelectCategory }) => {
+  const toast = useToast();
+
+  const bannerSlides = [
+    {
+      id: 1,
+      tag: '🎁 FESTIVE ETHNIC SALE',
+      title: 'Rakhi & Festive Ethnic Dhamaka',
+      subtitle: 'Flat 60% to 80% OFF on Banarasi Silk Sarees, Embroidered Anarkali Sets & Shararas',
+      couponCode: 'RAKHI25',
+      discountBadge: 'UP TO 80% OFF',
+      ctaText: "Shop Women's Ethnic",
+      category: "Women's Ethnic",
+      bgGradient: 'from-[#7928CA] via-[#B80058] to-[#FF0080]',
+      image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80',
+    },
+    {
+      id: 2,
+      tag: '🔥 STREETWEAR EDITION',
+      title: 'Oversized Tees & Cargo Carnival',
+      subtitle: 'Heavyweight 240 GSM Pure Combed Cotton Drop-Shoulder Tees & Utility Joggers',
+      couponCode: 'STREET20',
+      discountBadge: 'STARTING ₹799',
+      ctaText: "Shop Men's Casuals",
+      category: "Men's Casuals",
+      bgGradient: 'from-[#6C4DF6] via-[#855FF8] to-[#FF5C8A]',
+      image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80',
+    },
+    {
+      id: 3,
+      tag: '✨ ROYAL SAREES & SUITS',
+      title: 'Varanasi Banarasi & Silk Fest',
+      subtitle: 'Hand-Woven Royal Silk Sarees with Pure Golden Zari Borders & Floral Pallu',
+      couponCode: 'SILK30',
+      discountBadge: 'MIN 50% OFF',
+      ctaText: 'Browse Silk Sarees',
+      category: "Women's Ethnic",
+      bgGradient: 'from-[#0F172A] via-[#1E293B] to-[#3B82F6]',
+      image: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=600&q=80',
+    },
+    {
+      id: 4,
+      tag: '👗 SUMMER CHIC DRESSES',
+      title: 'Bohemian Maxi & Co-ords Gala',
+      subtitle: 'Flowy Chiffon Tiered Maxi Dresses & Ribbed Cotton Knit Wide Leg Trouser Sets',
+      couponCode: 'SUMMER20',
+      discountBadge: 'FLAT 45% OFF',
+      ctaText: "Explore Women's Western",
+      category: "Women's Western",
+      bgGradient: 'from-[#BE185D] via-[#DB2777] to-[#F43F5E]',
+      image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=600&q=80',
+    },
+    {
+      id: 5,
+      tag: '👔 GENTLEMAN FORMALS',
+      title: 'Italian Wool Blazers & Suits',
+      subtitle: 'Tailored Single-Breasted Blazers, Crisp French Linen Shirts & Formal Trousers',
+      couponCode: 'FORMAL40',
+      discountBadge: 'FLAT 40% OFF',
+      ctaText: "Shop Men's Formals",
+      category: "Men's Formals",
+      bgGradient: 'from-[#18181B] via-[#27272A] to-[#D97706]',
+      image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80',
+    },
+    {
+      id: 6,
+      tag: '🧸 KIDS FASHION WARDROBE',
+      title: 'Little Champions & Princess Wear',
+      subtitle: 'Organic Cotton Dino Co-ords, Girls Flared Foil Lehengas & Festive Party Wear',
+      couponCode: 'KIDS50',
+      discountBadge: 'FLAT 50% OFF',
+      ctaText: 'Shop Kids Outfits',
+      category: 'Kids Collection',
+      bgGradient: 'from-[#0369A1] via-[#0284C7] to-[#38BDF8]',
+      image: 'https://images.unsplash.com/photo-1519457431-44ccd64a579b?auto=format&fit=crop&w=600&q=80',
+    },
+    {
+      id: 7,
+      tag: '⚡ WEDDING & FESTIVE SPECIAL',
+      title: 'Silk Nehru Jackets & Sherwanis',
+      subtitle: 'Jacquard Woven Floral Nehru Jackets with Raw Silk Kurta Pajama Sets',
+      couponCode: 'FESTIVE25',
+      discountBadge: 'EXTRA 25% OFF',
+      ctaText: 'Explore Festive Outfits',
+      category: 'Festive & Winter',
+      bgGradient: 'from-[#C2410C] via-[#EA580C] to-[#F97316]',
+      image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=600&q=80',
+    },
+    {
+      id: 8,
+      tag: '👑 KIAAN FASHION PASS',
+      title: 'Join Kiaan Wardrobe Prime Club',
+      subtitle: 'Get 10% Extra Wallet Cashback on Every Outfit + Free Unlimited Express Delivery',
+      couponCode: 'FASHIONVIP',
+      discountBadge: 'FREE 500 COINS',
+      ctaText: 'Claim Fashion Pass',
+      category: 'All',
+      bgGradient: 'from-[#3730A3] via-[#4F46E5] to-[#7C3AED]',
+      image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=600&q=80',
+    }
+  ];
+
+  // Infinite looping track with cloned first slide
+  const extendedSlides = [...bannerSlides, { ...bannerSlides[0], id: 'clone-0' }];
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(true);
+
+  // Auto-advance forward every 3.5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      handleNext();
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [currentSlide]);
+
+  const handleNext = () => {
+    setIsTransitioning(true);
+    setCurrentSlide((prev) => prev + 1);
+  };
+
+  const handlePrev = () => {
+    setIsTransitioning(true);
+    setCurrentSlide((prev) => (prev === 0 ? bannerSlides.length - 1 : prev - 1));
+  };
+
+  // When we animate to the clone of the first slide at index bannerSlides.length,
+  // wait 700ms for the forward slide animation to complete, then silently snap to index 0 without rewinding!
+  useEffect(() => {
+    if (currentSlide === bannerSlides.length) {
+      const timer = setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrentSlide(0);
+      }, 700);
+      return () => clearTimeout(timer);
+    }
+  }, [currentSlide, bannerSlides.length]);
+
+  const handleCopyCoupon = (code) => {
+    navigator.clipboard?.writeText(code);
+    toast.success(`🎉 Copied coupon code "${code}"! Apply at checkout.`);
+  };
+
+  const activeDotIndex = currentSlide % bannerSlides.length;
+
+  return (
+    <div className="relative overflow-hidden rounded-3xl shadow-soft-xl group">
+      {/* Horizontal Continuous Infinite Track */}
+      <div
+        className={`flex will-change-transform ${
+          isTransitioning ? 'transition-transform duration-700 ease-out' : 'transition-none'
+        }`}
+        style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+      >
+        {extendedSlides.map((slide, idx) => (
+          <div
+            key={`${slide.id}-${idx}`}
+            className={`w-full shrink-0 relative p-6 sm:p-10 text-white bg-gradient-to-r ${slide.bgGradient} min-h-[320px] sm:min-h-[370px] flex flex-col justify-between overflow-hidden`}
+          >
+            {/* Ambient Blur Bubbles */}
+            <div className="absolute top-0 right-0 -mt-16 -mr-16 w-96 h-96 rounded-full bg-white/10 blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-1/3 -mb-20 w-80 h-80 rounded-full bg-black/15 blur-2xl pointer-events-none" />
+
+            {/* Slide Content Grid */}
+            <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-6 items-center flex-1">
+              {/* Left Text & Offers */}
+              <div className="md:col-span-8 space-y-4">
+                {/* Tag & Discount Badge */}
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-black tracking-wide border border-white/30">
+                    <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+                    <span>{slide.tag}</span>
+                  </span>
+
+                  <span className="px-2.5 py-1 rounded-full bg-amber-400 text-slate-900 text-xs font-black shadow-soft-sm">
+                    {slide.discountBadge}
+                  </span>
+                </div>
+
+                {/* Title */}
+                <h2 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight">
+                  {slide.title}
+                </h2>
+
+                {/* Subtitle */}
+                <p className="text-xs sm:text-sm md:text-base text-white/95 max-w-xl font-medium leading-relaxed">
+                  {slide.subtitle}
+                </p>
+
+                {/* Coupon Code Pill & CTA Buttons */}
+                <div className="flex flex-wrap items-center gap-3 pt-2">
+                  <button
+                    onClick={() => {
+                      if (onSelectCategory) onSelectCategory(slide.category);
+                      toast.success(`Browsing ${slide.title}!`);
+                    }}
+                    className="px-6 py-3 rounded-2xl bg-white text-slate-900 font-black text-xs sm:text-sm shadow-soft-lg hover:bg-slate-100 transition-all hover:scale-105 flex items-center gap-2 cursor-pointer"
+                  >
+                    <span>{slide.ctaText}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+
+                  {/* Copy Coupon Tag */}
+                  <button
+                    onClick={() => handleCopyCoupon(slide.couponCode)}
+                    className="px-4 py-2.5 rounded-2xl bg-black/25 hover:bg-black/40 backdrop-blur-md border border-white/30 text-white font-mono text-xs font-black flex items-center gap-2 transition-all cursor-pointer"
+                    title="Click to copy coupon code"
+                  >
+                    <Tag className="w-3.5 h-3.5 text-yellow-300" />
+                    <span>{slide.couponCode}</span>
+                    <span className="text-[10px] uppercase font-sans font-bold text-yellow-300 ml-1">Copy</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Right Product Spotlight Image */}
+              <div className="hidden md:flex md:col-span-4 justify-end">
+                <div className="relative w-56 h-56 lg:w-64 lg:h-64 rounded-3xl overflow-hidden shadow-2xl ring-4 ring-white/30 bg-slate-100">
+                  <img
+                    src={slide.image}
+                    alt={slide.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                  <span className="absolute bottom-3 left-3 px-2.5 py-1 rounded-lg text-[10px] font-black bg-white/90 text-slate-900 shadow-soft-sm backdrop-blur-md">
+                    Verified Authentic
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Centered Dots Indicator */}
+            <div className="relative z-10 flex items-center justify-center pt-6 mt-4 border-t border-white/15">
+              <div className="flex items-center gap-2">
+                {bannerSlides.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setIsTransitioning(true);
+                      setCurrentSlide(idx);
+                    }}
+                    className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                      activeDotIndex === idx ? 'w-8 bg-white' : 'w-2 bg-white/40 hover:bg-white/70'
+                    }`}
+                    aria-label={`Go to slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Left Navigation Arrow */}
+      <button
+        onClick={handlePrev}
+        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-800 flex items-center justify-center shadow-soft-xl opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-20 cursor-pointer"
+        aria-label="Previous Slide"
+      >
+        <ChevronLeft className="w-5 h-5" />
+      </button>
+
+      {/* Right Navigation Arrow */}
+      <button
+        onClick={handleNext}
+        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-800 flex items-center justify-center shadow-soft-xl opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-20 cursor-pointer"
+        aria-label="Next Slide"
+      >
+        <ChevronRight className="w-5 h-5" />
+      </button>
+    </div>
+  );
+};
+
+export default HeroBannerCarousel;

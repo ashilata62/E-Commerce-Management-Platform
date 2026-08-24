@@ -27,82 +27,313 @@ import {
   ExternalLink,
   Crown,
   ChevronRight,
+  ChevronLeft,
+  PanelLeftClose,
+  PanelLeftOpen,
   X,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { KiaanBrandLogo } from '../common/KiaanLogo';
 
-export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
+export const Sidebar = ({ isMobileOpen, setIsMobileOpen, isCollapsed, toggleCollapse }) => {
   const { user } = useAuth();
   const toast = useToast();
   const location = useLocation();
 
-  const navSections = [
+  const currentRole = user?.role || 'Admin';
+
+  const customerNavSections = [
     {
-      title: null,
+      title: 'MY ACCOUNT',
       items: [
-        { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+        {
+          label: 'My Account Hub',
+          desc: 'Order Status & Wallet Coins',
+          path: '/customer',
+          icon: LayoutDashboard,
+          icon3D: 'bg-gradient-to-br from-indigo-500 via-indigo-600 to-violet-700 shadow-indigo-500/30',
+          roles: ['Customer']
+        },
       ],
     },
     {
-      title: 'STORE',
+      title: 'SHOPPING & ORDERS',
       items: [
-        { label: 'Products', path: '/products', icon: ShoppingBag, badge: '8' },
-        { label: 'Categories', path: '/categories', icon: Layers },
-        { label: 'Collections', path: '/collections', icon: Sparkles },
-        { label: 'Brands', path: '/brands', icon: Award },
-      ],
-    },
-    {
-      title: 'ORDERS',
-      items: [
-        { label: 'All Orders', path: '/orders', icon: Package, badge: '128' },
-        { label: 'Returns', path: '/returns', icon: RotateCcw },
-        { label: 'Cancellations', path: '/cancellations', icon: Ban },
-      ],
-    },
-    {
-      title: 'CUSTOMERS',
-      items: [
-        { label: 'All Customers', path: '/customers', icon: Users },
-        { label: 'Segments', path: '/customer-segments', icon: UserCheck },
-        { label: 'Reviews', path: '/reviews', icon: MessageSquareQuote },
-      ],
-    },
-    {
-      title: 'MARKETING',
-      items: [
-        { label: 'Campaigns', path: '/campaigns', icon: Megaphone, badge: 'Live' },
-        { label: 'Coupons', path: '/coupons', icon: Ticket },
-        { label: 'Flash Sale', path: '/flash-sale', icon: Zap, badge: 'HOT' },
-        { label: 'Affiliates', path: '/affiliates', icon: Share2 },
-      ],
-    },
-    {
-      title: 'ANALYTICS',
-      items: [
-        { label: 'Sales Analytics', path: '/analytics/sales', icon: TrendingUp },
-        { label: 'Product Analytics', path: '/analytics/products', icon: BarChart2 },
-        { label: 'Customer Analytics', path: '/analytics/customers', icon: PieChart },
-        { label: 'Reports', path: '/reports', icon: FileText },
-        { label: 'AI Insights', path: '/ai-assistant', icon: Sparkles, badge: 'AI' },
-      ],
-    },
-    {
-      title: 'SETTINGS',
-      items: [
-        { label: 'Store Settings', path: '/settings/store', icon: Store },
-        { label: 'Payment', path: '/settings/payment', icon: CreditCard },
-        { label: 'Shipping', path: '/settings/shipping', icon: Truck },
-        { label: 'Users & Roles', path: '/settings/users-roles', icon: ShieldCheck },
+        {
+          label: 'Browse Store',
+          desc: 'Shop Latest Clothing & Outfits',
+          path: '/products',
+          icon: ShoppingBag,
+          icon3D: 'bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-700 shadow-emerald-500/30',
+          badge: 'Deals',
+          roles: ['Customer']
+        },
+        {
+          label: 'My Orders',
+          desc: 'Live BlueDart Courier Tracking',
+          path: '/orders',
+          icon: Package,
+          icon3D: 'bg-gradient-to-br from-blue-400 via-blue-600 to-indigo-700 shadow-blue-500/30',
+          badge: '2',
+          roles: ['Customer']
+        },
+        {
+          label: 'Returns & Refunds',
+          desc: '7-Day Size Exchange & RMA',
+          path: '/returns',
+          icon: RotateCcw,
+          icon3D: 'bg-gradient-to-br from-orange-400 via-orange-500 to-amber-600 shadow-orange-500/30',
+          roles: ['Customer']
+        },
       ],
     },
   ];
 
-  const handleStorePreview = (e) => {
-    e.preventDefault();
-    toast.info('Opening live storefront preview modal / sandbox...');
-  };
+  const allNavSections = [
+    {
+      title: 'MAIN HUB',
+      items: [
+        {
+          label: 'Dashboard',
+          desc: 'Live Sales & Store Operations',
+          path: '/',
+          icon: LayoutDashboard,
+          icon3D: 'bg-gradient-to-br from-violet-500 via-indigo-600 to-purple-700 shadow-indigo-500/35',
+          roles: ['Admin', 'Manager', 'Staff']
+        },
+      ],
+    },
+    {
+      title: 'STORE (Catalog & Stock)',
+      items: [
+        {
+          label: 'Products',
+          desc: 'Manage Stock, Sizes & Prices',
+          path: '/products',
+          icon: ShoppingBag,
+          icon3D: 'bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-700 shadow-emerald-500/35',
+          badge: '12',
+          roles: ['Admin', 'Manager', 'Staff']
+        },
+        {
+          label: 'Categories',
+          desc: 'Ethnic, Western, Kids & Formals',
+          path: '/categories',
+          icon: Layers,
+          icon3D: 'bg-gradient-to-br from-sky-400 via-cyan-500 to-blue-600 shadow-sky-500/35',
+          roles: ['Admin', 'Manager']
+        },
+        {
+          label: 'Collections',
+          desc: 'Seasonal & Featured Outfit Sets',
+          path: '/collections',
+          icon: Sparkles,
+          icon3D: 'bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 shadow-amber-500/35',
+          roles: ['Admin', 'Manager']
+        },
+        {
+          label: 'Brands',
+          desc: 'Kaira, UrbanThread & Heritage',
+          path: '/brands',
+          icon: Award,
+          icon3D: 'bg-gradient-to-br from-purple-400 via-purple-600 to-pink-600 shadow-purple-500/35',
+          roles: ['Admin', 'Manager']
+        },
+      ],
+    },
+    {
+      title: 'ORDERS (Fulfillment & Shipping)',
+      items: [
+        {
+          label: 'All Orders',
+          desc: 'Packing, Invoices & BlueDart AWB',
+          path: '/orders',
+          icon: Package,
+          icon3D: 'bg-gradient-to-br from-blue-400 via-blue-600 to-indigo-700 shadow-blue-500/35',
+          badge: '128',
+          roles: ['Admin', 'Manager', 'Staff']
+        },
+        {
+          label: 'Returns',
+          desc: 'Size Exchanges & Doorstep RMA',
+          path: '/returns',
+          icon: RotateCcw,
+          icon3D: 'bg-gradient-to-br from-orange-400 via-orange-500 to-amber-600 shadow-orange-500/35',
+          roles: ['Admin', 'Manager', 'Staff']
+        },
+        {
+          label: 'Cancellations',
+          desc: 'Refunds & Auto-Restock',
+          path: '/cancellations',
+          icon: Ban,
+          icon3D: 'bg-gradient-to-br from-rose-400 via-rose-500 to-red-600 shadow-rose-500/35',
+          roles: ['Admin', 'Manager', 'Staff']
+        },
+      ],
+    },
+    {
+      title: 'CUSTOMERS (CRM & Reviews)',
+      items: [
+        {
+          label: 'All Customers',
+          desc: 'Buyer Profiles, History & LTV',
+          path: '/customers',
+          icon: Users,
+          icon3D: 'bg-gradient-to-br from-teal-400 via-teal-600 to-emerald-700 shadow-teal-500/35',
+          roles: ['Admin', 'Manager', 'Staff']
+        },
+        {
+          label: 'Segments',
+          desc: 'VIP & High-Value Shopper Groups',
+          path: '/customer-segments',
+          icon: UserCheck,
+          icon3D: 'bg-gradient-to-br from-indigo-400 via-indigo-600 to-violet-700 shadow-indigo-500/35',
+          roles: ['Admin', 'Manager']
+        },
+        {
+          label: 'Reviews',
+          desc: 'Ratings & Photo Feedback Moderation',
+          path: '/reviews',
+          icon: MessageSquareQuote,
+          icon3D: 'bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-500 shadow-amber-500/35',
+          roles: ['Admin', 'Manager']
+        },
+      ],
+    },
+    {
+      title: 'MARKETING (Growth & Offers)',
+      items: [
+        {
+          label: 'Campaigns',
+          desc: 'WhatsApp & Email Sales Blasts',
+          path: '/campaigns',
+          icon: Megaphone,
+          icon3D: 'bg-gradient-to-br from-fuchsia-400 via-pink-500 to-rose-600 shadow-pink-500/35',
+          badge: 'Live',
+          roles: ['Admin', 'Manager']
+        },
+        {
+          label: 'Coupons',
+          desc: 'Discount Codes (FESTIVE20)',
+          path: '/coupons',
+          icon: Ticket,
+          icon3D: 'bg-gradient-to-br from-emerald-400 via-green-500 to-teal-600 shadow-emerald-500/35',
+          roles: ['Admin', 'Manager']
+        },
+        {
+          label: 'Flash Sale',
+          desc: 'Timed Ticking Sale Markdowns',
+          path: '/flash-sale',
+          icon: Zap,
+          icon3D: 'bg-gradient-to-br from-red-500 via-rose-600 to-orange-500 shadow-red-500/35',
+          badge: 'HOT',
+          roles: ['Admin', 'Manager']
+        },
+        {
+          label: 'Affiliates',
+          desc: 'Influencer Referral Commissions',
+          path: '/affiliates',
+          icon: Share2,
+          icon3D: 'bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600 shadow-cyan-500/35',
+          roles: ['Admin', 'Manager']
+        },
+      ],
+    },
+    {
+      title: 'ANALYTICS (Reports & AI)',
+      items: [
+        {
+          label: 'Sales Analytics',
+          desc: 'Daily & Monthly Revenue Growth',
+          path: '/analytics/sales',
+          icon: TrendingUp,
+          icon3D: 'bg-gradient-to-br from-emerald-400 via-emerald-600 to-teal-700 shadow-emerald-500/35',
+          roles: ['Admin', 'Manager']
+        },
+        {
+          label: 'Product Analytics',
+          desc: 'Top-Selling Outfits & Demand',
+          path: '/analytics/products',
+          icon: BarChart2,
+          icon3D: 'bg-gradient-to-br from-blue-400 via-blue-600 to-indigo-700 shadow-blue-500/35',
+          roles: ['Admin', 'Manager']
+        },
+        {
+          label: 'Customer Analytics',
+          desc: 'Retention & Average Order Value',
+          path: '/analytics/customers',
+          icon: PieChart,
+          icon3D: 'bg-gradient-to-br from-purple-400 via-violet-600 to-indigo-700 shadow-purple-500/35',
+          roles: ['Admin', 'Manager']
+        },
+        {
+          label: 'Reports',
+          desc: 'GST, Tax & Financial PDF Export',
+          path: '/reports',
+          icon: FileText,
+          icon3D: 'bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 shadow-slate-500/35',
+          roles: ['Admin']
+        },
+        {
+          label: 'AI Insights',
+          desc: 'Smart Price & Restock Assistant',
+          path: '/ai-assistant',
+          icon: Sparkles,
+          icon3D: 'bg-gradient-to-tr from-purple-500 via-pink-500 to-amber-400 shadow-purple-500/40',
+          badge: 'AI',
+          roles: ['Admin', 'Manager']
+        },
+      ],
+    },
+    {
+      title: 'SETTINGS (System & Setup)',
+      items: [
+        {
+          label: 'Store Settings',
+          desc: 'Logo Branding, Contact & Currency',
+          path: '/settings/store',
+          icon: Store,
+          icon3D: 'bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 shadow-amber-500/35',
+          roles: ['Admin']
+        },
+        {
+          label: 'Payment',
+          desc: 'UPI, Razorpay, Cards & COD Setup',
+          path: '/settings/payment',
+          icon: CreditCard,
+          icon3D: 'bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-700 shadow-emerald-500/35',
+          roles: ['Admin']
+        },
+        {
+          label: 'Shipping',
+          desc: 'Courier Rates & Free Over ₹999',
+          path: '/settings/shipping',
+          icon: Truck,
+          icon3D: 'bg-gradient-to-br from-blue-400 via-sky-500 to-indigo-600 shadow-blue-500/35',
+          roles: ['Admin']
+        },
+        {
+          label: 'Users & Roles',
+          desc: 'Staff Team Access Permissions',
+          path: '/settings/users-roles',
+          icon: ShieldCheck,
+          icon3D: 'bg-gradient-to-br from-indigo-500 via-violet-600 to-purple-700 shadow-indigo-500/35',
+          roles: ['Admin']
+        },
+      ],
+    },
+  ];
+
+  // Dynamically filter sections and items according to the logged-in user's role
+  const navSections = currentRole === 'Customer'
+    ? customerNavSections
+    : allNavSections
+        .map(section => ({
+          ...section,
+          items: section.items.filter(item => !item.roles || item.roles.includes(currentRole)),
+        }))
+        .filter(section => section.items.length > 0);
 
   const handleUpgradeClick = () => {
     toast.success('Enterprise Plus unlocked: Unlimited Flash Sales & Global Multi-Currency ready!');
@@ -113,55 +344,71 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
       {/* Mobile Drawer Overlay */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm lg:hidden animate-fade-in"
           onClick={() => setIsMobileOpen(false)}
+          aria-hidden="true"
         />
       )}
 
-      {/* Sidebar Container */}
+      {/* Main Sidebar Shell with Smooth Collapsible Width */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-white border-r border-surface-border flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-          isMobileOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col bg-[#F4F0FD] border-r border-[#E7E0F7] shadow-[4px_0_24px_rgba(108,77,246,0.05)] transition-all duration-300 ease-in-out lg:translate-x-0 ${
+          isCollapsed ? 'w-20' : 'w-72'
+        } ${isMobileOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}`}
+        aria-label="Sidebar Navigation"
       >
-        {/* Brand Logo & Header */}
-        <div className="h-16 flex items-center justify-between px-5 border-b border-surface-border shrink-0 bg-white">
-          <NavLink to="/" className="flex items-center gap-3 group" onClick={() => setIsMobileOpen(false)}>
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-500 to-coral-500 flex items-center justify-center text-white shadow-soft-sm group-hover:scale-105 transition-transform">
-              <ShoppingBag className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-base tracking-tight text-slateText-main">
-                  Kiaan<span className="text-brand-500">Technology</span>
-                </span>
-                <span className="text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded bg-brand-50 text-brand-600 border border-brand-200">
-                  PRO
-                </span>
-              </div>
-              <p className="text-[11px] text-slateText-muted font-medium tracking-tight">Commerce Business OS</p>
-            </div>
+        {/* Brand Header & Collapse Toggle */}
+        <div className="h-16 flex items-center justify-between px-3.5 border-b border-[#E7E0F7] shrink-0 bg-[#F4F0FD]">
+          <NavLink to="/" className="flex items-center overflow-hidden">
+            {isCollapsed ? (
+              <img
+                src="/kt-gold-logo.png"
+                alt="KT"
+                className="w-9 h-9 object-contain mix-blend-multiply mx-auto"
+                title="Kiaan Technology"
+              />
+            ) : (
+              <KiaanBrandLogo size="md" />
+            )}
           </NavLink>
 
+          {/* Desktop Sidebar Collapse Toggle Button */}
+          <button
+            type="button"
+            onClick={toggleCollapse}
+            className="hidden lg:flex p-1.5 rounded-xl bg-white hover:bg-[#E4DAFA] text-[#68647A] hover:text-[#6C4DF6] border border-[#E7E0F7] transition-all shadow-soft-xs cursor-pointer"
+            title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+          >
+            {isCollapsed ? (
+              <PanelLeftOpen className="w-4 h-4" />
+            ) : (
+              <PanelLeftClose className="w-4 h-4" />
+            )}
+          </button>
+
+          {/* Mobile Close Button */}
           <button
             type="button"
             onClick={() => setIsMobileOpen(false)}
-            className="lg:hidden p-1.5 rounded-lg text-slateText-muted hover:text-slateText-main hover:bg-surface-muted"
+            className="lg:hidden p-1.5 rounded-lg text-slateText-muted hover:text-slateText-main hover:bg-white/70"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Navigation Items Scroll Area */}
-        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+        <div className="flex-1 overflow-y-auto px-2.5 py-4 space-y-5 scrollbar-none">
           {navSections.map((section, sIdx) => (
             <div key={sIdx} className="space-y-1">
-              {section.title && (
-                <p className="px-3 text-[11px] font-extrabold text-slateText-muted tracking-wider uppercase">
+              {section.title && !isCollapsed && (
+                <p className="px-3 text-[10px] font-black text-[#8A84A1] tracking-wider uppercase transition-opacity">
                   {section.title}
                 </p>
               )}
-              <div className="space-y-0.5">
+              {isCollapsed && sIdx > 0 && (
+                <div className="w-6 h-[1px] bg-[#E7E0F7] mx-auto my-2" />
+              )}
+              <div className="space-y-1">
                 {section.items.map((item) => {
                   const Icon = item.icon;
                   const isActive = location.pathname === item.path;
@@ -171,33 +418,57 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
                       key={item.path}
                       to={item.path}
                       onClick={() => setIsMobileOpen(false)}
-                      className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-150 group ${
+                      title={isCollapsed ? `${item.label} (${item.desc})` : undefined}
+                      className={`flex items-center rounded-2xl transition-all duration-150 group ${
+                        isCollapsed
+                          ? 'justify-center p-2.5'
+                          : 'justify-between px-3 py-2.5'
+                      } ${
                         isActive
-                          ? 'bg-brand-50 text-brand-600 shadow-soft-sm'
-                          : 'text-slateText-muted hover:text-slateText-main hover:bg-surface-muted'
+                          ? 'bg-[#E4DAFA] text-[#6C4DF6] shadow-soft-sm font-black'
+                          : 'text-[#58546A] hover:text-[#202124] hover:bg-white/80'
                       }`}
                     >
-                      <div className="flex items-center gap-3">
-                        <Icon
-                          className={`w-4 h-4 transition-colors ${
+                      <div className={`flex items-start gap-3 min-w-0 ${isCollapsed ? 'justify-center' : ''}`}>
+                        {/* Real 3D Glossy App Icon Tile */}
+                        <div
+                          className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5 transition-all duration-200 border-t border-white/50 shadow-md ${
+                            item.icon3D || 'bg-gradient-to-br from-slate-600 to-slate-800'
+                          } ${
                             isActive
-                              ? 'text-brand-500'
-                              : 'text-slateText-muted group-hover:text-slateText-main'
+                              ? 'scale-110 ring-2 ring-[#6C4DF6]/40 shadow-lg'
+                              : 'group-hover:scale-105 group-hover:shadow-lg'
                           }`}
-                        />
-                        <span>{item.label}</span>
+                        >
+                          <Icon className="w-4 h-4 text-white drop-shadow-sm" />
+                        </div>
+
+                        {!isCollapsed && (
+                          <div className="flex flex-col min-w-0 animate-fade-in">
+                            <span className={`text-xs leading-snug truncate ${isActive ? 'font-black text-[#6C4DF6]' : 'font-bold text-[#202124]'}`}>
+                              {item.label}
+                            </span>
+                            {item.desc && (
+                              <span className={`text-[10px] leading-tight truncate mt-0.5 ${isActive ? 'text-[#6C4DF6]/80 font-medium' : 'text-[#858099] font-normal group-hover:text-slate-600'}`}>
+                                {item.desc}
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </div>
 
-                      {item.badge && (
+                      {!isCollapsed && item.badge && (
                         <span
-                          className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
-                            item.badge === 'HOT'
-                              ? 'bg-coral-50 text-coral-500 border border-coral-200'
+                          className={`text-[9px] font-black px-2 py-0.5 rounded-full shrink-0 ml-1.5 ${
+                            isActive
+                              ? 'bg-white text-[#6C4DF6] shadow-soft-xs'
+                              : item.badge === 'HOT'
+                              ? 'bg-coral-500 text-white shadow-soft-xs'
                               : item.badge === 'Live'
-                              ? 'bg-emeraldGreen-50 text-emeraldGreen-500 border border-emeraldGreen-500/20'
+                              ? 'bg-emeraldGreen-500 text-white shadow-soft-xs'
                               : item.badge === 'AI'
-                              ? 'bg-purple-100 text-brand-700'
-                              : 'bg-surface-muted text-slateText-muted'
+                              ? 'bg-purple-600 text-white'
+                              : 'bg-[#E4DAFA] text-[#6C4DF6]'
                           }`}
                         >
                           {item.badge}
@@ -212,40 +483,75 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
         </div>
 
         {/* Footer Quick Promotion & Store View */}
-        <div className="p-3 border-t border-surface-border shrink-0 bg-surface-bg/50 space-y-2">
-          {/* Upgrade Plan Card */}
-          <div
-            onClick={handleUpgradeClick}
-            className="p-3 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 text-white cursor-pointer hover:shadow-purple-glow transition-all duration-200 relative overflow-hidden group"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
-                  <Crown className="w-4 h-4 text-warm-400" />
+        <div className="p-2.5 border-t border-[#E7E0F7] shrink-0 bg-[#F4F0FD] space-y-2">
+          {currentRole === 'Customer' ? (
+            /* Customer Rewards & Wishlist Box */
+            <div
+              onClick={() => toast.success('You have ₹450 (1,280 Coins) ready to use on any checkout!')}
+              className={`rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-white cursor-pointer hover:shadow-soft-md transition-all duration-200 relative overflow-hidden group shadow-soft-sm ${
+                isCollapsed ? 'p-2 flex justify-center' : 'p-3'
+              }`}
+              title="₹450 Wallet Coins"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
+                    <Sparkles className="w-4 h-4 text-white" />
+                  </div>
+                  {!isCollapsed && (
+                    <div>
+                      <h5 className="text-xs font-bold leading-none">₹450 Wallet Coins</h5>
+                      <p className="text-[10px] text-white/90 mt-0.5">Gold Member Perks</p>
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <h5 className="text-xs font-bold leading-none">Upgrade Plan</h5>
-                  <p className="text-[10px] text-white/80 mt-0.5">Grow your business</p>
-                </div>
+                {!isCollapsed && <ChevronRight className="w-4 h-4 text-white/70 group-hover:translate-x-0.5 transition-transform" />}
               </div>
-              <ChevronRight className="w-4 h-4 text-white/70 group-hover:translate-x-0.5 transition-transform" />
             </div>
-          </div>
+          ) : (
+            /* Merchant Upgrade Plan Card */
+            <div
+              onClick={handleUpgradeClick}
+              className={`rounded-2xl bg-gradient-to-r from-[#6C4DF6] to-[#8A6AF8] text-white cursor-pointer hover:shadow-purple-glow transition-all duration-200 relative overflow-hidden group shadow-soft-sm ${
+                isCollapsed ? 'p-2 flex justify-center' : 'p-3'
+              }`}
+              title="Enterprise Pro Active"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
+                    <Crown className="w-4 h-4 text-amber-300" />
+                  </div>
+                  {!isCollapsed && (
+                    <div>
+                      <h5 className="text-xs font-bold leading-none">Enterprise OS</h5>
+                      <p className="text-[10px] text-white/90 mt-0.5">Active Merchant Pro</p>
+                    </div>
+                  )}
+                </div>
+                {!isCollapsed && <ChevronRight className="w-4 h-4 text-white/70 group-hover:translate-x-0.5 transition-transform" />}
+              </div>
+            </div>
+          )}
 
-          {/* View Your Store External link */}
-          <a
-            href="#store-preview"
-            onClick={handleStorePreview}
-            className="flex items-center justify-between w-full px-3 py-2 rounded-xl text-xs font-bold text-slateText-main bg-white hover:bg-brand-50 hover:text-brand-600 border border-surface-border transition-colors shadow-soft-sm"
+          {/* Direct Store View Button */}
+          <NavLink
+            to="/"
+            title="Live Website View"
+            className={`flex items-center w-full rounded-xl text-xs font-semibold text-slateText-muted hover:text-brand-500 hover:bg-white/80 transition-colors ${
+              isCollapsed ? 'justify-center p-2' : 'justify-between px-3 py-2'
+            }`}
           >
-            <span className="flex items-center gap-2">
-              <Store className="w-3.5 h-3.5 text-brand-500" />
-              View Your Store
-            </span>
-            <ExternalLink className="w-3.5 h-3.5 text-slateText-muted" />
-          </a>
+            <div className="flex items-center gap-2">
+              <Store className="w-3.5 h-3.5" />
+              {!isCollapsed && <span>Live Website View</span>}
+            </div>
+            {!isCollapsed && <ExternalLink className="w-3 h-3" />}
+          </NavLink>
         </div>
       </aside>
     </>
   );
 };
+
+export default Sidebar;
