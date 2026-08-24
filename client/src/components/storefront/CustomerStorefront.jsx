@@ -21,6 +21,7 @@ import {
 import { initialMockData } from '../../services/mockDataStore';
 import { useCart } from '../../context/CartContext';
 import { useToast } from '../../context/ToastContext';
+import { HeroBannerCarousel } from './HeroBannerCarousel';
 
 export const CustomerStorefront = () => {
   const { addToCart, setQuickViewProduct, setIsCheckoutOpen } = useCart();
@@ -80,44 +81,8 @@ export const CustomerStorefront = () => {
 
   return (
     <div className="space-y-8 pb-12 animate-fade-in">
-      {/* 1. Hero Shopping Promotional Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#6C4DF6] via-[#855FF8] to-[#FF5C8A] text-white p-6 sm:p-10 shadow-soft-xl">
-        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-80 h-80 rounded-full bg-white/10 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 -mb-16 w-60 h-60 rounded-full bg-amber-400/20 blur-2xl pointer-events-none" />
-
-        <div className="relative z-10 max-w-2xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-xs font-black tracking-wide border border-white/30">
-            <Flame className="w-4 h-4 text-amber-300 fill-amber-300" />
-            <span>Kiaan Mega Festive Festival — Up to 70% OFF</span>
-          </div>
-
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-            Elevate Your Style With Premium Fashion & Lifestyle
-          </h1>
-
-          <p className="text-sm sm:text-base text-white/90 font-medium">
-            Explore authentic collections with Free Express Shipping, 7-day hassle-free returns & 100% genuine guarantee.
-          </p>
-
-          <div className="flex flex-wrap gap-3 pt-2">
-            <button
-              onClick={() => {
-                setSelectedCategory('All');
-                toast.success('Browsing entire catalog!');
-              }}
-              className="px-6 py-3 rounded-2xl bg-white text-slateText-main font-black text-sm shadow-soft-lg hover:bg-slate-50 transition-all hover:scale-105"
-            >
-              Shop All Deals
-            </button>
-            <button
-              onClick={() => setSelectedCategory('Women')}
-              className="px-6 py-3 rounded-2xl bg-white/20 backdrop-blur-md text-white font-bold text-sm hover:bg-white/30 border border-white/30 transition-all"
-            >
-              Explore Women's Wardrobe
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* 1. Flipkart/Amazon Style 8-Slide Auto-Playing Hero Offer Carousel */}
+      <HeroBannerCarousel onSelectCategory={(cat) => setSelectedCategory(cat)} />
 
       {/* 2. Category Circular Strip */}
       <div className="space-y-3">
