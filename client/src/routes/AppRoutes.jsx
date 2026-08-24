@@ -62,6 +62,15 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+const RoleRoute = ({ children, allowedRoles }) => {
+  const { user } = useAuth();
+  const role = user?.role || 'Admin';
+  if (allowedRoles && !allowedRoles.includes(role)) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+};
+
 export const AppRoutes = () => {
   return (
     <Routes>
@@ -83,16 +92,65 @@ export const AppRoutes = () => {
 
         {/* Products */}
         <Route path="products" element={<Products />} />
-        <Route path="products/add" element={<AddProduct />} />
-        <Route path="products/edit/:id" element={<EditProduct />} />
+        <Route
+          path="products/add"
+          element={
+            <RoleRoute allowedRoles={['Admin', 'Manager']}>
+              <AddProduct />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="products/edit/:id"
+          element={
+            <RoleRoute allowedRoles={['Admin', 'Manager']}>
+              <EditProduct />
+            </RoleRoute>
+          }
+        />
         <Route path="products/:id" element={<ProductDetails />} />
 
         {/* Categories & Brands */}
-        <Route path="categories" element={<Categories />} />
-        <Route path="categories/:slug" element={<CategoryDetails />} />
-        <Route path="collections" element={<Collections />} />
-        <Route path="brands" element={<Brands />} />
-        <Route path="reviews" element={<Reviews />} />
+        <Route
+          path="categories"
+          element={
+            <RoleRoute allowedRoles={['Admin', 'Manager']}>
+              <Categories />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="categories/:slug"
+          element={
+            <RoleRoute allowedRoles={['Admin', 'Manager']}>
+              <CategoryDetails />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="collections"
+          element={
+            <RoleRoute allowedRoles={['Admin', 'Manager']}>
+              <Collections />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="brands"
+          element={
+            <RoleRoute allowedRoles={['Admin', 'Manager']}>
+              <Brands />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="reviews"
+          element={
+            <RoleRoute allowedRoles={['Admin', 'Manager']}>
+              <Reviews />
+            </RoleRoute>
+          }
+        />
 
         {/* Orders */}
         <Route path="orders" element={<Orders />} />
@@ -103,26 +161,124 @@ export const AppRoutes = () => {
         {/* Customers */}
         <Route path="customers" element={<Customers />} />
         <Route path="customers/:id" element={<CustomerDetails />} />
-        <Route path="customer-segments" element={<CustomerSegments />} />
+        <Route
+          path="customer-segments"
+          element={
+            <RoleRoute allowedRoles={['Admin', 'Manager']}>
+              <CustomerSegments />
+            </RoleRoute>
+          }
+        />
 
-        {/* Marketing */}
-        <Route path="campaigns" element={<Campaigns />} />
-        <Route path="coupons" element={<Coupons />} />
-        <Route path="flash-sale" element={<FlashSale />} />
-        <Route path="affiliates" element={<Affiliates />} />
+        {/* Marketing (Admin & Manager Only) */}
+        <Route
+          path="campaigns"
+          element={
+            <RoleRoute allowedRoles={['Admin', 'Manager']}>
+              <Campaigns />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="coupons"
+          element={
+            <RoleRoute allowedRoles={['Admin', 'Manager']}>
+              <Coupons />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="flash-sale"
+          element={
+            <RoleRoute allowedRoles={['Admin', 'Manager']}>
+              <FlashSale />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="affiliates"
+          element={
+            <RoleRoute allowedRoles={['Admin', 'Manager']}>
+              <Affiliates />
+            </RoleRoute>
+          }
+        />
 
-        {/* Analytics */}
-        <Route path="analytics/sales" element={<SalesAnalytics />} />
-        <Route path="analytics/products" element={<ProductAnalytics />} />
-        <Route path="analytics/customers" element={<CustomerAnalytics />} />
-        <Route path="reports" element={<Reports />} />
-        <Route path="ai-assistant" element={<AIAssistant />} />
+        {/* Analytics (Admin & Manager Only) */}
+        <Route
+          path="analytics/sales"
+          element={
+            <RoleRoute allowedRoles={['Admin', 'Manager']}>
+              <SalesAnalytics />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="analytics/products"
+          element={
+            <RoleRoute allowedRoles={['Admin', 'Manager']}>
+              <ProductAnalytics />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="analytics/customers"
+          element={
+            <RoleRoute allowedRoles={['Admin', 'Manager']}>
+              <CustomerAnalytics />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="reports"
+          element={
+            <RoleRoute allowedRoles={['Admin']}>
+              <Reports />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="ai-assistant"
+          element={
+            <RoleRoute allowedRoles={['Admin', 'Manager']}>
+              <AIAssistant />
+            </RoleRoute>
+          }
+        />
 
-        {/* Settings */}
-        <Route path="settings/store" element={<StoreSettings />} />
-        <Route path="settings/payment" element={<PaymentSettings />} />
-        <Route path="settings/shipping" element={<ShippingSettings />} />
-        <Route path="settings/users-roles" element={<UsersRoles />} />
+        {/* Settings (Admin Only) */}
+        <Route
+          path="settings/store"
+          element={
+            <RoleRoute allowedRoles={['Admin']}>
+              <StoreSettings />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="settings/payment"
+          element={
+            <RoleRoute allowedRoles={['Admin']}>
+              <PaymentSettings />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="settings/shipping"
+          element={
+            <RoleRoute allowedRoles={['Admin']}>
+              <ShippingSettings />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="settings/users-roles"
+          element={
+            <RoleRoute allowedRoles={['Admin']}>
+              <UsersRoles />
+            </RoleRoute>
+          }
+        />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

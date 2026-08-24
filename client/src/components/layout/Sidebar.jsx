@@ -38,67 +38,77 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
   const toast = useToast();
   const location = useLocation();
 
-  const navSections = [
+  const currentRole = user?.role || 'Admin';
+
+  const allNavSections = [
     {
       title: null,
       items: [
-        { label: 'Dashboard', path: '/', icon: LayoutDashboard },
+        { label: 'Dashboard', path: '/', icon: LayoutDashboard, roles: ['Admin', 'Manager', 'Staff'] },
       ],
     },
     {
       title: 'STORE',
       items: [
-        { label: 'Products', path: '/products', icon: ShoppingBag, badge: '8' },
-        { label: 'Categories', path: '/categories', icon: Layers },
-        { label: 'Collections', path: '/collections', icon: Sparkles },
-        { label: 'Brands', path: '/brands', icon: Award },
+        { label: 'Products', path: '/products', icon: ShoppingBag, badge: '8', roles: ['Admin', 'Manager', 'Staff'] },
+        { label: 'Categories', path: '/categories', icon: Layers, roles: ['Admin', 'Manager'] },
+        { label: 'Collections', path: '/collections', icon: Sparkles, roles: ['Admin', 'Manager'] },
+        { label: 'Brands', path: '/brands', icon: Award, roles: ['Admin', 'Manager'] },
       ],
     },
     {
       title: 'ORDERS',
       items: [
-        { label: 'All Orders', path: '/orders', icon: Package, badge: '128' },
-        { label: 'Returns', path: '/returns', icon: RotateCcw },
-        { label: 'Cancellations', path: '/cancellations', icon: Ban },
+        { label: 'All Orders', path: '/orders', icon: Package, badge: '128', roles: ['Admin', 'Manager', 'Staff'] },
+        { label: 'Returns', path: '/returns', icon: RotateCcw, roles: ['Admin', 'Manager', 'Staff'] },
+        { label: 'Cancellations', path: '/cancellations', icon: Ban, roles: ['Admin', 'Manager', 'Staff'] },
       ],
     },
     {
       title: 'CUSTOMERS',
       items: [
-        { label: 'All Customers', path: '/customers', icon: Users },
-        { label: 'Segments', path: '/customer-segments', icon: UserCheck },
-        { label: 'Reviews', path: '/reviews', icon: MessageSquareQuote },
+        { label: 'All Customers', path: '/customers', icon: Users, roles: ['Admin', 'Manager', 'Staff'] },
+        { label: 'Segments', path: '/customer-segments', icon: UserCheck, roles: ['Admin', 'Manager'] },
+        { label: 'Reviews', path: '/reviews', icon: MessageSquareQuote, roles: ['Admin', 'Manager'] },
       ],
     },
     {
       title: 'MARKETING',
       items: [
-        { label: 'Campaigns', path: '/campaigns', icon: Megaphone, badge: 'Live' },
-        { label: 'Coupons', path: '/coupons', icon: Ticket },
-        { label: 'Flash Sale', path: '/flash-sale', icon: Zap, badge: 'HOT' },
-        { label: 'Affiliates', path: '/affiliates', icon: Share2 },
+        { label: 'Campaigns', path: '/campaigns', icon: Megaphone, badge: 'Live', roles: ['Admin', 'Manager'] },
+        { label: 'Coupons', path: '/coupons', icon: Ticket, roles: ['Admin', 'Manager'] },
+        { label: 'Flash Sale', path: '/flash-sale', icon: Zap, badge: 'HOT', roles: ['Admin', 'Manager'] },
+        { label: 'Affiliates', path: '/affiliates', icon: Share2, roles: ['Admin', 'Manager'] },
       ],
     },
     {
       title: 'ANALYTICS',
       items: [
-        { label: 'Sales Analytics', path: '/analytics/sales', icon: TrendingUp },
-        { label: 'Product Analytics', path: '/analytics/products', icon: BarChart2 },
-        { label: 'Customer Analytics', path: '/analytics/customers', icon: PieChart },
-        { label: 'Reports', path: '/reports', icon: FileText },
-        { label: 'AI Insights', path: '/ai-assistant', icon: Sparkles, badge: 'AI' },
+        { label: 'Sales Analytics', path: '/analytics/sales', icon: TrendingUp, roles: ['Admin', 'Manager'] },
+        { label: 'Product Analytics', path: '/analytics/products', icon: BarChart2, roles: ['Admin', 'Manager'] },
+        { label: 'Customer Analytics', path: '/analytics/customers', icon: PieChart, roles: ['Admin', 'Manager'] },
+        { label: 'Reports', path: '/reports', icon: FileText, roles: ['Admin'] },
+        { label: 'AI Insights', path: '/ai-assistant', icon: Sparkles, badge: 'AI', roles: ['Admin', 'Manager'] },
       ],
     },
     {
       title: 'SETTINGS',
       items: [
-        { label: 'Store Settings', path: '/settings/store', icon: Store },
-        { label: 'Payment', path: '/settings/payment', icon: CreditCard },
-        { label: 'Shipping', path: '/settings/shipping', icon: Truck },
-        { label: 'Users & Roles', path: '/settings/users-roles', icon: ShieldCheck },
+        { label: 'Store Settings', path: '/settings/store', icon: Store, roles: ['Admin'] },
+        { label: 'Payment', path: '/settings/payment', icon: CreditCard, roles: ['Admin'] },
+        { label: 'Shipping', path: '/settings/shipping', icon: Truck, roles: ['Admin'] },
+        { label: 'Users & Roles', path: '/settings/users-roles', icon: ShieldCheck, roles: ['Admin'] },
       ],
     },
   ];
+
+  // Dynamically filter sections and items according to the logged-in user's role
+  const navSections = allNavSections
+    .map(section => ({
+      ...section,
+      items: section.items.filter(item => !item.roles || item.roles.includes(currentRole)),
+    }))
+    .filter(section => section.items.length > 0);
 
   const handleStorePreview = (e) => {
     e.preventDefault();
