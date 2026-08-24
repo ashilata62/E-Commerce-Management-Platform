@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import {
   X,
   Send,
@@ -15,7 +16,8 @@ import {
   Clock,
   PhoneCall,
   ChevronRight,
-  Smile
+  Smile,
+  ShieldCheck
 } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 
@@ -41,7 +43,7 @@ export const CustomerSupportModal = ({ isOpen, onClose }) => {
     {
       id: 3,
       sender: 'agent',
-      agentName: 'Pooja Sharma (Senior Support)',
+      agentName: 'Pooja Sharma (Senior Support Specialist)',
       text: 'Hello Rohan! Your shipment with BlueDart (AWB #BD-992014) is currently Out for Delivery in Lokhandwala, Mumbai. It will reach your doorstep today between 2:00 PM – 4:00 PM. 🚚',
       time: '10:32 AM',
     },
@@ -54,7 +56,7 @@ export const CustomerSupportModal = ({ isOpen, onClose }) => {
     {
       id: 5,
       sender: 'agent',
-      agentName: 'Pooja Sharma (Senior Support)',
+      agentName: 'Pooja Sharma (Senior Support Specialist)',
       text: 'Absolutely! We offer 7-Day Hassle-Free doorstep pickup & instant size exchange at zero extra charge. You can raise a 1-click request right from your dashboard. ✨',
       time: '10:34 AM',
     }
@@ -63,34 +65,34 @@ export const CustomerSupportModal = ({ isOpen, onClose }) => {
   const [isTyping, setIsTyping] = useState(false);
 
   const quickQuestions = [
-    { text: 'Track my order #ORD-82942', type: 'track' },
-    { text: 'How do I return / exchange?', type: 'return' },
-    { text: 'Apply coupon code FESTIVE20', type: 'coupon' },
-    { text: 'Refund status for cancelled item', type: 'refund' },
+    { text: '🚚 Track order #ORD-82942' },
+    { text: '🔄 How do I exchange size?' },
+    { text: '🎟️ Promo code FESTIVE20' },
+    { text: '💳 Refund status for returns' },
   ];
 
   const faqs = [
     {
       q: 'How long does standard delivery take?',
-      a: 'Orders are dispatched within 24 hours. Metro deliveries take 1-2 days, while rest of India takes 3-4 days.',
+      a: 'Orders are dispatched within 24 hours. Metro deliveries take 1-2 days, while rest of India takes 3-4 days via BlueDart/Delhivery Express.',
     },
     {
       q: 'What is Kiaan 7-Day Return & Exchange Policy?',
-      a: 'You can return or exchange any unworn clothing with tags intact within 7 days of delivery with free doorstep pickup.',
+      a: 'You can return or exchange any clothing item with tags intact within 7 days of delivery with 100% free doorstep pickup.',
     },
     {
       q: 'When will I receive my refund for COD / UPI?',
       a: 'UPI and Card refunds are credited within 24-48 hours. For COD orders, refund is transferred to your bank account or Kiaan Wallet.',
     },
     {
-      q: 'Are all products 100% genuine and original?',
-      a: 'Yes, 100% authentic pure fabrics sourced directly from verified Indian weavers and manufacturers.',
+      q: 'Are all clothing fabrics 100% genuine and original?',
+      a: 'Yes, 100% authentic pure cotton, silk, rayon, and linen sourced directly from verified Indian weavers and certified brands.',
     }
   ];
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isTyping]);
+  }, [messages, isTyping, activeTab]);
 
   if (!isOpen) return null;
 
@@ -111,19 +113,19 @@ export const CustomerSupportModal = ({ isOpen, onClose }) => {
     // Simulate smart bot/agent reply
     setIsTyping(true);
     setTimeout(() => {
-      let replyText = 'Thank you for contacting us! Our team is reviewing your query and will update you shortly.';
+      let replyText = 'Thank you for contacting us! Our support team is resolving your query on priority.';
 
       const lower = text.toLowerCase();
       if (lower.includes('track') || lower.includes('order')) {
         replyText = '📦 Order #ORD-82942 is on vehicle with BlueDart courier. Expected delivery: Today by 4:00 PM. Delivery OTP will be sent to your phone.';
-      } else if (lower.includes('return') || lower.includes('exchange')) {
-        replyText = '🔄 Return/Exchange initiated! A courier pickup executive will collect the packet tomorrow between 10 AM - 1 PM. Keep the tag intact.';
-      } else if (lower.includes('coupon') || lower.includes('discount')) {
+      } else if (lower.includes('return') || lower.includes('exchange') || lower.includes('size')) {
+        replyText = '🔄 Size Exchange initiated! A courier pickup executive will collect the packet tomorrow between 10 AM - 1 PM. Keep the tag intact.';
+      } else if (lower.includes('coupon') || lower.includes('discount') || lower.includes('festive20')) {
         replyText = '🎉 Code "FESTIVE20" is active! You will get flat 20% OFF on all clothing items in your bag at checkout.';
       } else if (lower.includes('refund') || lower.includes('money')) {
         replyText = '💳 Your refund of ₹1,499 has been processed back to your UPI ID (rohan@okhdfcbank). UTR #REF-849201.';
       } else {
-        replyText = `Thank you for your message! Senior Support Executive Pooja is on chat and resolving your query on priority.`;
+        replyText = `Thank you for your query! Senior Support Executive Pooja is active and has noted your request.`;
       }
 
       setMessages((prev) => [
@@ -131,18 +133,21 @@ export const CustomerSupportModal = ({ isOpen, onClose }) => {
         {
           id: Date.now() + 1,
           sender: 'agent',
-          agentName: 'Pooja Sharma (Senior Support)',
+          agentName: 'Pooja Sharma (Senior Support Specialist)',
           text: replyText,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         }
       ]);
       setIsTyping(false);
-    }, 900);
+    }, 850);
   };
 
-  return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-slate-900/60 backdrop-blur-sm flex justify-end animate-fade-in">
-      <div className="relative w-full max-w-lg bg-white h-full shadow-2xl flex flex-col justify-between overflow-hidden animate-slide-left">
+  const modalContent = (
+    <div
+      className="fixed inset-0 z-[99999] overflow-hidden bg-slate-900/60 backdrop-blur-sm flex justify-end animate-fade-in"
+      style={{ margin: 0, padding: 0 }}
+    >
+      <div className="relative w-full sm:w-[480px] bg-white h-full shadow-2xl flex flex-col justify-between overflow-hidden animate-slide-left border-l border-[#E7E0F7]">
         {/* 1. Support Header */}
         <div className="p-4 sm:p-5 border-b border-[#E7E0F7] bg-[#F4F0FD] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
@@ -168,7 +173,8 @@ export const CustomerSupportModal = ({ isOpen, onClose }) => {
 
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-xl bg-white hover:bg-slate-100 text-slate-600 flex items-center justify-center shadow-soft-sm transition-transform hover:scale-105"
+            className="w-9 h-9 rounded-xl bg-white hover:bg-slate-100 text-slate-600 flex items-center justify-center shadow-soft-sm transition-transform hover:scale-105 cursor-pointer"
+            title="Close Support Desk"
           >
             <X className="w-4 h-4" />
           </button>
@@ -178,7 +184,7 @@ export const CustomerSupportModal = ({ isOpen, onClose }) => {
         <div className="flex border-b border-[#E7E0F7] bg-white px-4 shrink-0">
           <button
             onClick={() => setActiveTab('chat')}
-            className={`flex-1 py-3 text-xs font-black transition-all border-b-2 flex items-center justify-center gap-2 ${
+            className={`flex-1 py-3 text-xs font-black transition-all border-b-2 flex items-center justify-center gap-2 cursor-pointer ${
               activeTab === 'chat'
                 ? 'border-brand-500 text-brand-600 bg-brand-50/40'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
@@ -190,7 +196,7 @@ export const CustomerSupportModal = ({ isOpen, onClose }) => {
 
           <button
             onClick={() => setActiveTab('faqs')}
-            className={`flex-1 py-3 text-xs font-black transition-all border-b-2 flex items-center justify-center gap-2 ${
+            className={`flex-1 py-3 text-xs font-black transition-all border-b-2 flex items-center justify-center gap-2 cursor-pointer ${
               activeTab === 'faqs'
                 ? 'border-brand-500 text-brand-600 bg-brand-50/40'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
@@ -210,7 +216,7 @@ export const CustomerSupportModal = ({ isOpen, onClose }) => {
                 <button
                   key={i}
                   onClick={() => handleSendMessage(q.text)}
-                  className="px-3 py-1.5 rounded-xl bg-white hover:bg-[#E4DAFA] text-slate-700 hover:text-brand-600 border border-[#E7E0F7] text-[11px] font-bold shrink-0 transition-all shadow-soft-sm flex items-center gap-1.5"
+                  className="px-3 py-1.5 rounded-xl bg-white hover:bg-[#E4DAFA] text-slate-700 hover:text-brand-600 border border-[#E7E0F7] text-[11px] font-bold shrink-0 transition-all shadow-soft-sm flex items-center gap-1.5 cursor-pointer"
                 >
                   <Sparkles className="w-3 h-3 text-brand-500" />
                   <span>{q.text}</span>
@@ -278,7 +284,7 @@ export const CustomerSupportModal = ({ isOpen, onClose }) => {
               />
               <button
                 type="submit"
-                className="w-10 h-10 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white flex items-center justify-center shadow-purple-glow transition-all hover:scale-105 shrink-0"
+                className="w-10 h-10 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white flex items-center justify-center shadow-purple-glow transition-all hover:scale-105 shrink-0 cursor-pointer"
               >
                 <Send className="w-4 h-4" />
               </button>
@@ -327,6 +333,8 @@ export const CustomerSupportModal = ({ isOpen, onClose }) => {
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };
 
 export default CustomerSupportModal;
