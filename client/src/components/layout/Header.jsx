@@ -268,7 +268,7 @@ export const Header = ({ onMenuClick }) => {
                 <p className="text-[10px] font-bold text-slateText-muted uppercase px-2">
                   Switch Demo Role:
                 </p>
-                {['Admin', 'Manager', 'Staff'].map((role) => (
+                {['Admin', 'Manager', 'Staff', 'Customer'].map((role) => (
                   <button
                     key={role}
                     onClick={() => {
@@ -278,11 +278,11 @@ export const Header = ({ onMenuClick }) => {
                     }}
                     className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-between ${
                       user?.role === role
-                        ? 'bg-brand-50 text-brand-600'
-                        : 'text-slateText-main hover:bg-surface-muted'
+                        ? 'bg-[#E4DAFA] text-[#6C4DF6] font-bold'
+                        : 'text-slateText-main hover:bg-[#F4F0FD]'
                     }`}
                   >
-                    <span>{role}</span>
+                    <span>{role === 'Customer' ? '👤 Customer (Shopper)' : role}</span>
                     {user?.role === role && <CheckCircle2 className="w-3.5 h-3.5 text-brand-500" />}
                   </button>
                 ))}

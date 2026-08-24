@@ -92,6 +92,22 @@ export const AuthProvider = ({ children }) => {
         permissions: ['orders'],
       };
       setUser(staffUser);
+    } else if (role === 'Customer') {
+      const customerUser = {
+        _id: 'usr_004',
+        name: 'Rohan Deshmukh',
+        email: 'rohan.shopper@gmail.com',
+        role: 'Customer',
+        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+        phone: '+91 98234 56789',
+        status: 'Active',
+        walletBalance: 450,
+        rewardPoints: 1280,
+        activeOrders: 2,
+        wishlistCount: 6,
+        permissions: ['customer_portal'],
+      };
+      setUser(customerUser);
     } else {
       const adminUser = {
         _id: 'usr_001',

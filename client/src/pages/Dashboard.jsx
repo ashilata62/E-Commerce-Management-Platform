@@ -12,16 +12,23 @@ import { CommerceBenefits } from '../components/dashboard/CommerceBenefits';
 import { SkeletonLoader } from '../components/common/SkeletonLoader';
 import { productService } from '../services/productService';
 import { orderService } from '../services/orderService';
-import { analyticsService } from '../services/analyticsService';
 import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/AuthContext';
+import { CustomerDashboard } from '../components/dashboard/CustomerDashboard';
 
 export const Dashboard = () => {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [orders, setOrders] = useState([]);
   const [analytics, setAnalytics] = useState(null);
   const toast = useToast();
+
+  // If the logged-in user is a Customer, show the Customer Experience Dashboard
+  if (user?.role === 'Customer') {
+    return <CustomerDashboard />;
+  }
 
   useEffect(() => {
     const fetchDashboardData = async () => {

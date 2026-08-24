@@ -40,6 +40,23 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
 
   const currentRole = user?.role || 'Admin';
 
+  const customerNavSections = [
+    {
+      title: null,
+      items: [
+        { label: 'My Account Hub', path: '/', icon: LayoutDashboard, roles: ['Customer'] },
+      ],
+    },
+    {
+      title: 'SHOPPING & ORDERS',
+      items: [
+        { label: 'Browse Store', path: '/products', icon: ShoppingBag, badge: 'Deals', roles: ['Customer'] },
+        { label: 'My Orders', path: '/orders', icon: Package, badge: '2', roles: ['Customer'] },
+        { label: 'Returns & Refunds', path: '/returns', icon: RotateCcw, roles: ['Customer'] },
+      ],
+    },
+  ];
+
   const allNavSections = [
     {
       title: null,
@@ -103,12 +120,14 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
   ];
 
   // Dynamically filter sections and items according to the logged-in user's role
-  const navSections = allNavSections
-    .map(section => ({
-      ...section,
-      items: section.items.filter(item => !item.roles || item.roles.includes(currentRole)),
-    }))
-    .filter(section => section.items.length > 0);
+  const navSections = currentRole === 'Customer'
+    ? customerNavSections
+    : allNavSections
+        .map(section => ({
+          ...section,
+          items: section.items.filter(item => !item.roles || item.roles.includes(currentRole)),
+        }))
+        .filter(section => section.items.length > 0);
 
   const handleStorePreview = (e) => {
     e.preventDefault();
@@ -213,24 +232,45 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
 
         {/* Footer Quick Promotion & Store View */}
         <div className="p-3 border-t border-[#E7E0F7] shrink-0 bg-[#F4F0FD] space-y-2">
-          {/* Upgrade Plan Card */}
-          <div
-            onClick={handleUpgradeClick}
-            className="p-3 rounded-2xl bg-gradient-to-r from-[#6C4DF6] to-[#8A6AF8] text-white cursor-pointer hover:shadow-purple-glow transition-all duration-200 relative overflow-hidden group shadow-soft-sm"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
-                  <Crown className="w-4 h-4 text-warm-300" />
+          {currentRole === 'Customer' ? (
+            /* Customer Rewards & Wishlist Box */
+            <div
+              onClick={() => toast.success('You have ₹450 (1,280 Coins) ready to use on any checkout!')}
+              className="p-3 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-white cursor-pointer hover:shadow-soft-md transition-all duration-200 relative overflow-hidden group shadow-soft-sm"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
+                    <Sparkles className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <h5 className="text-xs font-bold leading-none">₹450 Wallet Coins</h5>
+                    <p className="text-[10px] text-white/90 mt-0.5">Gold Member Perks</p>
+                  </div>
                 </div>
-                <div>
-                  <h5 className="text-xs font-bold leading-none">Upgrade Plan</h5>
-                  <p className="text-[10px] text-white/80 mt-0.5">Grow your business</p>
-                </div>
+                <ChevronRight className="w-4 h-4 text-white/70 group-hover:translate-x-0.5 transition-transform" />
               </div>
-              <ChevronRight className="w-4 h-4 text-white/70 group-hover:translate-x-0.5 transition-transform" />
             </div>
-          </div>
+          ) : (
+            /* Merchant Upgrade Plan Card */
+            <div
+              onClick={handleUpgradeClick}
+              className="p-3 rounded-2xl bg-gradient-to-r from-[#6C4DF6] to-[#8A6AF8] text-white cursor-pointer hover:shadow-purple-glow transition-all duration-200 relative overflow-hidden group shadow-soft-sm"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
+                    <Crown className="w-4 h-4 text-warm-300" />
+                  </div>
+                  <div>
+                    <h5 className="text-xs font-bold leading-none">Upgrade Plan</h5>
+                    <p className="text-[10px] text-white/80 mt-0.5">Grow your business</p>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-white/70 group-hover:translate-x-0.5 transition-transform" />
+              </div>
+            </div>
+          )}
 
           {/* View Your Store External link */}
           <a
@@ -240,7 +280,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           >
             <span className="flex items-center gap-2">
               <Store className="w-3.5 h-3.5 text-brand-500" />
-              View Your Store
+              {currentRole === 'Customer' ? 'Explore Store Deals' : 'View Your Store'}
             </span>
             <ExternalLink className="w-3.5 h-3.5 text-slateText-muted" />
           </a>
