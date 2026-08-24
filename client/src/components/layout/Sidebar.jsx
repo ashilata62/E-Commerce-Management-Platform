@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { KiaanBrandLogo } from '../common/KiaanLogo';
 
 export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
   const { user } = useAuth();
@@ -125,22 +126,9 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
         }`}
       >
         {/* Brand Logo & Header */}
-        <div className="h-16 flex items-center justify-between px-5 border-b border-surface-border shrink-0 bg-white">
-          <NavLink to="/" className="flex items-center gap-3 group" onClick={() => setIsMobileOpen(false)}>
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-500 to-coral-500 flex items-center justify-center text-white shadow-soft-sm group-hover:scale-105 transition-transform">
-              <ShoppingBag className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-base tracking-tight text-slateText-main">
-                  Kiaan<span className="text-brand-500">Technology</span>
-                </span>
-                <span className="text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded bg-brand-50 text-brand-600 border border-brand-200">
-                  PRO
-                </span>
-              </div>
-              <p className="text-[11px] text-slateText-muted font-medium tracking-tight">Commerce Business OS</p>
-            </div>
+        <div className="h-16 flex items-center justify-between px-4 border-b border-surface-border shrink-0 bg-white">
+          <NavLink to="/" className="group" onClick={() => setIsMobileOpen(false)}>
+            <KiaanBrandLogo size="md" />
           </NavLink>
 
           <button
