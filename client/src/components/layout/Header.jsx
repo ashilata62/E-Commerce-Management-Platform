@@ -78,11 +78,33 @@ export const Header = ({ onMenuClick }) => {
         <button
           type="button"
           onClick={toggleStoreStatus}
-          className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold bg-emeraldGreen-50 text-emeraldGreen-600 border border-emeraldGreen-200 hover:bg-emeraldGreen-100/60 transition-colors"
+          className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold bg-emeraldGreen-50 text-emeraldGreen-600 border border-emeraldGreen-200 hover:bg-emeraldGreen-100/60 transition-colors"
           title="Click to toggle store operational mode"
         >
           <span className="w-2 h-2 rounded-full bg-emeraldGreen-500 status-dot-pulse shrink-0" />
           <span>● Store {storeStatus}</span>
+        </button>
+
+        {/* 1-Click View Switcher Toggle Button */}
+        <button
+          type="button"
+          onClick={() => {
+            if (user?.role === 'Customer') {
+              switchDemoRole('Admin');
+              toast.success('Switched back to Admin OS Management View! 👑');
+            } else {
+              switchDemoRole('Customer');
+              toast.success('Switched to Customer Experience Dashboard! 🛍️');
+            }
+          }}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shadow-soft-sm cursor-pointer ${
+            user?.role === 'Customer'
+              ? 'bg-amber-50 text-amber-800 border border-amber-300 hover:bg-amber-100'
+              : 'bg-[#E4DAFA] text-[#6C4DF6] border border-[#D5C6F8] hover:bg-[#D5C6F8]'
+          }`}
+          title="Click to instantly toggle between Merchant Admin and Customer Dashboard"
+        >
+          <span>{user?.role === 'Customer' ? '👑 Back to Admin OS' : '🛍️ Customer View'}</span>
         </button>
       </div>
 

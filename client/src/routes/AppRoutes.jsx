@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 
 // Pages
 import { Dashboard } from '../pages/Dashboard';
+import { CustomerDashboard } from '../components/dashboard/CustomerDashboard';
 
 // Products
 import { Products } from '../pages/products/Products';
@@ -89,6 +90,7 @@ export const AppRoutes = () => {
         }
       >
         <Route index element={<Dashboard />} />
+        <Route path="customer" element={<CustomerDashboard />} />
 
         {/* Products */}
         <Route path="products" element={<Products />} />
