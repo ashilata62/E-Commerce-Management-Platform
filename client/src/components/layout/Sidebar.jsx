@@ -347,9 +347,9 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
         />
       )}
 
-      {/* Main Sidebar Shell (Soft Lavender Variation 1 Theme) */}
+      {/* Main Sidebar Shell (Soft Lavender Variation 1 Theme with Distinct Visual Border) */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col w-72 bg-[#F4F0FD] border-r border-[#E7E0F7] transition-all duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col w-72 bg-[#F4F0FD] border-r border-[#E7E0F7] shadow-[4px_0_24px_rgba(108,77,246,0.05)] transition-all duration-300 ease-in-out lg:translate-x-0 ${
           isMobileOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
         }`}
         aria-label="Sidebar Navigation"
