@@ -6,11 +6,12 @@ import ktLogoImg from '../../assets/kt-gold-logo.png';
  */
 export const KiaanEmblem = ({ className = "w-10 h-10" }) => {
   return (
-    <div className={`relative flex items-center justify-center shrink-0 ${className}`}>
+    <div className={`relative flex items-center justify-center shrink-0 bg-transparent ${className}`}>
       <img
         src={ktLogoImg}
-        alt="Kiaan Technology Gold Logo"
-        className="w-full h-full object-contain drop-shadow-[0_2px_8px_rgba(245,158,11,0.35)] hover:scale-105 transition-transform"
+        alt="Kiaan Technology Gold KT Logo"
+        className="w-full h-full object-contain mix-blend-multiply hover:scale-105 transition-transform"
+        style={{ mixBlendMode: 'multiply' }}
       />
     </div>
   );
