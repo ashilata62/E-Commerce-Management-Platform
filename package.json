@@ -1,0 +1,13 @@
+{
+  "name": "ecommerce-management-platform",
+  "version": "1.0.0",
+  "description": "MERN E-Commerce Business Management Operating System - Frontend UI",
+  "scripts": {
+    "dev": "npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "preview": "npm run preview --prefix client"
+  },
+  "keywords": ["ecommerce", "react", "tailwind", "ui", "operating-system"],
+  "author": "",
+  "license": "ISC"
+}

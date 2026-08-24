@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #F7F7FA;
+    color: #202124;
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Custom modern scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D7D9E0;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6C4DF6;
+}
+
+/* Card & Glass styles */
+.commerce-card {
+  background: #FFFFFF;
+  border: 1px solid #EAEAEF;
+  border-radius: 16px;
+  box-shadow: 0 2px 10px -2px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.commerce-card:hover {
+  border-color: #DFD7FD;
+  box-shadow: 0 8px 24px -4px rgba(108, 77, 246, 0.08), 0 2px 8px -1px rgba(0, 0, 0, 0.03);
+}
+
+/* Hero card dynamic gradient */
+.hero-gradient {
+  background: linear-gradient(135deg, #6C4DF6 0%, #835FF7 45%, #9B78FC 100%);
+}
+
+.ai-card-gradient {
+  background: linear-gradient(135deg, #5836E6 0%, #6C4DF6 50%, #FF5C8A 140%);
+}
+
+.coral-badge-gradient {
+  background: linear-gradient(135deg, #FF5C8A 0%, #FF7E5F 100%);
+}
+
+.warm-badge-gradient {
+  background: linear-gradient(135deg, #FFB84D 0%, #FFA012 100%);
+}
+
+/* Pulse animation for live indicators */
+@keyframes live-pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(25, 169, 116, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 6px rgba(25, 169, 116, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(25, 169, 116, 0);
+  }
+}
+
+.status-dot-pulse {
+  animation: live-pulse 2s infinite;
+}
+
+/* Shimmer animation for skeleton loaders */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.shimmer-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-effect::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.4) 20%,
+    rgba(255, 255, 255, 0.6) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 2s infinite;
+  content: '';
+}
