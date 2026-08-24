@@ -77,6 +77,8 @@ export const AppRoutes = () => {
   return (
     <Routes>
       {/* Public Landing Page */}
+      <Route path="/landing" element={<LandingPage />} />
+      <Route path="/landing-page" element={<LandingPage />} />
       <Route path="/" element={<LandingPage />} />
 
       {/* Auth Public Routes */}
