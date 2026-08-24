@@ -49,6 +49,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Order Status & Wallet Coins',
           path: '/',
           icon: LayoutDashboard,
+          iconBg: 'bg-indigo-50 text-indigo-600 border-indigo-200',
           roles: ['Customer']
         },
       ],
@@ -61,6 +62,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Shop Latest Clothing & Outfits',
           path: '/products',
           icon: ShoppingBag,
+          iconBg: 'bg-emerald-50 text-emerald-600 border-emerald-200',
           badge: 'Deals',
           roles: ['Customer']
         },
@@ -69,6 +71,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Live BlueDart Courier Tracking',
           path: '/orders',
           icon: Package,
+          iconBg: 'bg-blue-50 text-blue-600 border-blue-200',
           badge: '2',
           roles: ['Customer']
         },
@@ -77,6 +80,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: '7-Day Size Exchange & RMA',
           path: '/returns',
           icon: RotateCcw,
+          iconBg: 'bg-orange-50 text-orange-600 border-orange-200',
           roles: ['Customer']
         },
       ],
@@ -92,6 +96,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Live Sales & Store Operations',
           path: '/',
           icon: LayoutDashboard,
+          iconBg: 'bg-violet-100 text-violet-700 border-violet-200',
           roles: ['Admin', 'Manager', 'Staff']
         },
       ],
@@ -104,6 +109,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Manage Stock, Sizes & Prices',
           path: '/products',
           icon: ShoppingBag,
+          iconBg: 'bg-emerald-100 text-emerald-700 border-emerald-200',
           badge: '12',
           roles: ['Admin', 'Manager', 'Staff']
         },
@@ -112,6 +118,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Ethnic, Western, Kids & Formals',
           path: '/categories',
           icon: Layers,
+          iconBg: 'bg-sky-100 text-sky-700 border-sky-200',
           roles: ['Admin', 'Manager']
         },
         {
@@ -119,6 +126,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Seasonal & Featured Outfit Sets',
           path: '/collections',
           icon: Sparkles,
+          iconBg: 'bg-amber-100 text-amber-700 border-amber-200',
           roles: ['Admin', 'Manager']
         },
         {
@@ -126,6 +134,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Kaira, UrbanThread & Heritage',
           path: '/brands',
           icon: Award,
+          iconBg: 'bg-purple-100 text-purple-700 border-purple-200',
           roles: ['Admin', 'Manager']
         },
       ],
@@ -138,6 +147,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Packing, Invoices & BlueDart AWB',
           path: '/orders',
           icon: Package,
+          iconBg: 'bg-blue-100 text-blue-700 border-blue-200',
           badge: '128',
           roles: ['Admin', 'Manager', 'Staff']
         },
@@ -146,6 +156,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Size Exchanges & Doorstep RMA',
           path: '/returns',
           icon: RotateCcw,
+          iconBg: 'bg-orange-100 text-orange-700 border-orange-200',
           roles: ['Admin', 'Manager', 'Staff']
         },
         {
@@ -153,6 +164,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Refunds & Auto-Restock',
           path: '/cancellations',
           icon: Ban,
+          iconBg: 'bg-rose-100 text-rose-700 border-rose-200',
           roles: ['Admin', 'Manager', 'Staff']
         },
       ],
@@ -165,6 +177,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Buyer Profiles, History & LTV',
           path: '/customers',
           icon: Users,
+          iconBg: 'bg-teal-100 text-teal-700 border-teal-200',
           roles: ['Admin', 'Manager', 'Staff']
         },
         {
@@ -172,6 +185,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'VIP & High-Value Shopper Groups',
           path: '/customer-segments',
           icon: UserCheck,
+          iconBg: 'bg-indigo-100 text-indigo-700 border-indigo-200',
           roles: ['Admin', 'Manager']
         },
         {
@@ -179,6 +193,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Ratings & Photo Feedback Moderation',
           path: '/reviews',
           icon: MessageSquareQuote,
+          iconBg: 'bg-amber-100 text-amber-700 border-amber-200',
           roles: ['Admin', 'Manager']
         },
       ],
@@ -191,6 +206,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'WhatsApp & Email Sales Blasts',
           path: '/campaigns',
           icon: Megaphone,
+          iconBg: 'bg-pink-100 text-pink-700 border-pink-200',
           badge: 'Live',
           roles: ['Admin', 'Manager']
         },
@@ -199,6 +215,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Discount Codes (FESTIVE20)',
           path: '/coupons',
           icon: Ticket,
+          iconBg: 'bg-emerald-100 text-emerald-700 border-emerald-200',
           roles: ['Admin', 'Manager']
         },
         {
@@ -206,6 +223,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Timed Ticking Sale Markdowns',
           path: '/flash-sale',
           icon: Zap,
+          iconBg: 'bg-red-100 text-red-700 border-red-200',
           badge: 'HOT',
           roles: ['Admin', 'Manager']
         },
@@ -214,6 +232,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Influencer Referral Commissions',
           path: '/affiliates',
           icon: Share2,
+          iconBg: 'bg-cyan-100 text-cyan-700 border-cyan-200',
           roles: ['Admin', 'Manager']
         },
       ],
@@ -226,6 +245,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Daily & Monthly Revenue Growth',
           path: '/analytics/sales',
           icon: TrendingUp,
+          iconBg: 'bg-emerald-100 text-emerald-700 border-emerald-200',
           roles: ['Admin', 'Manager']
         },
         {
@@ -233,6 +253,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Top-Selling Outfits & Demand',
           path: '/analytics/products',
           icon: BarChart2,
+          iconBg: 'bg-blue-100 text-blue-700 border-blue-200',
           roles: ['Admin', 'Manager']
         },
         {
@@ -240,6 +261,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Retention & Average Order Value',
           path: '/analytics/customers',
           icon: PieChart,
+          iconBg: 'bg-purple-100 text-purple-700 border-purple-200',
           roles: ['Admin', 'Manager']
         },
         {
@@ -247,6 +269,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'GST, Tax & Financial PDF Export',
           path: '/reports',
           icon: FileText,
+          iconBg: 'bg-slate-100 text-slate-700 border-slate-300',
           roles: ['Admin']
         },
         {
@@ -254,6 +277,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Smart Price & Restock Assistant',
           path: '/ai-assistant',
           icon: Sparkles,
+          iconBg: 'bg-gradient-to-tr from-purple-500 via-pink-500 to-amber-400 text-white border-0 shadow-soft-xs',
           badge: 'AI',
           roles: ['Admin', 'Manager']
         },
@@ -267,6 +291,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Logo Branding, Contact & Currency',
           path: '/settings/store',
           icon: Store,
+          iconBg: 'bg-amber-100 text-amber-700 border-amber-200',
           roles: ['Admin']
         },
         {
@@ -274,6 +299,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'UPI, Razorpay, Cards & COD Setup',
           path: '/settings/payment',
           icon: CreditCard,
+          iconBg: 'bg-emerald-100 text-emerald-700 border-emerald-200',
           roles: ['Admin']
         },
         {
@@ -281,6 +307,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Courier Rates & Free Over ₹999',
           path: '/settings/shipping',
           icon: Truck,
+          iconBg: 'bg-blue-100 text-blue-700 border-blue-200',
           roles: ['Admin']
         },
         {
@@ -288,6 +315,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           desc: 'Staff Team Access Permissions',
           path: '/settings/users-roles',
           icon: ShieldCheck,
+          iconBg: 'bg-indigo-100 text-indigo-700 border-indigo-200',
           roles: ['Admin']
         },
       ],
@@ -367,15 +395,17 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
                       }`}
                     >
                       <div className="flex items-start gap-3 min-w-0">
+                        {/* Vibrant Colorful Icon Badge */}
                         <div
-                          className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
+                          className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5 transition-all shadow-soft-xs border ${
                             isActive
-                              ? 'bg-[#6C4DF6] text-white shadow-soft-xs'
-                              : 'bg-white text-[#68647A] group-hover:text-[#6C4DF6] group-hover:bg-[#E4DAFA]'
+                              ? 'bg-gradient-to-tr from-[#6C4DF6] to-[#8A6AF8] text-white border-transparent shadow-purple-glow scale-105'
+                              : `${item.iconBg || 'bg-white text-slate-700 border-slate-200'} group-hover:scale-105`
                           }`}
                         >
-                          <Icon className="w-3.5 h-3.5" />
+                          <Icon className="w-4 h-4" />
                         </div>
+
                         <div className="flex flex-col min-w-0">
                           <span className={`text-xs leading-snug truncate ${isActive ? 'font-black text-[#6C4DF6]' : 'font-bold text-[#202124]'}`}>
                             {item.label}
