@@ -22,11 +22,13 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { useStore } from '../../context/StoreContext';
 import { useToast } from '../../context/ToastContext';
+import { useCart } from '../../context/CartContext';
 
 export const Header = ({ onMenuClick }) => {
   const navigate = useNavigate();
   const { user, logout, switchDemoRole } = useAuth();
   const { storeStatus, toggleStoreStatus, unreadNotifications, unreadMessages, notifications, markAllAsRead } = useStore();
+  const { cartCount, setIsCartOpen } = useCart();
   const toast = useToast();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -253,6 +255,21 @@ export const Header = ({ onMenuClick }) => {
           <span className="absolute -top-1 -right-1 bg-brand-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center ring-2 ring-white">
             {unreadMessages}
           </span>
+        </button>
+
+        {/* Shopping Cart Drawer Trigger Button */}
+        <button
+          type="button"
+          onClick={() => setIsCartOpen(true)}
+          className="relative p-2.5 rounded-xl bg-[#E4DAFA] hover:bg-[#D8CCF8] text-[#6C4DF6] transition-all shadow-soft-sm flex items-center justify-center cursor-pointer"
+          title="Open Shopping Bag"
+        >
+          <ShoppingBag className="w-4 h-4" />
+          {cartCount > 0 && (
+            <span className="absolute -top-1 -right-1 bg-coral-500 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center ring-2 ring-white">
+              {cartCount}
+            </span>
+          )}
         </button>
 
         {/* User Avatar & Profile Switcher */}

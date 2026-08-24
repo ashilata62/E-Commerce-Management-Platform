@@ -15,7 +15,7 @@ import { orderService } from '../services/orderService';
 import { analyticsService } from '../services/analyticsService';
 import { useToast } from '../context/ToastContext';
 import { useAuth } from '../context/AuthContext';
-import { CustomerDashboard } from '../components/dashboard/CustomerDashboard';
+import { CustomerStorefront } from '../components/storefront/CustomerStorefront';
 
 export const Dashboard = () => {
   const { user } = useAuth();
@@ -60,9 +60,9 @@ export const Dashboard = () => {
     fetchDashboardData();
   }, []);
 
-  // If the logged-in user is a Customer, show the Customer Experience Dashboard
+  // If the logged-in user is a Customer, show the complete Shopping Storefront
   if (user?.role === 'Customer') {
-    return <CustomerDashboard />;
+    return <CustomerStorefront />;
   }
 
   if (loading) {
