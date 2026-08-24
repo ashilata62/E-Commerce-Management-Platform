@@ -10,7 +10,6 @@ import { useToast } from '../../context/ToastContext';
 
 export const HeroBannerCarousel = ({ onSelectCategory }) => {
   const toast = useToast();
-  const [currentSlide, setCurrentSlide] = useState(0);
 
   const bannerSlides = [
     {
@@ -111,37 +110,61 @@ export const HeroBannerCarousel = ({ onSelectCategory }) => {
     }
   ];
 
-  // Continuous Automatic Slide Transition every 3.5 seconds
+  // Infinite looping track with cloned first slide
+  const extendedSlides = [...bannerSlides, { ...bannerSlides[0], id: 'clone-0' }];
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(true);
+
+  // Auto-advance forward every 3.5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % bannerSlides.length);
+      handleNext();
     }, 3500);
     return () => clearInterval(interval);
-  }, [bannerSlides.length]);
+  }, [currentSlide]);
 
   const handleNext = () => {
-    setCurrentSlide((prev) => (prev + 1) % bannerSlides.length);
+    setIsTransitioning(true);
+    setCurrentSlide((prev) => prev + 1);
   };
 
   const handlePrev = () => {
-    setCurrentSlide((prev) => (prev - 1 + bannerSlides.length) % bannerSlides.length);
+    setIsTransitioning(true);
+    setCurrentSlide((prev) => (prev === 0 ? bannerSlides.length - 1 : prev - 1));
   };
+
+  // When we animate to the clone of the first slide at index bannerSlides.length,
+  // wait 700ms for the forward slide animation to complete, then silently snap to index 0 without rewinding!
+  useEffect(() => {
+    if (currentSlide === bannerSlides.length) {
+      const timer = setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrentSlide(0);
+      }, 700);
+      return () => clearTimeout(timer);
+    }
+  }, [currentSlide, bannerSlides.length]);
 
   const handleCopyCoupon = (code) => {
     navigator.clipboard?.writeText(code);
     toast.success(`🎉 Copied coupon code "${code}"! Apply at checkout.`);
   };
 
+  const activeDotIndex = currentSlide % bannerSlides.length;
+
   return (
     <div className="relative overflow-hidden rounded-3xl shadow-soft-xl group">
-      {/* Horizontal Sliding Track */}
+      {/* Horizontal Continuous Infinite Track */}
       <div
-        className="flex transition-transform duration-700 ease-out will-change-transform"
+        className={`flex will-change-transform ${
+          isTransitioning ? 'transition-transform duration-700 ease-out' : 'transition-none'
+        }`}
         style={{ transform: `translateX(-${currentSlide * 100}%)` }}
       >
-        {bannerSlides.map((slide) => (
+        {extendedSlides.map((slide, idx) => (
           <div
-            key={slide.id}
+            key={`${slide.id}-${idx}`}
             className={`w-full shrink-0 relative p-6 sm:p-10 text-white bg-gradient-to-r ${slide.bgGradient} min-h-[320px] sm:min-h-[370px] flex flex-col justify-between overflow-hidden`}
           >
             {/* Ambient Blur Bubbles */}
@@ -181,7 +204,7 @@ export const HeroBannerCarousel = ({ onSelectCategory }) => {
                       if (onSelectCategory) onSelectCategory(slide.category);
                       toast.success(`Browsing ${slide.title}!`);
                     }}
-                    className="px-6 py-3 rounded-2xl bg-white text-slate-900 font-black text-xs sm:text-sm shadow-soft-lg hover:bg-slate-100 transition-all hover:scale-105 flex items-center gap-2"
+                    className="px-6 py-3 rounded-2xl bg-white text-slate-900 font-black text-xs sm:text-sm shadow-soft-lg hover:bg-slate-100 transition-all hover:scale-105 flex items-center gap-2 cursor-pointer"
                   >
                     <span>{slide.ctaText}</span>
                     <ArrowRight className="w-4 h-4" />
@@ -190,7 +213,7 @@ export const HeroBannerCarousel = ({ onSelectCategory }) => {
                   {/* Copy Coupon Tag */}
                   <button
                     onClick={() => handleCopyCoupon(slide.couponCode)}
-                    className="px-4 py-2.5 rounded-2xl bg-black/25 hover:bg-black/40 backdrop-blur-md border border-white/30 text-white font-mono text-xs font-black flex items-center gap-2 transition-all"
+                    className="px-4 py-2.5 rounded-2xl bg-black/25 hover:bg-black/40 backdrop-blur-md border border-white/30 text-white font-mono text-xs font-black flex items-center gap-2 transition-all cursor-pointer"
                     title="Click to copy coupon code"
                   >
                     <Tag className="w-3.5 h-3.5 text-yellow-300" />
@@ -216,15 +239,18 @@ export const HeroBannerCarousel = ({ onSelectCategory }) => {
               </div>
             </div>
 
-            {/* Bottom Dots Indicator (Centered without any numbers text) */}
+            {/* Bottom Centered Dots Indicator */}
             <div className="relative z-10 flex items-center justify-center pt-6 mt-4 border-t border-white/15">
               <div className="flex items-center gap-2">
                 {bannerSlides.map((_, idx) => (
                   <button
                     key={idx}
-                    onClick={() => setCurrentSlide(idx)}
+                    onClick={() => {
+                      setIsTransitioning(true);
+                      setCurrentSlide(idx);
+                    }}
                     className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                      currentSlide === idx ? 'w-8 bg-white' : 'w-2 bg-white/40 hover:bg-white/70'
+                      activeDotIndex === idx ? 'w-8 bg-white' : 'w-2 bg-white/40 hover:bg-white/70'
                     }`}
                     aria-label={`Go to slide ${idx + 1}`}
                   />
@@ -238,7 +264,7 @@ export const HeroBannerCarousel = ({ onSelectCategory }) => {
       {/* Left Navigation Arrow */}
       <button
         onClick={handlePrev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-800 flex items-center justify-center shadow-soft-xl opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-20"
+        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-800 flex items-center justify-center shadow-soft-xl opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-20 cursor-pointer"
         aria-label="Previous Slide"
       >
         <ChevronLeft className="w-5 h-5" />
@@ -247,7 +273,7 @@ export const HeroBannerCarousel = ({ onSelectCategory }) => {
       {/* Right Navigation Arrow */}
       <button
         onClick={handleNext}
-        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-800 flex items-center justify-center shadow-soft-xl opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-20"
+        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-800 flex items-center justify-center shadow-soft-xl opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-20 cursor-pointer"
         aria-label="Next Slide"
       >
         <ChevronRight className="w-5 h-5" />
