@@ -35,10 +35,10 @@ export const KiaanBrandLogo = ({
       <KiaanEmblem
         className={
           size === "lg"
-            ? "w-16 h-16 min-w-[64px]"
+            ? "w-12 h-12 min-w-[48px]"
             : size === "sm"
-            ? "w-10 h-10 min-w-[40px]"
-            : "w-13 h-13 min-w-[52px]"
+            ? "w-8 h-8 min-w-[32px]"
+            : "w-10 h-10 min-w-[40px]"
         }
       />
 
