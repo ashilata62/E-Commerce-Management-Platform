@@ -23,6 +23,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useStore } from '../../context/StoreContext';
 import { useToast } from '../../context/ToastContext';
 import { useCart } from '../../context/CartContext';
+import { CustomerSupportModal } from '../support/CustomerSupportModal';
 
 export const Header = ({ onMenuClick }) => {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ export const Header = ({ onMenuClick }) => {
   const [showQuickActions, setShowQuickActions] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showSupport, setShowSupport] = useState(false);
 
   const quickActionsRef = useRef(null);
   const notificationsRef = useRef(null);
@@ -244,12 +246,13 @@ export const Header = ({ onMenuClick }) => {
           )}
         </div>
 
-        {/* Messages indicator button */}
+        {/* Messages / Customer Support Help Indicator button */}
         <button
           type="button"
-          onClick={() => toast.info(`22 customer support chats waiting in unified inbox.`)}
-          className="relative p-2.5 rounded-xl bg-[#F4F0FD]/80 hover:bg-[#E4DAFA] text-[#68647A] hover:text-[#6C4DF6] transition-colors hidden sm:flex"
-          aria-label="View messages"
+          onClick={() => setShowSupport(true)}
+          className="relative p-2.5 rounded-xl bg-[#F4F0FD]/80 hover:bg-[#E4DAFA] text-[#68647A] hover:text-[#6C4DF6] transition-colors flex cursor-pointer"
+          aria-label="Open Customer Support Chat"
+          title="Open Customer Support Live Chat"
         >
           <MessageSquare className="w-4 h-4" />
           <span className="absolute -top-1 -right-1 bg-brand-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center ring-2 ring-white">
@@ -343,6 +346,9 @@ export const Header = ({ onMenuClick }) => {
           )}
         </div>
       </div>
+
+      {/* Customer Support Live Chat & Help Assistant Modal */}
+      <CustomerSupportModal isOpen={showSupport} onClose={() => setShowSupport(false)} />
     </header>
   );
 };
