@@ -62,13 +62,13 @@ export const Header = ({ onMenuClick }) => {
   };
 
   return (
-    <header className="sticky top-0 z-30 h-16 bg-white border-b border-surface-border px-4 sm:px-6 flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-30 h-16 bg-white/95 backdrop-blur-md border-b border-[#E7E0F7] px-4 sm:px-6 flex items-center justify-between gap-4">
       {/* Left: Mobile hamburger menu toggle & Store status */}
       <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={onMenuClick}
-          className="lg:hidden p-2 rounded-xl text-slateText-muted hover:text-slateText-main hover:bg-surface-muted transition-colors"
+          className="lg:hidden p-2 rounded-xl text-slateText-muted hover:text-slateText-main hover:bg-[#F4F0FD] transition-colors"
           aria-label="Toggle navigation menu"
         >
           <Menu className="w-5 h-5" />
@@ -78,7 +78,7 @@ export const Header = ({ onMenuClick }) => {
         <button
           type="button"
           onClick={toggleStoreStatus}
-          className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-emeraldGreen-50 text-emeraldGreen-500 border border-emeraldGreen-500/20 hover:bg-emeraldGreen-500/10 transition-colors"
+          className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold bg-emeraldGreen-50 text-emeraldGreen-600 border border-emeraldGreen-200 hover:bg-emeraldGreen-100/60 transition-colors"
           title="Click to toggle store operational mode"
         >
           <span className="w-2 h-2 rounded-full bg-emeraldGreen-500 status-dot-pulse shrink-0" />
@@ -92,15 +92,15 @@ export const Header = ({ onMenuClick }) => {
         className="flex-1 max-w-xl relative hidden md:block"
       >
         <div className="relative flex items-center">
-          <Search className="w-4 h-4 text-slateText-muted absolute left-3.5 pointer-events-none" />
+          <Search className="w-4 h-4 text-[#858099] absolute left-3.5 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search products, orders, customers..."
-            className="w-full bg-surface-muted/70 hover:bg-surface-muted focus:bg-white text-slateText-main placeholder:text-slateText-muted border border-surface-border focus:border-brand-500 rounded-xl pl-10 pr-12 py-2 text-sm outline-none transition-all shadow-soft-sm focus:shadow-soft-md"
+            className="w-full bg-[#F4F0FD]/60 hover:bg-[#F4F0FD] focus:bg-white text-slateText-main placeholder:text-[#858099] border border-[#E7E0F7] focus:border-brand-500 rounded-xl pl-10 pr-12 py-2 text-sm outline-none transition-all shadow-soft-sm focus:shadow-soft-md font-medium"
           />
-          <kbd className="absolute right-3 hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-bold text-slateText-muted bg-white border border-surface-border rounded shadow-soft-sm pointer-events-none">
+          <kbd className="absolute right-3 hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-bold text-slateText-muted bg-white border border-[#E7E0F7] rounded shadow-soft-sm pointer-events-none">
             ↵ Enter
           </kbd>
         </div>
@@ -113,15 +113,15 @@ export const Header = ({ onMenuClick }) => {
           <button
             type="button"
             onClick={() => setShowQuickActions(!showQuickActions)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-600 text-xs sm:text-sm font-bold transition-all shadow-soft-sm"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#E4DAFA] hover:bg-[#D8CCF8] text-[#6C4DF6] text-xs sm:text-sm font-black transition-all shadow-soft-sm"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden sm:inline">Quick Action</span>
-            <ChevronDown className="w-3.5 h-3.5 text-brand-500" />
+            <ChevronDown className="w-3.5 h-3.5 text-[#6C4DF6]" />
           </button>
 
           {showQuickActions && (
-            <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-soft-xl border border-surface-border p-2 z-50 animate-fade-in">
+            <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-soft-xl border border-[#E7E0F7] p-2 z-50 animate-fade-in">
               <div className="text-[10px] font-bold text-slateText-muted uppercase px-3 py-1.5">
                 Create New
               </div>
@@ -224,7 +224,7 @@ export const Header = ({ onMenuClick }) => {
         <button
           type="button"
           onClick={() => toast.info(`22 customer support chats waiting in unified inbox.`)}
-          className="relative p-2.5 rounded-xl bg-surface-muted/60 hover:bg-surface-muted text-slateText-muted hover:text-slateText-main transition-colors hidden sm:flex"
+          className="relative p-2.5 rounded-xl bg-[#F4F0FD]/80 hover:bg-[#E4DAFA] text-[#68647A] hover:text-[#6C4DF6] transition-colors hidden sm:flex"
           aria-label="View messages"
         >
           <MessageSquare className="w-4 h-4" />
@@ -238,7 +238,7 @@ export const Header = ({ onMenuClick }) => {
           <button
             type="button"
             onClick={() => setShowUserMenu(!showUserMenu)}
-            className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-surface-muted transition-colors"
+            className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-[#F4F0FD] transition-colors"
           >
             <img
               src={user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'}
@@ -253,11 +253,11 @@ export const Header = ({ onMenuClick }) => {
           </button>
 
           {showUserMenu && (
-            <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-soft-xl border border-surface-border p-3 z-50 animate-fade-in">
-              <div className="p-3 bg-surface-muted/60 rounded-xl mb-3">
+            <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-soft-xl border border-[#E7E0F7] p-3 z-50 animate-fade-in">
+              <div className="p-3 bg-[#F4F0FD]/60 rounded-xl mb-3 border border-[#E7E0F7]">
                 <p className="text-xs font-bold text-slateText-main">{user?.name}</p>
                 <p className="text-[11px] text-slateText-muted truncate">{user?.email}</p>
-                <div className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-brand-50 text-brand-600">
+                <div className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#E4DAFA] text-[#6C4DF6]">
                   <Shield className="w-3 h-3" />
                   Role: {user?.role}
                 </div>
