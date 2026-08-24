@@ -34,11 +34,7 @@ export const AppLayout = () => {
           isCollapsed ? 'lg:pl-20' : 'lg:pl-72'
         }`}
       >
-        <Header
-          onMenuClick={() => setIsMobileOpen(true)}
-          isCollapsed={isCollapsed}
-          toggleCollapse={toggleCollapse}
-        />
+        <Header onMenuClick={() => setIsMobileOpen(true)} />
 
         <main className="flex-1 p-5 sm:p-7 lg:p-9 max-w-[1600px] w-full mx-auto pb-24 lg:pb-12">
           <Outlet />
