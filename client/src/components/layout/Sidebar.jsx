@@ -121,12 +121,12 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-[#F2F4F8] border-r border-[#E2E5EC] flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-[#F4F0FD] border-r border-[#E7E0F7] flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           isMobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Brand Logo & Header */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-[#E2E5EC] shrink-0 bg-white/70 backdrop-blur-md">
+        <div className="h-16 flex items-center justify-between px-4 border-b border-[#E7E0F7] shrink-0 bg-[#F4F0FD]">
           <NavLink to="/" className="group" onClick={() => setIsMobileOpen(false)}>
             <KiaanBrandLogo size="md" />
           </NavLink>
@@ -134,7 +134,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           <button
             type="button"
             onClick={() => setIsMobileOpen(false)}
-            className="lg:hidden p-1.5 rounded-lg text-slateText-muted hover:text-slateText-main hover:bg-white"
+            className="lg:hidden p-1.5 rounded-lg text-slateText-muted hover:text-slateText-main hover:bg-white/70"
           >
             <X className="w-5 h-5" />
           </button>
@@ -145,7 +145,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           {navSections.map((section, sIdx) => (
             <div key={sIdx} className="space-y-1">
               {section.title && (
-                <p className="px-3 text-[10px] font-black text-slate-400 tracking-wider uppercase">
+                <p className="px-3 text-[10px] font-bold text-[#9C98B0] tracking-wider uppercase">
                   {section.title}
                 </p>
               )}
@@ -159,18 +159,18 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
                       key={item.path}
                       to={item.path}
                       onClick={() => setIsMobileOpen(false)}
-                      className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-150 group ${
+                      className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm transition-all duration-150 group ${
                         isActive
-                          ? 'bg-brand-500 text-white shadow-purple-glow font-bold'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-white hover:shadow-soft-sm'
+                          ? 'bg-[#E4DAFA] text-[#6C4DF6] font-extrabold'
+                          : 'text-[#68647A] font-semibold hover:text-[#202124] hover:bg-white/70'
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <Icon
                           className={`w-4 h-4 transition-colors ${
                             isActive
-                              ? 'text-white'
-                              : 'text-slate-400 group-hover:text-slate-700'
+                              ? 'text-[#6C4DF6]'
+                              : 'text-[#858099] group-hover:text-[#202124]'
                           }`}
                         />
                         <span>{item.label}</span>
@@ -180,14 +180,14 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
                         <span
                           className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
                             isActive
-                              ? 'bg-white/20 text-white'
+                              ? 'bg-white/60 text-[#6C4DF6]'
                               : item.badge === 'HOT'
                               ? 'bg-coral-50 text-coral-500 border border-coral-200'
                               : item.badge === 'Live'
                               ? 'bg-emeraldGreen-50 text-emeraldGreen-500 border border-emeraldGreen-500/20'
                               : item.badge === 'AI'
                               ? 'bg-purple-100 text-brand-700'
-                              : 'bg-white text-slateText-muted border border-slate-200'
+                              : 'bg-[#E5DCF9] text-[#6C4DF6]'
                           }`}
                         >
                           {item.badge}
@@ -202,16 +202,16 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
         </div>
 
         {/* Footer Quick Promotion & Store View */}
-        <div className="p-3 border-t border-[#E2E5EC] shrink-0 bg-white/60 space-y-2">
+        <div className="p-3 border-t border-[#E7E0F7] shrink-0 bg-[#F4F0FD] space-y-2">
           {/* Upgrade Plan Card */}
           <div
             onClick={handleUpgradeClick}
-            className="p-3 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 text-white cursor-pointer hover:shadow-purple-glow transition-all duration-200 relative overflow-hidden group shadow-soft-sm"
+            className="p-3 rounded-2xl bg-gradient-to-r from-[#6C4DF6] to-[#8A6AF8] text-white cursor-pointer hover:shadow-purple-glow transition-all duration-200 relative overflow-hidden group shadow-soft-sm"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
-                  <Crown className="w-4 h-4 text-warm-400" />
+                  <Crown className="w-4 h-4 text-warm-300" />
                 </div>
                 <div>
                   <h5 className="text-xs font-bold leading-none">Upgrade Plan</h5>
@@ -226,7 +226,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           <a
             href="#store-preview"
             onClick={handleStorePreview}
-            className="flex items-center justify-between w-full px-3 py-2 rounded-xl text-xs font-bold text-slateText-main bg-white hover:bg-brand-50 hover:text-brand-600 border border-[#E2E5EC] transition-colors shadow-soft-sm"
+            className="flex items-center justify-between w-full px-3 py-2 rounded-xl text-xs font-bold text-slateText-main bg-white hover:bg-white/90 hover:text-brand-600 border border-[#E7E0F7] transition-colors shadow-soft-sm"
           >
             <span className="flex items-center gap-2">
               <Store className="w-3.5 h-3.5 text-brand-500" />
