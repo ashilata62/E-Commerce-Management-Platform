@@ -51,7 +51,27 @@ export const Categories = () => {
     fetchCategories();
   }, []);
 
-  const handleFileUpload = (e) => {
+
+  // Compress image to fit localStorage limits
+  const compressImage = (dataUrl, maxWidth = 400, quality = 0.6) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ratio = Math.min(maxWidth / img.width, maxWidth / img.height, 1);
+        canvas.width = img.width * ratio;
+        canvas.height = img.height * ratio;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = () => resolve(dataUrl);
+      img.src = dataUrl;
+    });
+  };
+
+
+  const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) {
@@ -59,11 +79,13 @@ export const Categories = () => {
       return;
     }
     const reader = new FileReader();
-    reader.onload = (event) => {
-      setNewCat(prev => ({ ...prev, image: event.target.result }));
+    reader.onload = async (event) => {
+      const compressed = await compressImage(event.target.result, 400, 0.6);
+      setNewCat(prev => ({ ...prev, image: compressed }));
       toast.success('Category cover image uploaded!');
     };
     reader.readAsDataURL(file);
+    e.target.value = '';
   };
 
   const handleCreateCategory = async (e) => {
@@ -175,7 +197,7 @@ export const Categories = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slateText-main mb-1">Cover Image (Upload file or Paste URL)</label>
+            <label className="block text-xs font-bold text-slateText-main mb-1">Cover Image</label>
             
             {/* Upload Area */}
             <div
@@ -186,13 +208,7 @@ export const Categories = () => {
               <span className="text-xs font-bold text-brand-600">Click to upload photo from computer</span>
             </div>
 
-            <input
-              type="url"
-              value={newCat.image}
-              onChange={(e) => setNewCat({ ...newCat, image: e.target.value })}
-              placeholder="Or paste image URL (e.g. https://images.unsplash.com/...)"
-              className="w-full px-4 py-2.5 rounded-xl border border-surface-border text-sm outline-none focus:border-brand-500"
-            />
+            
 
             {/* Quick Presets */}
             <div className="flex flex-wrap gap-1.5 mt-2">

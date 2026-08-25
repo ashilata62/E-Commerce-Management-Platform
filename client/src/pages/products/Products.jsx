@@ -190,13 +190,15 @@ export const Products = () => {
           breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Products' }]}
           badge={`${totalCount} Active SKUs`}
         >
-          <Button
-            variant="primary"
-            icon={Plus}
-            onClick={() => navigate('/products/add')}
-          >
-            Add Product
-          </Button>
+          {user?.role !== 'Staff' && (
+            <Button
+              variant="primary"
+              icon={Plus}
+              onClick={() => navigate('/products/add')}
+            >
+              Add Product
+            </Button>
+          )}
         </PageHeader>
       )}
 

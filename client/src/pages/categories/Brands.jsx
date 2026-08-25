@@ -55,12 +55,37 @@ export const Brands = () => {
     }
   };
 
-  const handleFileUpload = (e) => {
+
+  // Compress image to fit localStorage limits
+  const compressImage = (dataUrl, maxWidth = 400, quality = 0.6) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ratio = Math.min(maxWidth / img.width, maxWidth / img.height, 1);
+        canvas.width = img.width * ratio;
+        canvas.height = img.height * ratio;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = () => resolve(dataUrl);
+      img.src = dataUrl;
+    });
+  };
+
+
+  const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      return;
+    }
     const reader = new FileReader();
-    reader.onload = (event) => {
-      setNewBrand(prev => ({ ...prev, logo: event.target.result }));
+    reader.onload = async (event) => {
+      const compressed = await compressImage(event.target.result, 200, 0.6);
+      setNewBrand(prev => ({ ...prev, logo: compressed }));
       toast.success('Brand logo uploaded!');
     };
     reader.readAsDataURL(file);
@@ -166,7 +191,7 @@ export const Brands = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slateText-main mb-1">Brand Logo (Upload or Link)</label>
+            <label className="block text-xs font-bold text-slateText-main mb-1">Brand Logo</label>
 
             <div
               onClick={() => fileInputRef.current?.click()}
@@ -176,13 +201,7 @@ export const Brands = () => {
               <span className="text-xs font-bold text-brand-600">Upload logo from computer</span>
             </div>
 
-            <input
-              type="url"
-              value={newBrand.logo}
-              onChange={(e) => setNewBrand({ ...newBrand, logo: e.target.value })}
-              placeholder="Or paste image URL..."
-              className="w-full px-4 py-2.5 rounded-xl border border-surface-border text-sm outline-none"
-            />
+            
 
             {newBrand.logo && (
               <div className="mt-2 flex items-center gap-3 p-2 border rounded-xl bg-surface-muted">

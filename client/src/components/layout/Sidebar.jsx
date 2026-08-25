@@ -227,14 +227,6 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen, isCollapsed, toggleColl
       title: 'CUSTOMERS (CRM & Reviews)',
       items: [
         {
-          label: 'All Customers',
-          desc: 'Buyer Profiles, History & LTV',
-          path: '/customers',
-          icon: Users,
-          icon3D: 'bg-gradient-to-br from-teal-400 via-teal-600 to-emerald-700 shadow-teal-500/35',
-          roles: ['Admin', 'Manager', 'Staff']
-        },
-        {
           label: 'Segments',
           desc: 'VIP & High-Value Shopper Groups',
           path: '/customer-segments',
