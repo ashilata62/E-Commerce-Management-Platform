@@ -666,8 +666,8 @@ export const Products = () => {
                 </div>
 
                 {/* Card Footer: Rating & Action */}
-                <div className="flex items-center justify-between mt-3 pt-3 border-t border-surface-border gap-2">
-                  <div className="flex items-center gap-1 text-[11px] sm:text-xs font-bold text-warm-600">
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-surface-border gap-1 sm:gap-2 min-w-0">
+                  <div className="flex items-center gap-0.5 sm:gap-1 text-[11px] sm:text-xs font-bold text-warm-600 shrink-0">
                     <Star className="w-3.5 h-3.5 fill-warm-500 text-warm-500" />
                     <span>{product.rating}</span>
                     <span className="text-[10px] text-slateText-muted font-normal">
@@ -679,13 +679,13 @@ export const Products = () => {
                     <button
                       type="button"
                       onClick={() => addToCart(product, 'M', 'Default', 1)}
-                      className="px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition-all flex items-center gap-1 shadow-soft-xs cursor-pointer active:scale-95"
+                      className="px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition-all flex items-center gap-1 shadow-soft-xs cursor-pointer active:scale-95 shrink-0"
                     >
                       <ShoppingBag className="w-3.5 h-3.5" />
                       <span>Add</span>
                     </button>
                   ) : (
-                    <StatusBadge status={product.status} size="sm" />
+                    <StatusBadge status={product.status} size="sm" className="shrink-0" />
                   )}
                 </div>
               </div>
