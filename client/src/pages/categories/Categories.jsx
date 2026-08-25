@@ -134,12 +134,12 @@ export const Categories = () => {
         </Button>
       </PageHeader>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {categories.map((cat) => (
           <div
             key={cat._id}
             onClick={() => navigate(`/categories/${cat.slug || cat.name.toLowerCase()}`)}
-            className="commerce-card overflow-hidden cursor-pointer group flex flex-col justify-between"
+            className="commerce-card rounded-2xl sm:rounded-3xl overflow-hidden cursor-pointer group flex flex-col justify-between hover:shadow-soft-md transition-all"
           >
             <div>
               <div className="relative aspect-[16/9] overflow-hidden bg-surface-muted">
@@ -153,22 +153,22 @@ export const Categories = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between">
-                  <h3 className="text-xl font-extrabold text-white">{cat.name}</h3>
-                  <span className="px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-bold">
+                <div className="absolute bottom-2.5 sm:bottom-3 left-3 sm:left-4 right-3 sm:right-4 flex items-end justify-between gap-2">
+                  <h3 className="text-base sm:text-xl font-extrabold text-white truncate">{cat.name}</h3>
+                  <span className="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-[10px] sm:text-xs font-bold shrink-0">
                     {formatNumber(cat.itemCount || 1200)} Items
                   </span>
                 </div>
               </div>
 
-              <div className="p-5">
-                <p className="text-xs text-slateText-muted leading-relaxed font-medium">
+              <div className="p-3.5 sm:p-5">
+                <p className="text-xs text-slateText-muted leading-relaxed font-medium line-clamp-2 sm:line-clamp-3">
                   {cat.description || 'Curated clothing, styles, and essentials for modern lifestyle shoppers.'}
                 </p>
               </div>
             </div>
 
-            <div className="p-4 bg-surface-muted/40 border-t border-surface-border flex items-center justify-between text-xs font-bold text-brand-600 group-hover:text-brand-700">
+            <div className="p-3 sm:p-4 bg-surface-muted/40 border-t border-surface-border flex items-center justify-between text-xs font-bold text-brand-600 group-hover:text-brand-700">
               <span>Manage Products</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>

@@ -73,7 +73,7 @@ export const Navbar = () => {
             <Link to="/login" className="text-sm font-bold text-slateText-muted hover:text-brand-600 transition-colors">
               Sign In
             </Link>
-            <Link to="/login" className="text-sm font-bold bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl transition-all shadow-soft-sm hover:-translate-y-0.5 shadow-purple-glow flex items-center gap-2">
+            <Link to="/register" className="text-sm font-bold bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl transition-all shadow-soft-sm hover:-translate-y-0.5 shadow-purple-glow flex items-center gap-2">
               Get Started <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -104,10 +104,18 @@ export const Navbar = () => {
               ))}
            </div>
            <div className="flex flex-col gap-4 mt-4">
-              <Link to="/login" className="w-full py-4 text-center border border-surface-border rounded-xl font-bold text-slateText-main hover:bg-surface-muted transition-colors">
+              <Link 
+                to="/login" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full py-3.5 text-center border border-surface-border rounded-xl font-bold text-slateText-main hover:bg-surface-muted transition-colors text-base"
+              >
                 Sign In
               </Link>
-              <Link to="/login" className="w-full py-4 text-center bg-brand-600 text-white rounded-xl font-bold shadow-purple-glow">
+              <Link 
+                to="/register" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full py-3.5 text-center bg-brand-600 text-white rounded-xl font-bold shadow-purple-glow text-base"
+              >
                 Get Started
               </Link>
            </div>

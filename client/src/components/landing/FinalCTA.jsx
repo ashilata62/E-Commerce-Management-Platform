@@ -51,7 +51,7 @@ export const FinalCTA = () => {
           className="flex flex-col sm:flex-row justify-center gap-4"
         >
           <Link 
-            to="/login" 
+            to="/register" 
             className="px-10 py-5 bg-brand-600 text-white hover:bg-brand-700 rounded-2xl font-bold text-lg transition-all hover:-translate-y-1 shadow-purple-glow flex items-center justify-center gap-2 group"
           >
             Get Started Free <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

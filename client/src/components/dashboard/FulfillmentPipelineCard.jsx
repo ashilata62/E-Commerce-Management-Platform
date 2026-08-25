@@ -53,24 +53,24 @@ export const FulfillmentPipelineCard = () => {
   ];
 
   return (
-    <div className="p-6 rounded-3xl bg-white border border-[#E7E0F7] shadow-soft-sm flex flex-col justify-between space-y-5">
+    <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white border border-[#E7E0F7] shadow-soft-sm flex flex-col justify-between space-y-4 sm:space-y-5">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <div>
-          <div className="flex items-center gap-2">
-            <h3 className="text-base font-black text-slateText-main">Fulfillment & Courier Pipeline</h3>
-            <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[10px] font-black uppercase">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <h3 className="text-sm sm:text-base font-black text-slateText-main">Fulfillment Pipeline</h3>
+            <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[9px] sm:text-[10px] font-black uppercase">
               Live Logistics
             </span>
           </div>
-          <p className="text-xs text-slateText-muted mt-0.5 font-medium">
+          <p className="text-[11px] sm:text-xs text-slateText-muted mt-0.5 font-medium">
             Active dispatch status with BlueDart & Delhivery Express
           </p>
         </div>
 
         <button
           onClick={() => navigate('/orders')}
-          className="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1 cursor-pointer"
+          className="text-[11px] sm:text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1 cursor-pointer shrink-0"
         >
           <span>All Orders</span>
           <ArrowRight className="w-3.5 h-3.5" />
@@ -78,35 +78,35 @@ export const FulfillmentPipelineCard = () => {
       </div>
 
       {/* 4 Pipeline Stages */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3.5">
         {stages.map((stage, idx) => {
           const Icon = stage.icon;
           return (
             <div
               key={idx}
-              className={`p-4 rounded-2xl border ${stage.color} flex flex-col justify-between space-y-3 transition-transform hover:scale-[1.01]`}
+              className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border ${stage.color} flex flex-col justify-between space-y-2.5 sm:space-y-3 transition-transform hover:scale-[1.01]`}
             >
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center shadow-soft-xs">
-                    <Icon className="w-4 h-4" />
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-soft-xs shrink-0">
+                    <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </div>
-                  <div>
-                    <h4 className="text-xs font-black text-slateText-main">{stage.title}</h4>
-                    <p className="text-[10px] text-slate-500 font-medium">{stage.desc}</p>
+                  <div className="min-w-0">
+                    <h4 className="text-[11px] sm:text-xs font-black text-slateText-main truncate">{stage.title}</h4>
+                    <p className="text-[9px] sm:text-[10px] text-slate-500 font-medium truncate">{stage.desc}</p>
                   </div>
                 </div>
 
-                <span className={`text-xs font-black px-2.5 py-0.5 rounded-full shadow-soft-xs ${stage.badgeColor}`}>
+                <span className={`text-[11px] sm:text-xs font-black px-2 py-0.5 rounded-full shadow-soft-xs ${stage.badgeColor} shrink-0`}>
                   {stage.count}
                 </span>
               </div>
 
               <div className="flex items-center justify-between pt-1 border-t border-black/5">
-                <span className="text-[10px] font-bold opacity-75">Next Action:</span>
+                <span className="text-[9px] sm:text-[10px] font-bold opacity-75">Next Action:</span>
                 <span
                   onClick={() => navigate('/orders')}
-                  className="text-[11px] font-black underline cursor-pointer hover:opacity-90"
+                  className="text-[10px] sm:text-[11px] font-black underline cursor-pointer hover:opacity-90"
                 >
                   {stage.action} →
                 </span>
