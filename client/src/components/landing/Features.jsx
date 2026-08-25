@@ -63,42 +63,42 @@ export const Features = () => {
   ];
 
   return (
-    <section id="features" className="py-24 bg-white border-b border-surface-border">
+    <section id="features" className="py-12 sm:py-24 bg-white border-b border-surface-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="text-center mb-16 max-w-3xl mx-auto">
+        <div className="text-center mb-10 sm:mb-16 max-w-3xl mx-auto">
           <motion.h2 
             {...fadeUp}
-            className="text-4xl md:text-5xl font-extrabold mb-5 text-slateText-main tracking-tight"
+            className="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-3 sm:mb-5 text-slateText-main tracking-tight"
           >
             Everything You Need to Market Smarter
           </motion.h2>
           <motion.p 
             {...fadeUp}
-            className="text-xl text-slateText-muted font-medium leading-relaxed"
+            className="text-sm sm:text-lg md:text-xl text-slateText-muted font-medium leading-relaxed"
           >
             Stop guessing what works. Our comprehensive suite of tools gives you complete control over your e-commerce growth.
           </motion.p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {featureList.map((feature, i) => (
             <motion.div 
-              key={i}
+              key={i} 
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ delay: i * 0.1, duration: 0.5, type: 'spring' }}
-              whileHover={{ scale: 1.03, y: -5 }}
-              className="p-6 rounded-2xl bg-surface-bg border border-surface-border hover:shadow-soft-md transition-shadow group cursor-pointer"
+              transition={{ delay: i * 0.08, duration: 0.5, type: 'spring' }}
+              whileHover={{ scale: 1.03, y: -4 }}
+              className="p-5 sm:p-6 rounded-2xl bg-surface-bg border border-surface-border hover:shadow-soft-md transition-all group cursor-pointer"
             >
-              <div className="w-12 h-12 bg-white rounded-xl border border-surface-border flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-soft-sm">
+              <div className="w-11 h-11 sm:w-12 sm:h-12 bg-white rounded-xl border border-surface-border flex items-center justify-center mb-3 sm:mb-5 group-hover:scale-110 transition-transform shadow-soft-sm">
                 {feature.icon}
               </div>
-              <h3 className="text-lg font-bold text-slateText-main mb-2 group-hover:text-brand-600 transition-colors">
+              <h3 className="text-base sm:text-lg font-bold text-slateText-main mb-1.5 group-hover:text-brand-600 transition-colors">
                 {feature.title}
               </h3>
-              <p className="text-sm font-medium text-slateText-muted leading-relaxed">
+              <p className="text-xs sm:text-sm font-medium text-slateText-muted leading-relaxed">
                 {feature.desc}
               </p>
             </motion.div>

@@ -40,19 +40,19 @@ export const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(0);
 
   return (
-    <section id="faq" className="py-24 bg-white border-b border-surface-border">
+    <section id="faq" className="py-12 sm:py-24 bg-white border-b border-surface-border">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="text-center mb-16">
+        <div className="text-center mb-10 sm:mb-16">
           <motion.h2 
             {...fadeUp}
-            className="text-3xl md:text-5xl font-extrabold mb-5 text-slateText-main tracking-tight"
+            className="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-3 sm:mb-5 text-slateText-main tracking-tight"
           >
             Frequently Asked Questions
           </motion.h2>
           <motion.p 
             {...fadeUp}
-            className="text-xl text-slateText-muted font-medium"
+            className="text-sm sm:text-lg md:text-xl text-slateText-muted font-medium"
           >
             Everything you need to know about the product and billing.
           </motion.p>
@@ -63,7 +63,7 @@ export const FAQ = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.6 }}
-          className="space-y-4"
+          className="space-y-3 sm:space-y-4"
         >
           {faqs.map((faq, i) => (
             <div 
@@ -74,11 +74,11 @@ export const FAQ = () => {
             >
               <button
                 onClick={() => setOpenIndex(openIndex === i ? -1 : i)}
-                className="w-full text-left px-6 py-5 flex items-center justify-between font-bold text-slateText-main focus:outline-none"
+                className="w-full text-left px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between font-bold text-slateText-main focus:outline-none"
               >
-                <span className="text-lg">{faq.q}</span>
-                <span className={`flex-shrink-0 ml-4 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${openIndex === i ? 'bg-brand-100 text-brand-600' : 'bg-surface-muted text-slateText-muted'}`}>
-                  {openIndex === i ? <Minus className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                <span className="text-sm sm:text-lg pr-2">{faq.q}</span>
+                <span className={`flex-shrink-0 ml-2 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-colors ${openIndex === i ? 'bg-brand-100 text-brand-600' : 'bg-surface-muted text-slateText-muted'}`}>
+                  {openIndex === i ? <Minus className="w-4 h-4 sm:w-5 sm:h-5" /> : <Plus className="w-4 h-4 sm:w-5 sm:h-5" />}
                 </span>
               </button>
               
@@ -91,7 +91,7 @@ export const FAQ = () => {
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                     className="overflow-hidden"
                   >
-                    <div className="px-6 pb-5 text-slateText-muted font-medium leading-relaxed">
+                    <div className="px-4 sm:px-6 pb-4 sm:pb-5 text-xs sm:text-base text-slateText-muted font-medium leading-relaxed">
                       {faq.a}
                     </div>
                   </motion.div>

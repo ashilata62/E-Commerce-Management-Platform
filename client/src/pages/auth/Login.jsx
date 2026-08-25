@@ -232,7 +232,7 @@ export const Login = () => {
                 icon={ArrowRight}
                 iconPosition="right"
               >
-                Sign In to Store OS
+                Login
               </Button>
             </form>
 
@@ -279,6 +279,16 @@ export const Login = () => {
                   <span>Customer</span>
                 </button>
               </div>
+            </div>
+
+            {/* Link to Register */}
+            <div className="mt-5 pt-4 border-t border-slate-100 text-center">
+              <p className="text-xs text-slate-600 font-medium">
+                New customer?{' '}
+                <Link to="/register" className="font-extrabold text-[#5B51D8] hover:underline">
+                  Create an account (Get Started)
+                </Link>
+              </p>
             </div>
 
           </div>

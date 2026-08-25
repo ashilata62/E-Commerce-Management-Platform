@@ -57,24 +57,24 @@ export const TopSellingOutfitsCard = ({ products = [] }) => {
   ];
 
   return (
-    <div className="p-6 rounded-3xl bg-white border border-[#E7E0F7] shadow-soft-sm flex flex-col justify-between space-y-4">
+    <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white border border-[#E7E0F7] shadow-soft-sm flex flex-col justify-between space-y-3.5 sm:space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <div>
-          <div className="flex items-center gap-2">
-            <h3 className="text-base font-black text-slateText-main">Top Performing Outfits</h3>
-            <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-black uppercase">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <h3 className="text-sm sm:text-base font-black text-slateText-main">Top Outfits</h3>
+            <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[9px] sm:text-[10px] font-black uppercase">
               Bestsellers
             </span>
           </div>
-          <p className="text-xs text-slateText-muted mt-0.5 font-medium">
+          <p className="text-[11px] sm:text-xs text-slateText-muted mt-0.5 font-medium">
             Highest grossing fashion items by units & total volume
           </p>
         </div>
 
         <button
           onClick={() => navigate('/products')}
-          className="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1 cursor-pointer"
+          className="text-[11px] sm:text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1 cursor-pointer shrink-0"
         >
           <span>Catalog</span>
           <ArrowRight className="w-3.5 h-3.5" />
@@ -82,41 +82,41 @@ export const TopSellingOutfitsCard = ({ products = [] }) => {
       </div>
 
       {/* List of top items */}
-      <div className="space-y-3">
+      <div className="space-y-2.5 sm:space-y-3">
         {topOutfits.map((item, idx) => (
           <div
             key={item.id}
             onClick={() => navigate('/products')}
-            className="p-3 rounded-2xl border border-slate-100 hover:border-brand-200 bg-slate-50/50 hover:bg-brand-50/30 transition-all flex items-center justify-between gap-3 cursor-pointer group"
+            className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border border-slate-100 hover:border-brand-200 bg-slate-50/50 hover:bg-brand-50/30 transition-all flex items-center justify-between gap-2.5 sm:gap-3 cursor-pointer group"
           >
-            <div className="flex items-center gap-3 min-w-0">
-              <span className="w-6 h-6 rounded-lg bg-slate-200 text-slate-700 text-xs font-black flex items-center justify-center shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+              <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-slate-200 text-slate-700 text-[10px] sm:text-xs font-black flex items-center justify-center shrink-0">
                 #{idx + 1}
               </span>
 
               <img
                 src={item.image}
                 alt={item.name}
-                className="w-12 h-12 rounded-xl object-cover shrink-0 shadow-soft-xs"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl object-cover shrink-0 shadow-soft-xs"
               />
 
-              <div className="min-w-0">
-                <h4 className="text-xs font-black text-slateText-main truncate group-hover:text-brand-600 transition-colors">
+              <div className="min-w-0 flex-1">
+                <h4 className="text-[11px] sm:text-xs font-black text-slateText-main truncate group-hover:text-brand-600 transition-colors">
                   {item.name}
                 </h4>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-[10px] font-bold text-slate-500">{item.category}</span>
-                  <span className="text-[10px] text-slate-300">•</span>
-                  <span className="text-[10px] font-bold text-emerald-600">{item.stock} in stock</span>
+                <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5">
+                  <span className="text-[9px] sm:text-[10px] font-bold text-slate-500 truncate">{item.category}</span>
+                  <span className="text-[9px] text-slate-300">•</span>
+                  <span className="text-[9px] sm:text-[10px] font-bold text-emerald-600 shrink-0">{item.stock} in stock</span>
                 </div>
               </div>
             </div>
 
             <div className="text-right shrink-0">
-              <span className="text-xs font-black text-slate-900 block">
+              <span className="text-[11px] sm:text-xs font-black text-slate-900 block">
                 {formatCurrency(item.revenue)}
               </span>
-              <span className="text-[10px] font-bold text-slate-500">
+              <span className="text-[9px] sm:text-[10px] font-bold text-slate-500">
                 {item.unitsSold} sold
               </span>
             </div>

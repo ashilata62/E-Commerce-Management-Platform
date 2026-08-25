@@ -130,6 +130,26 @@ export const AuthProvider = ({ children }) => {
     if (role === 'Customer') { customerService.registerCustomerLogin(newUser); }
   };
 
+  const register = async (userData) => {
+    setLoading(true);
+    try {
+      const res = await authService.register(userData);
+      if (res.success) {
+        setUser(res.user);
+        setToken(res.token);
+        localStorage.removeItem('kiaan_sidebar_preview_role');
+        customerService.registerCustomerLogin(res.user);
+        return { success: true, user: res.user, message: res.message };
+      }
+      return { success: false, message: res.message };
+    } catch (err) {
+      console.error('Registration error:', err);
+      return { success: false, message: 'Failed to create account.' };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     setUser(null);
     setToken(null);
@@ -138,7 +158,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, logout, switchDemoRole, isAuthenticated: !!token }}>
+    <AuthContext.Provider value={{ user, token, loading, login, register, logout, switchDemoRole, isAuthenticated: !!token }}>
       {children}
     </AuthContext.Provider>
   );

@@ -321,75 +321,75 @@ export const Products = () => {
         </div>
       ) : (
         /* Admin / Merchant: Inventory Stats Bar */
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
           <div
             onClick={() => handleFilterChange('stockStatus', 'All')}
-            className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
+            className={`p-2.5 sm:p-3.5 rounded-xl border cursor-pointer transition-all ${
               filters.stockStatus === 'All'
                 ? 'bg-brand-50/50 border-brand-300 shadow-soft-sm'
                 : 'bg-white border-surface-border hover:bg-surface-muted'
             }`}
           >
-            <p className="text-[11px] font-bold text-slateText-muted uppercase">Total Catalog</p>
-            <p className="text-xl font-black text-slateText-main mt-0.5">{stats.totalProducts || products.length}</p>
+            <p className="text-[10px] sm:text-[11px] font-bold text-slateText-muted uppercase truncate">Total Catalog</p>
+            <p className="text-lg sm:text-xl font-black text-slateText-main mt-0.5">{stats.totalProducts || products.length}</p>
           </div>
 
           <div
             onClick={() => handleFilterChange('stockStatus', 'inStock')}
-            className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
+            className={`p-2.5 sm:p-3.5 rounded-xl border cursor-pointer transition-all ${
               filters.stockStatus === 'inStock'
                 ? 'bg-emeraldGreen-50/50 border-emeraldGreen-500/40 shadow-soft-sm'
                 : 'bg-white border-surface-border hover:bg-surface-muted'
             }`}
           >
-            <p className="text-[11px] font-bold text-emeraldGreen-600 uppercase">In Stock</p>
-            <p className="text-xl font-black text-slateText-main mt-0.5">{stats.inStock}</p>
+            <p className="text-[10px] sm:text-[11px] font-bold text-emeraldGreen-600 uppercase truncate">In Stock</p>
+            <p className="text-lg sm:text-xl font-black text-slateText-main mt-0.5">{stats.inStock}</p>
           </div>
 
           <div
             onClick={() => handleFilterChange('stockStatus', 'lowStock')}
-            className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
+            className={`p-2.5 sm:p-3.5 rounded-xl border cursor-pointer transition-all ${
               filters.stockStatus === 'lowStock'
                 ? 'bg-warm-50/50 border-warm-300 shadow-soft-sm'
                 : 'bg-white border-surface-border hover:bg-surface-muted'
             }`}
           >
-            <p className="text-[11px] font-bold text-warm-600 uppercase">Low Stock Alert</p>
-            <p className="text-xl font-black text-warm-700 mt-0.5">{stats.lowStock}</p>
+            <p className="text-[10px] sm:text-[11px] font-bold text-warm-600 uppercase truncate">Low Stock Alert</p>
+            <p className="text-lg sm:text-xl font-black text-warm-700 mt-0.5">{stats.lowStock}</p>
           </div>
 
           <div
             onClick={() => handleFilterChange('stockStatus', 'outOfStock')}
-            className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
+            className={`p-2.5 sm:p-3.5 rounded-xl border cursor-pointer transition-all ${
               filters.stockStatus === 'outOfStock'
                 ? 'bg-roseDanger-50/50 border-roseDanger-500/40 shadow-soft-sm'
                 : 'bg-white border-surface-border hover:bg-surface-muted'
             }`}
           >
-            <p className="text-[11px] font-bold text-roseDanger-500 uppercase">Out of Stock</p>
-            <p className="text-xl font-black text-roseDanger-500 mt-0.5">{stats.outOfStock}</p>
+            <p className="text-[10px] sm:text-[11px] font-bold text-roseDanger-500 uppercase truncate">Out of Stock</p>
+            <p className="text-lg sm:text-xl font-black text-roseDanger-500 mt-0.5">{stats.outOfStock}</p>
           </div>
         </div>
       )}
 
       {/* 3. Search Bar */}
-      <div className="space-y-3">
-        <div className="flex flex-col sm:flex-row items-center gap-3">
+      <div className="space-y-2.5 sm:space-y-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <SearchBar
             value={search}
             onChange={setSearch}
-            placeholder={isCustomer ? "Search kurtas, dresses, suits, shirts, watches..." : "Search by product name, SKU, tags or brand..."}
-            className="flex-1"
+            placeholder={isCustomer ? "Search kurtas, dresses, suits, shirts..." : "Search by name, SKU, tags or brand..."}
+            className="flex-1 min-w-0"
           />
 
           {!isCustomer && (
-            <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+            <div className="flex items-center gap-2 shrink-0">
               {/* View Mode Toggle for Admin */}
               <div className="flex items-center bg-surface-muted p-1 rounded-xl border border-surface-border">
                 <button
                   type="button"
                   onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-lg transition-colors ${
+                  className={`p-1.5 sm:p-2 rounded-lg transition-colors cursor-pointer ${
                     viewMode === 'grid'
                       ? 'bg-white text-brand-600 shadow-soft-sm'
                       : 'text-slateText-muted hover:text-slateText-main'
@@ -401,7 +401,7 @@ export const Products = () => {
                 <button
                   type="button"
                   onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-lg transition-colors ${
+                  className={`p-1.5 sm:p-2 rounded-lg transition-colors cursor-pointer ${
                     viewMode === 'list'
                       ? 'bg-white text-brand-600 shadow-soft-sm'
                       : 'text-slateText-muted hover:text-slateText-main'
@@ -691,95 +691,126 @@ export const Products = () => {
           })}
         </div>
       ) : (
-        /* Admin List View Table */
-        <div className="commerce-card overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-surface-border text-[11px] font-extrabold text-slateText-muted uppercase bg-surface-muted/50">
-                  <th className="py-3 px-4">Product</th>
-                  <th className="py-3 px-4">Category / Brand</th>
-                  <th className="py-3 px-4">Price</th>
-                  <th className="py-3 px-4">Stock</th>
-                  <th className="py-3 px-4">Sales</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-surface-border text-sm font-medium">
-                {products.map((product) => (
-                  <tr key={product._id} className="hover:bg-brand-50/20 transition-colors">
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={product.images?.[0]}
-                          alt={product.name}
-                          className="w-12 h-12 rounded-xl object-cover border border-surface-border"
-                        />
-                        <div>
-                          <p
-                            onClick={() => navigate(`/products/${product._id}`)}
-                            className="font-bold text-slateText-main hover:text-brand-600 cursor-pointer"
-                          >
-                            {product.name}
-                          </p>
-                          <p className="text-xs font-mono text-slateText-muted">SKU: {product.sku}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4 text-xs font-semibold text-slateText-muted">
-                      <p className="text-slateText-main">{product.category}</p>
-                      <p className="text-[11px]">{product.brand}</p>
-                    </td>
-                    <td className="py-3 px-4 font-black text-slateText-main">
-                      {formatCurrency(product.price)}
-                    </td>
-                    <td className="py-3 px-4">
-                      <span
-                        className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                          product.stock <= product.lowStockThreshold
-                            ? 'bg-roseDanger-50 text-roseDanger-500'
-                            : 'bg-emeraldGreen-50 text-emeraldGreen-500'
-                        }`}
-                      >
-                        {product.stock} in stock
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-xs font-bold text-slateText-main">
-                      {formatNumber(product.salesCount)} units
-                    </td>
-                    <td className="py-3 px-4">
-                      <StatusBadge status={product.status} />
-                    </td>
-                    <td className="py-3 px-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => navigate(`/products/${product._id}`)}
-                          className="p-1.5 rounded-lg text-slateText-muted hover:text-brand-600 hover:bg-brand-50 transition-colors cursor-pointer"
-                          title="View"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => navigate(`/products/edit/${product._id}`)}
-                          className="p-1.5 rounded-lg text-slateText-muted hover:text-brand-600 hover:bg-brand-50 transition-colors cursor-pointer"
-                          title="Edit"
-                        >
-                          <Edit3 className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => setDeleteProductItem(product)}
-                          className="p-1.5 rounded-lg text-slateText-muted hover:text-roseDanger-600 hover:bg-roseDanger-50 transition-colors cursor-pointer"
-                          title="Delete"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
+        /* Admin List View */
+        <div className="space-y-2.5">
+          {/* Mobile Card List (Visible only on mobile) */}
+          <div className="block sm:hidden space-y-2.5">
+            {products.map((product) => (
+              <div
+                key={product._id}
+                onClick={() => navigate(`/products/${product._id}`)}
+                className="commerce-card p-3 rounded-2xl flex items-center justify-between gap-3 cursor-pointer"
+              >
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <img
+                    src={product.images?.[0]}
+                    alt={product.name}
+                    className="w-12 h-12 rounded-xl object-cover border border-surface-border shrink-0"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-bold text-slateText-main truncate">{product.name}</p>
+                    <p className="text-[10px] text-slateText-muted">{product.brand} • {product.category}</p>
+                    <p className="text-xs font-black text-slateText-main mt-0.5">{formatCurrency(product.price)}</p>
+                  </div>
+                </div>
+                <div className="flex flex-col items-end gap-1.5 shrink-0">
+                  <StatusBadge status={product.status} size="sm" />
+                  <span className="text-[10px] font-bold text-slate-500">{product.stock} in stock</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table View (Hidden on mobile) */}
+          <div className="hidden sm:block commerce-card overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-surface-border text-[11px] font-extrabold text-slateText-muted uppercase bg-surface-muted/50">
+                    <th className="py-3 px-4">Product</th>
+                    <th className="py-3 px-4">Category / Brand</th>
+                    <th className="py-3 px-4">Price</th>
+                    <th className="py-3 px-4">Stock</th>
+                    <th className="py-3 px-4">Sales</th>
+                    <th className="py-3 px-4">Status</th>
+                    <th className="py-3 px-4 text-right">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-surface-border text-sm font-medium">
+                  {products.map((product) => (
+                    <tr key={product._id} className="hover:bg-brand-50/20 transition-colors">
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={product.images?.[0]}
+                            alt={product.name}
+                            className="w-12 h-12 rounded-xl object-cover border border-surface-border"
+                          />
+                          <div>
+                            <p
+                              onClick={() => navigate(`/products/${product._id}`)}
+                              className="font-bold text-slateText-main hover:text-brand-600 cursor-pointer"
+                            >
+                              {product.name}
+                            </p>
+                            <p className="text-xs font-mono text-slateText-muted">SKU: {product.sku}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-xs font-semibold text-slateText-muted">
+                        <p className="text-slateText-main">{product.category}</p>
+                        <p className="text-[11px]">{product.brand}</p>
+                      </td>
+                      <td className="py-3 px-4 font-black text-slateText-main">
+                        {formatCurrency(product.price)}
+                      </td>
+                      <td className="py-3 px-4">
+                        <span
+                          className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                            product.stock <= product.lowStockThreshold
+                              ? 'bg-roseDanger-50 text-roseDanger-500'
+                              : 'bg-emeraldGreen-50 text-emeraldGreen-500'
+                          }`}
+                        >
+                          {product.stock} in stock
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-xs font-bold text-slateText-main">
+                        {formatNumber(product.salesCount)} units
+                      </td>
+                      <td className="py-3 px-4">
+                        <StatusBadge status={product.status} />
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => navigate(`/products/${product._id}`)}
+                            className="p-1.5 rounded-lg text-slateText-muted hover:text-brand-600 hover:bg-brand-50 transition-colors cursor-pointer"
+                            title="View"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => navigate(`/products/edit/${product._id}`)}
+                            className="p-1.5 rounded-lg text-slateText-muted hover:text-brand-600 hover:bg-brand-50 transition-colors cursor-pointer"
+                            title="Edit"
+                          >
+                            <Edit3 className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => setDeleteProductItem(product)}
+                            className="p-1.5 rounded-lg text-slateText-muted hover:text-roseDanger-600 hover:bg-roseDanger-50 transition-colors cursor-pointer"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}

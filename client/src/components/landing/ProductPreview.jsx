@@ -3,22 +3,22 @@ import { motion } from 'framer-motion';
 
 export const ProductPreview = () => {
   return (
-    <section className="py-24 bg-surface-bg border-b border-surface-border overflow-hidden">
+    <section className="py-12 sm:py-24 bg-surface-bg border-b border-surface-border overflow-hidden">
       <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="text-center mb-16">
+        <div className="text-center mb-10 sm:mb-16">
           <motion.h2 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6 }}
-            className="text-4xl md:text-5xl font-extrabold mb-5 text-slateText-main tracking-tight"
+            className="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-3 sm:mb-5 text-slateText-main tracking-tight"
           >
             See Your Marketing Performance at a Glance
           </motion.h2>
         </div>
 
-        <div className="flex flex-col xl:flex-row items-center gap-12 lg:gap-16">
+        <div className="flex flex-col xl:flex-row items-center gap-8 sm:gap-12 lg:gap-16">
           
           {/* Left Side: Graph/Dashboard Mockup */}
           <motion.div 
@@ -28,31 +28,31 @@ export const ProductPreview = () => {
             transition={{ duration: 1 }}
             className="flex-1 w-full relative"
           >
-            <div className="absolute inset-0 bg-brand-300/30 rounded-full blur-[100px] -z-10" />
+            <div className="absolute inset-0 bg-brand-300/30 rounded-full blur-[100px] -z-10 pointer-events-none" />
             
-            <div className="bg-white rounded-3xl border border-surface-border shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] p-6 md:p-8 text-left relative overflow-hidden">
+            <div className="bg-white rounded-2xl sm:rounded-3xl border border-surface-border shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] p-4 sm:p-6 md:p-8 text-left relative overflow-hidden">
                
                {/* Top KPI Cards */}
-               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 mb-6 sm:mb-8">
                   {[
                     { label: "Revenue", val: "$42,890.00", trend: "+12.5%", color: "text-emeraldGreen-500", bg: "bg-emeraldGreen-50" },
                     { label: "Orders", val: "842", trend: "+5.2%", color: "text-brand-600", bg: "bg-brand-50" },
                     { label: "Conv. Rate", val: "3.2%", trend: "+0.8%", color: "text-coral-500", bg: "bg-coral-50" },
                     { label: "Customers", val: "4,120", trend: "+14.1%", color: "text-warm-500", bg: "bg-warm-50" }
                   ].map((kpi, i) => (
-                    <div key={i} className="p-4 rounded-2xl border border-surface-border hover:shadow-soft-md transition-shadow cursor-default bg-surface-bg flex flex-col justify-center">
-                       <div className="text-[10px] sm:text-xs font-bold text-slateText-muted uppercase tracking-wider mb-2">{kpi.label}</div>
-                       <div className="text-xl sm:text-2xl font-black text-slateText-main mb-2 truncate">{kpi.val}</div>
-                       <div className={`text-[10px] sm:text-xs font-bold ${kpi.color} px-2 py-1 rounded-md ${kpi.bg} inline-block self-start`}>{kpi.trend}</div>
+                    <div key={i} className="p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-surface-border hover:shadow-soft-md transition-shadow cursor-default bg-surface-bg flex flex-col justify-center">
+                       <div className="text-[10px] sm:text-xs font-bold text-slateText-muted uppercase tracking-wider mb-1 sm:mb-2">{kpi.label}</div>
+                       <div className="text-base sm:text-xl md:text-2xl font-black text-slateText-main mb-1 truncate">{kpi.val}</div>
+                       <div className={`text-[9px] sm:text-[10px] font-bold ${kpi.color} px-1.5 py-0.5 rounded-md ${kpi.bg} inline-block self-start`}>{kpi.trend}</div>
                     </div>
                   ))}
                </div>
 
                {/* Middle Revenue Chart */}
-               <div className="bg-surface-bg border border-surface-border rounded-2xl p-6 mb-8">
-                  <div className="flex justify-between items-center mb-6">
-                     <div className="font-bold text-slateText-main">Revenue Overview</div>
-                     <div className="px-3 py-1 bg-white border border-surface-border rounded-lg text-xs font-bold text-slateText-main shadow-sm">Last 30 Days</div>
+               <div className="bg-surface-bg border border-surface-border rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8">
+                  <div className="flex justify-between items-center mb-4 sm:mb-6">
+                     <div className="text-sm sm:text-base font-bold text-slateText-main">Revenue Overview</div>
+                     <div className="px-2.5 py-1 bg-white border border-surface-border rounded-lg text-[10px] sm:text-xs font-bold text-slateText-main shadow-sm">Last 30 Days</div>
                   </div>
                   <div className="h-48 flex items-end justify-between gap-2 px-2 relative">
                      <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pb-0">
