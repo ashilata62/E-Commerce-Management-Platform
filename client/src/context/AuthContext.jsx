@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+﻿import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authService } from '../services/authService';
 
 const AuthContext = createContext(null);
@@ -68,6 +68,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const switchDemoRole = (role) => {
+    const demoToken = `demo_token_${role.toLowerCase()}_2026`;
+    setToken(demoToken);
+    localStorage.setItem('kiaan_auth_token', demoToken);
+
     if (role === 'Manager') {
       const managerUser = {
         _id: 'usr_002',

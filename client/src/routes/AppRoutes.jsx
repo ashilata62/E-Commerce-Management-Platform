@@ -92,7 +92,7 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       >
-        <Route index element={<Dashboard />} />
+        
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="customer" element={<CustomerDashboard />} />
 
@@ -292,3 +292,4 @@ export const AppRoutes = () => {
     </Routes>
   );
 };
+

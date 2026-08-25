@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -97,7 +97,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen, isCollapsed, toggleColl
         {
           label: 'Dashboard',
           desc: 'Live Sales & Store Operations',
-          path: '/',
+          path: '/dashboard',
           icon: LayoutDashboard,
           icon3D: 'bg-gradient-to-br from-violet-500 via-indigo-600 to-purple-700 shadow-indigo-500/35',
           roles: ['Admin', 'Manager', 'Staff']
@@ -307,7 +307,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen, isCollapsed, toggleColl
         },
         {
           label: 'Shipping',
-          desc: 'Courier Rates & Free Over ₹999',
+          desc: 'Courier Rates & Free Over â‚¹999',
           path: '/settings/shipping',
           icon: Truck,
           icon3D: 'bg-gradient-to-br from-blue-400 via-sky-500 to-indigo-600 shadow-blue-500/35',
@@ -359,7 +359,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen, isCollapsed, toggleColl
       >
         {/* Brand Header & Collapse Toggle */}
         <div className="h-16 flex items-center justify-between px-3.5 border-b border-[#E7E0F7] shrink-0 bg-[#F4F0FD]">
-          <NavLink to="/" className="flex items-center overflow-hidden">
+          <NavLink to={currentRole === 'Customer' ? '/customer' : '/dashboard'} className="flex items-center overflow-hidden">
             {isCollapsed ? (
               <img
                 src="/kt-gold-logo.png"
@@ -487,11 +487,11 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen, isCollapsed, toggleColl
           {currentRole === 'Customer' ? (
             /* Customer Rewards & Wishlist Box */
             <div
-              onClick={() => toast.success('You have ₹450 (1,280 Coins) ready to use on any checkout!')}
+              onClick={() => toast.success('You have â‚¹450 (1,280 Coins) ready to use on any checkout!')}
               className={`rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-white cursor-pointer hover:shadow-soft-md transition-all duration-200 relative overflow-hidden group shadow-soft-sm ${
                 isCollapsed ? 'p-2 flex justify-center' : 'p-3'
               }`}
-              title="₹450 Wallet Coins"
+              title="â‚¹450 Wallet Coins"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -500,7 +500,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen, isCollapsed, toggleColl
                   </div>
                   {!isCollapsed && (
                     <div>
-                      <h5 className="text-xs font-bold leading-none">₹450 Wallet Coins</h5>
+                      <h5 className="text-xs font-bold leading-none">â‚¹450 Wallet Coins</h5>
                       <p className="text-[10px] text-white/90 mt-0.5">Gold Member Perks</p>
                     </div>
                   )}
@@ -555,3 +555,4 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen, isCollapsed, toggleColl
 };
 
 export default Sidebar;
+
