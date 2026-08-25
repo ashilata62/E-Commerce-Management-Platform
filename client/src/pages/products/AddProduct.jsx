@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   UploadCloud,
@@ -24,6 +24,7 @@ import { formatCurrency } from '../../utils/formatters';
 export const AddProduct = () => {
   const navigate = useNavigate();
   const toast = useToast();
+  const fileInputRef = useRef(null);
 
   const [activeTab, setActiveTab] = useState('basic'); // 'basic' | 'media' | 'pricing' | 'variants' | 'shipping'
   const [submitting, setSubmitting] = useState(false);
@@ -32,8 +33,8 @@ export const AddProduct = () => {
   // Form State
   const [formData, setFormData] = useState({
     name: '',
-    category: 'Women',
-    brand: 'Aura Studio',
+    category: "Women's Ethnic",
+    brand: 'Kaira Ethnic',
     description: '',
     badge: 'New Arrival',
     status: 'Published',
@@ -48,11 +49,9 @@ export const AddProduct = () => {
     dimensions: '30x20x5 cm',
     deliveryDays: '2-4 Days',
     flashSale: false,
+    freeShipping: true,
     tags: 'ethnic, festive, trending',
-    images: [
-      'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=600&q=80',
-    ],
+    images: [],
     variants: [
       { size: 'S', color: 'Midnight Ruby', stock: 15, sku: 'VAR-S' },
       { size: 'M', color: 'Midnight Ruby', stock: 20, sku: 'VAR-M' },
@@ -70,14 +69,41 @@ export const AddProduct = () => {
     }));
   };
 
+  // Add Image via URL or trigger File Selection if empty
   const handleAddImage = () => {
-    if (!imageUrlInput.trim()) return;
-    setFormData(prev => ({
-      ...prev,
-      images: [...prev.images, imageUrlInput.trim()],
-    }));
-    setImageUrlInput('');
-    toast.success('Image added to gallery!');
+    if (imageUrlInput.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        images: [...prev.images, imageUrlInput.trim()],
+      }));
+      setImageUrlInput('');
+      toast.success('Image URL added to gallery!');
+    } else if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  // File Upload Handler (reads file as Data URL)
+  const handleFileUpload = (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+
+    files.forEach(file => {
+      if (!file.type.startsWith('image/')) {
+        toast.error(`${file.name} is not an image file.`);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setFormData(prev => ({
+          ...prev,
+          images: [...prev.images, event.target.result],
+        }));
+        toast.success(`Image "${file.name}" uploaded successfully!`);
+      };
+      reader.readAsDataURL(file);
+    });
+    e.target.value = '';
   };
 
   const handleRemoveImage = (idx) => {
@@ -85,6 +111,18 @@ export const AddProduct = () => {
       ...prev,
       images: prev.images.filter((_, i) => i !== idx),
     }));
+    toast.info('Image removed');
+  };
+
+  const handleMakePrimaryImage = (idx) => {
+    if (idx === 0) return;
+    setFormData(prev => {
+      const newImages = [...prev.images];
+      const [selected] = newImages.splice(idx, 1);
+      newImages.unshift(selected);
+      return { ...prev, images: newImages };
+    });
+    toast.success('Primary cover image updated!');
   };
 
   const handleAddVariant = () => {
@@ -95,6 +133,7 @@ export const AddProduct = () => {
         { size: 'XL', color: 'Classic Noir', stock: 10, sku: `VAR-${Date.now().toString().slice(-4)}` }
       ]
     }));
+    toast.success('New variant added!');
   };
 
   const handleVariantChange = (index, field, value) => {
@@ -149,8 +188,25 @@ export const AddProduct = () => {
     { id: 'shipping', label: 'Shipping & Delivery', icon: Truck },
   ];
 
+  const presets = [
+    { name: '+ Linen Shirt', url: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=600&q=80', color: 'bg-brand-50 text-brand-600 hover:bg-brand-100' },
+    { name: '+ Crimson Sneakers', url: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80', color: 'bg-coral-50 text-coral-600 hover:bg-coral-100' },
+    { name: '+ Leather Tote', url: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=600&q=80', color: 'bg-warm-50 text-warm-700 hover:bg-warm-100' },
+    { name: '+ Silk Anarkali', url: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80', color: 'bg-purple-50 text-purple-600 hover:bg-purple-100' },
+  ];
+
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-6 max-w-5xl mx-auto pb-12">
+      {/* Hidden File Input for Image Upload */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileUpload}
+        accept="image/*"
+        multiple
+        className="hidden"
+      />
+
       {/* Page Header */}
       <PageHeader
         title="Add New Product"
@@ -194,7 +250,7 @@ export const AddProduct = () => {
         })}
       </div>
 
-      {/* Tab Panels */}
+      {/* Tab Panels Container */}
       <div className="commerce-card p-6 sm:p-8">
         {/* TAB 1: BASIC INFO */}
         {activeTab === 'basic' && (
@@ -214,7 +270,7 @@ export const AddProduct = () => {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="e.g. Embroidered Anarkali Kurta Set"
-                  className="w-full px-4 py-2.5 rounded-xl border border-surface-border bg-surface-muted/40 focus:bg-white text-sm focus:border-brand-500 outline-none transition-all"
+                  className="w-full px-4 py-2.5 rounded-xl border border-surface-border bg-surface-muted/40 focus:bg-white text-sm focus:border-brand-500 outline-none transition-all font-semibold"
                 />
               </div>
 
@@ -226,7 +282,7 @@ export const AddProduct = () => {
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-xl border border-surface-border bg-surface-muted/40 text-sm focus:border-brand-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-surface-border bg-surface-muted/40 text-sm focus:border-brand-500 outline-none font-medium"
                 >
                   {PRODUCT_CATEGORIES.filter(c => c !== 'All').map(c => (
                     <option key={c} value={c}>{c}</option>
@@ -242,7 +298,7 @@ export const AddProduct = () => {
                   name="brand"
                   value={formData.brand}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-xl border border-surface-border bg-surface-muted/40 text-sm focus:border-brand-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-surface-border bg-surface-muted/40 text-sm focus:border-brand-500 outline-none font-medium"
                 >
                   {PRODUCT_BRANDS.filter(b => b !== 'All').map(b => (
                     <option key={b} value={b}>{b}</option>
@@ -274,7 +330,7 @@ export const AddProduct = () => {
                   value={formData.badge}
                   onChange={handleChange}
                   placeholder="e.g. Bestseller, Trending, 60% Off"
-                  className="w-full px-4 py-2.5 rounded-xl border border-surface-border bg-surface-muted/40 text-sm outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-surface-border bg-surface-muted/40 text-sm outline-none font-medium"
                 />
               </div>
 
@@ -288,7 +344,7 @@ export const AddProduct = () => {
                   value={formData.tags}
                   onChange={handleChange}
                   placeholder="ethnic, festive, kurta, summer"
-                  className="w-full px-4 py-2.5 rounded-xl border border-surface-border bg-surface-muted/40 text-sm outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-surface-border bg-surface-muted/40 text-sm outline-none font-medium"
                 />
               </div>
             </div>
@@ -302,13 +358,31 @@ export const AddProduct = () => {
               Product Images & Visual Assets
             </h3>
 
-            {/* URL Input Bar */}
+            {/* Drag & Drop / Click Upload Area */}
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              className="border-2 border-dashed border-brand-300 hover:border-brand-500 bg-brand-50/40 hover:bg-brand-50/80 rounded-2xl p-6 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 group"
+            >
+              <div className="w-12 h-12 rounded-full bg-brand-100 group-hover:scale-110 transition-transform flex items-center justify-center text-brand-600">
+                <UploadCloud className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-slateText-main">
+                  Click here to Upload photo from your computer
+                </p>
+                <p className="text-xs text-slateText-muted mt-0.5">
+                  Supports JPG, PNG, WEBP high-resolution photos
+                </p>
+              </div>
+            </div>
+
+            {/* URL Input Bar & Add Button */}
             <div className="flex gap-2">
               <input
                 type="url"
                 value={imageUrlInput}
                 onChange={(e) => setImageUrlInput(e.target.value)}
-                placeholder="Paste high-res image URL (e.g. Unsplash photo link)..."
+                placeholder="Or paste high-res image URL (e.g. Unsplash photo link)..."
                 className="flex-1 px-4 py-2.5 rounded-xl border border-surface-border bg-surface-muted/40 text-sm focus:border-brand-500 outline-none"
               />
               <Button variant="primary" icon={Plus} onClick={handleAddImage}>
@@ -316,59 +390,62 @@ export const AddProduct = () => {
               </Button>
             </div>
 
-            {/* Quick Demo Image Suggestion presets */}
+            {/* Quick Demo Image Presets */}
             <div className="flex flex-wrap items-center gap-2 text-xs text-slateText-muted">
               <span className="font-bold">Quick Demo Presets:</span>
-              <button
-                type="button"
-                onClick={() => setFormData(prev => ({
-                  ...prev,
-                  images: [...prev.images, 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=600&q=80']
-                }))}
-                className="px-2.5 py-1 rounded-lg bg-surface-muted hover:bg-brand-50 text-brand-600 font-semibold"
-              >
-                + Linen Shirt
-              </button>
-              <button
-                type="button"
-                onClick={() => setFormData(prev => ({
-                  ...prev,
-                  images: [...prev.images, 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80']
-                }))}
-                className="px-2.5 py-1 rounded-lg bg-surface-muted hover:bg-coral-50 text-coral-600 font-semibold"
-              >
-                + Crimson Sneakers
-              </button>
-              <button
-                type="button"
-                onClick={() => setFormData(prev => ({
-                  ...prev,
-                  images: [...prev.images, 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=600&q=80']
-                }))}
-                className="px-2.5 py-1 rounded-lg bg-surface-muted hover:bg-warm-50 text-warm-700 font-semibold"
-              >
-                + Leather Tote
-              </button>
+              {presets.map((preset, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => {
+                    setFormData(prev => ({
+                      ...prev,
+                      images: [...prev.images, preset.url]
+                    }));
+                    toast.success(`Added ${preset.name.replace('+ ', '')}`);
+                  }}
+                  className={`px-2.5 py-1 rounded-lg ${preset.color} font-semibold transition-all cursor-pointer` }
+                >
+                  {preset.name}
+                </button>
+              ))}
             </div>
 
             {/* Gallery Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
-              {formData.images.map((url, idx) => (
-                <div key={idx} className="relative group rounded-2xl overflow-hidden aspect-square border border-surface-border bg-surface-muted">
-                  <img src={url} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
-                  <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-slateText-main/80 backdrop-blur-sm text-white text-[10px] font-bold">
-                    {idx === 0 ? 'Primary' : `#${idx + 1}`}
+            <div>
+              <p className="text-xs font-bold text-slateText-main mb-3">
+                Uploaded Gallery ({formData.images.length} images):
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {formData.images.map((url, idx) => (
+                  <div key={idx} className="relative group rounded-2xl overflow-hidden aspect-square border border-surface-border bg-surface-muted shadow-soft-sm">
+                    <img src={url} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
+                    <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-slateText-main/80 backdrop-blur-sm text-white text-[10px] font-bold">
+                      {idx === 0 ? 'Primary Cover' : `#${idx + 1}`}
+                    </div>
+
+                    <div className="absolute inset-0 bg-slateText-main/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      {idx !== 0 && (
+                        <button
+                          type="button"
+                          onClick={() => handleMakePrimaryImage(idx)}
+                          className="px-2 py-1 bg-white text-slateText-main rounded-lg text-[10px] font-bold shadow hover:bg-brand-50"
+                        >
+                          Make Cover
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveImage(idx)}
+                        className="p-1.5 rounded-lg bg-roseDanger-500 text-white hover:bg-roseDanger-600 transition-colors"
+                        title="Remove Image"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveImage(idx)}
-                    className="absolute top-2 right-2 p-1.5 rounded-lg bg-roseDanger-500 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                    title="Remove"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -457,16 +534,19 @@ export const AddProduct = () => {
           <div className="space-y-5 animate-fade-in">
             <div className="flex items-center justify-between border-b pb-3">
               <h3 className="text-base font-bold text-slateText-main">
-                Variants (Size & Color Matrix)
+                Variants, Sizes & Inventory Count
               </h3>
-              <Button variant="outline" size="sm" icon={Plus} onClick={handleAddVariant}>
-                Add Variant Row
+              <Button variant="secondary" size="sm" icon={Plus} onClick={handleAddVariant}>
+                Add Variant
               </Button>
             </div>
 
             <div className="space-y-3">
               {formData.variants.map((variant, idx) => (
-                <div key={idx} className="grid grid-cols-1 sm:grid-cols-4 gap-3 p-3.5 rounded-xl border border-surface-border bg-surface-muted/30 items-center">
+                <div
+                  key={idx}
+                  className="grid grid-cols-1 sm:grid-cols-4 gap-3 p-4 rounded-xl border border-surface-border bg-surface-muted/30 items-center"
+                >
                   <div>
                     <label className="text-[10px] font-bold text-slateText-muted uppercase">Size</label>
                     <input
@@ -597,6 +677,20 @@ export const AddProduct = () => {
                 />
               </div>
             </div>
+
+            <div className="flex items-center gap-2 pt-2">
+              <input
+                type="checkbox"
+                id="freeShipping"
+                name="freeShipping"
+                checked={formData.freeShipping}
+                onChange={handleChange}
+                className="w-4 h-4 rounded text-brand-500 accent-brand-500 cursor-pointer"
+              />
+              <label htmlFor="freeShipping" className="text-xs font-bold text-slateText-main cursor-pointer">
+                Eligible for Free Standard Express Shipping
+              </label>
+            </div>
           </div>
         )}
 
@@ -643,16 +737,20 @@ export const AddProduct = () => {
       >
         <div className="max-w-xs mx-auto commerce-card p-4 rounded-2xl">
           <div className="relative aspect-[4/5] rounded-xl overflow-hidden mb-3">
-            <img src={formData.images[0]} alt="preview" className="w-full h-full object-cover" />
-            <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-brand-500 text-white font-extrabold text-[10px]">
-              {formData.badge}
-            </span>
+            <img src={formData.images[0] || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=600&q=80'} alt="preview" className="w-full h-full object-cover" />
+            {formData.badge && (
+              <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-brand-500 text-white font-extrabold text-[10px]">
+                {formData.badge}
+              </span>
+            )}
           </div>
           <p className="text-[10px] font-bold text-brand-600 uppercase">{formData.brand}</p>
           <h4 className="text-sm font-bold text-slateText-main truncate">{formData.name || 'Untitled Product'}</h4>
           <div className="flex items-baseline gap-2 mt-1.5">
             <span className="text-base font-black text-slateText-main">{formatCurrency(formData.price)}</span>
-            <span className="text-xs text-slateText-muted line-through">{formatCurrency(formData.compareAtPrice)}</span>
+            {formData.compareAtPrice > 0 && (
+              <span className="text-xs text-slateText-muted line-through">{formatCurrency(formData.compareAtPrice)}</span>
+            )}
           </div>
         </div>
       </Modal>

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Layers, ArrowRight, Image as ImageIcon, Sparkles } from 'lucide-react';
+import { Plus, Layers, ArrowRight, UploadCloud, Trash2 } from 'lucide-react';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { Button } from '../../components/common/Button';
 import { Modal } from '../../components/common/Modal';
@@ -8,9 +8,19 @@ import { productService } from '../../services/productService';
 import { useToast } from '../../context/ToastContext';
 import { formatNumber } from '../../utils/formatters';
 
+const DEFAULT_CATEGORY_FALLBACK = 'https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=600&q=80';
+
+const PRESET_IMAGES = [
+  { label: '👟 Shoes / Footwear', url: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=600&q=80' },
+  { label: '👗 Western Wear', url: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=600&q=80' },
+  { label: '👜 Bags & Totes', url: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=600&q=80' },
+  { label: '👔 Men Formals', url: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80' },
+];
+
 export const Categories = () => {
   const navigate = useNavigate();
   const toast = useToast();
+  const fileInputRef = useRef(null);
 
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +29,7 @@ export const Categories = () => {
 
   const [newCat, setNewCat] = useState({
     name: '',
-    image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=400&q=80',
+    image: '',
     description: '',
   });
 
@@ -41,13 +51,32 @@ export const Categories = () => {
     fetchCategories();
   }, []);
 
+  const handleFileUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select a valid image file');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setNewCat(prev => ({ ...prev, image: event.target.result }));
+      toast.success('Category cover image uploaded!');
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleCreateCategory = async (e) => {
     e.preventDefault();
     if (!newCat.name.trim()) return;
 
     try {
       setSubmitting(true);
-      const res = await productService.createCategory(newCat);
+      const finalImage = newCat.image.trim() || DEFAULT_CATEGORY_FALLBACK;
+      const res = await productService.createCategory({
+        ...newCat,
+        image: finalImage,
+      });
       if (res.success) {
         toast.success(`Category "${newCat.name}" created!`);
         setShowAddModal(false);
@@ -63,6 +92,15 @@ export const Categories = () => {
 
   return (
     <div className="space-y-6">
+      {/* Hidden File Input */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileUpload}
+        accept="image/*"
+        className="hidden"
+      />
+
       <PageHeader
         title="Store Categories"
         subtitle="Manage product taxonomy, navigation hierarchies, and department imagery"
@@ -84,8 +122,12 @@ export const Categories = () => {
             <div>
               <div className="relative aspect-[16/9] overflow-hidden bg-surface-muted">
                 <img
-                  src={cat.image}
+                  src={cat.image || DEFAULT_CATEGORY_FALLBACK}
                   alt={cat.name}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = DEFAULT_CATEGORY_FALLBACK;
+                  }}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -128,19 +170,57 @@ export const Categories = () => {
               onChange={(e) => setNewCat({ ...newCat, name: e.target.value })}
               placeholder="e.g. Ethnic Footwear"
               required
-              className="w-full px-4 py-2.5 rounded-xl border text-sm outline-none focus:border-brand-500"
+              className="w-full px-4 py-2.5 rounded-xl border border-surface-border text-sm outline-none focus:border-brand-500 font-semibold"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slateText-main mb-1">Cover Image URL</label>
+            <label className="block text-xs font-bold text-slateText-main mb-1">Cover Image (Upload file or Paste URL)</label>
+            
+            {/* Upload Area */}
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              className="mb-2 p-3 border border-dashed border-brand-300 hover:border-brand-500 bg-brand-50/40 rounded-xl text-center cursor-pointer flex items-center justify-center gap-2 group transition-all"
+            >
+              <UploadCloud className="w-4 h-4 text-brand-600 group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-bold text-brand-600">Click to upload photo from computer</span>
+            </div>
+
             <input
               type="url"
               value={newCat.image}
               onChange={(e) => setNewCat({ ...newCat, image: e.target.value })}
-              placeholder="https://images.unsplash.com/..."
-              className="w-full px-4 py-2.5 rounded-xl border text-sm outline-none"
+              placeholder="Or paste image URL (e.g. https://images.unsplash.com/...)"
+              className="w-full px-4 py-2.5 rounded-xl border border-surface-border text-sm outline-none focus:border-brand-500"
             />
+
+            {/* Quick Presets */}
+            <div className="flex flex-wrap gap-1.5 mt-2">
+              {PRESET_IMAGES.map((preset, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setNewCat({ ...newCat, image: preset.url })}
+                  className="px-2 py-1 rounded-lg bg-surface-muted hover:bg-brand-50 text-[11px] font-bold text-slateText-main hover:text-brand-600 transition-colors"
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Preview Box */}
+            {newCat.image && (
+              <div className="mt-3 relative aspect-[16/9] w-full rounded-xl overflow-hidden border border-surface-border">
+                <img src={newCat.image} alt="Preview" className="w-full h-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => setNewCat({ ...newCat, image: '' })}
+                  className="absolute top-2 right-2 p-1 rounded-lg bg-roseDanger-500 text-white"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
           </div>
 
           <div>
@@ -150,11 +230,11 @@ export const Categories = () => {
               value={newCat.description}
               onChange={(e) => setNewCat({ ...newCat, description: e.target.value })}
               placeholder="Brief description for category banner..."
-              className="w-full px-4 py-2.5 rounded-xl border text-sm outline-none"
+              className="w-full px-4 py-2.5 rounded-xl border border-surface-border text-sm outline-none focus:border-brand-500"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-3">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-surface-border">
             <Button variant="secondary" onClick={() => setShowAddModal(false)}>
               Cancel
             </Button>

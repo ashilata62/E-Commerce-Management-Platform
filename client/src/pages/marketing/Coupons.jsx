@@ -3,14 +3,42 @@ import { Ticket, Plus, Copy, Check, Trash2, Calendar, Tag, Percent } from 'lucid
 import { PageHeader } from '../../components/layout/PageHeader';
 import { Button } from '../../components/common/Button';
 import { Modal } from '../../components/common/Modal';
-import { marketingService } from '../../services/marketingService';
-import { formatCurrency, formatDate } from '../../utils/formatters';
+import { formatCurrency } from '../../utils/formatters';
 import { useToast } from '../../context/ToastContext';
+
+const STORAGE_KEY = 'kiaan_coupons_store';
+
+const INITIAL_COUPONS = [
+  {
+    _id: 'cpn_001',
+    code: 'FESTIVE20',
+    discountType: 'percentage',
+    discountValue: 20,
+    minOrderAmount: 1499,
+    maxDiscount: 500,
+    usedCount: 342,
+    usageLimit: 1000,
+    expiryDate: '2026-10-31',
+    status: 'Active',
+    description: 'Flat 20% discount on all Indian Ethnic wear & Anarkalis.',
+  },
+  {
+    _id: 'cpn_002',
+    code: 'WELCOME100',
+    discountType: 'flat',
+    discountValue: 100,
+    minOrderAmount: 499,
+    usedCount: 890,
+    usageLimit: 2000,
+    expiryDate: '2026-12-31',
+    status: 'Active',
+    description: 'Flat ₹100 cashback for first time shoppers.',
+  },
+];
 
 export const Coupons = () => {
   const toast = useToast();
   const [coupons, setCoupons] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [copiedCode, setCopiedCode] = useState(null);
 
@@ -25,65 +53,89 @@ export const Coupons = () => {
     description: '',
   });
 
-  const fetchCoupons = async () => {
+  useEffect(() => {
     try {
-      setLoading(true);
-      const res = await marketingService.getCoupons();
-      if (res.success) {
-        setCoupons(res.data);
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setCoupons(parsed);
+          return;
+        }
       }
-    } catch (err) {
-      toast.error('Failed to load coupons');
-    } finally {
-      setLoading(false);
+    } catch (e) {
+      console.error(e);
+    }
+    setCoupons(INITIAL_COUPONS);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_COUPONS));
+  }, []);
+
+  const saveCoupons = (newList) => {
+    setCoupons(newList);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(newList));
+    } catch (e) {
+      console.error(e);
     }
   };
-
-  useEffect(() => {
-    fetchCoupons();
-  }, []);
 
   const handleCopy = (code) => {
     navigator.clipboard?.writeText(code);
     setCopiedCode(code);
-    toast.success(`Coupon "${code}" copied to clipboard!`);
+    toast.success(`Coupon code "${code}" copied!`);
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
-  const handleCreate = async (e) => {
+  const handleCreate = (e) => {
     e.preventDefault();
-    if (!newCoupon.code.trim()) return;
-
-    try {
-      const res = await marketingService.createCoupon(newCoupon);
-      if (res.success) {
-        toast.success(`Coupon ${newCoupon.code.toUpperCase()} created!`);
-        setShowModal(false);
-        setNewCoupon({ code: '', discountType: 'percentage', discountValue: 20, minOrderAmount: 999, maxDiscount: 500, usageLimit: 500, expiryDate: '2026-12-31', description: '' });
-        fetchCoupons();
-      }
-    } catch (err) {
-      toast.error('Failed to create coupon');
+    if (!newCoupon.code.trim()) {
+      toast.warning('Please enter a coupon code');
+      return;
     }
+
+    const created = {
+      _id: 'cpn_' + Date.now(),
+      code: newCoupon.code.trim().toUpperCase(),
+      discountType: newCoupon.discountType,
+      discountValue: Number(newCoupon.discountValue),
+      minOrderAmount: Number(newCoupon.minOrderAmount),
+      maxDiscount: Number(newCoupon.maxDiscount),
+      usedCount: 0,
+      usageLimit: Number(newCoupon.usageLimit),
+      expiryDate: newCoupon.expiryDate || '2026-12-31',
+      status: 'Active',
+      description: newCoupon.description || 'Special promo coupon discount for online store purchases.',
+    };
+
+    const updated = [created, ...coupons];
+    saveCoupons(updated);
+    toast.success(`Coupon "${created.code}" created successfully!`);
+    setShowModal(false);
+    setNewCoupon({
+      code: '',
+      discountType: 'percentage',
+      discountValue: 20,
+      minOrderAmount: 999,
+      maxDiscount: 500,
+      usageLimit: 500,
+      expiryDate: '2026-12-31',
+      description: '',
+    });
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await marketingService.deleteCoupon(id);
-      toast.success('Coupon removed');
-      fetchCoupons();
-    } catch (err) {
-      toast.error('Error deleting coupon');
-    }
+  const handleDelete = (id, code) => {
+    const updated = coupons.filter(c => c._id !== id);
+    saveCoupons(updated);
+    toast.info(`Coupon "${code}" deleted`);
   };
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Discounts & Voucher Codes"
-        subtitle="Manage cart promotions, affiliate promo codes, and minimum spend checkout vouchers"
-        breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Marketing' }, { label: 'Coupons' }]}
-        badge={`${coupons.length} Active Vouchers`}
+        title="Promo Coupons & Discounts"
+        subtitle="Create discount codes, cart triggers, and limited time voucher vouchers"
+        breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Coupons' }]}
+        badge={`${coupons.length} Active Coupons`}
       >
         <Button variant="primary" icon={Plus} onClick={() => setShowModal(true)}>
           Create Coupon
@@ -91,77 +143,66 @@ export const Coupons = () => {
       </PageHeader>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {coupons.map((cpn) => (
-          <div
-            key={cpn._id}
-            className="commerce-card p-6 relative overflow-hidden bg-white border-2 border-dashed border-brand-200 flex flex-col justify-between"
-          >
+        {coupons.map((coupon) => (
+          <div key={coupon._id} className="commerce-card p-6 flex flex-col justify-between group relative">
             <div>
-              {/* Top Voucher Header */}
-              <div className="flex items-center justify-between gap-3 mb-4">
+              <div className="flex items-center justify-between border-b border-surface-border pb-4 mb-4">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center font-bold">
-                    <Ticket className="w-4 h-4" />
+                  <div className="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center font-bold">
+                    <Ticket className="w-5 h-5" />
                   </div>
-                  <span className="text-xs font-black uppercase text-brand-600">
-                    {cpn.discountType === 'percentage' ? `${cpn.discountValue}% OFF` : `₹${cpn.discountValue} OFF`}
-                  </span>
+                  <div>
+                    <h3 className="text-base font-black text-slateText-main tracking-wide">{coupon.code}</h3>
+                    <p className="text-[11px] text-slateText-muted font-medium">
+                      Min Order: {formatCurrency(coupon.minOrderAmount)}
+                    </p>
+                  </div>
                 </div>
-
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emeraldGreen-50 text-emeraldGreen-600">
-                  {cpn.status}
-                </span>
-              </div>
-
-              {/* Code Banner with Copy Trigger */}
-              <div className="p-3 bg-surface-muted/70 rounded-xl border border-surface-border flex items-center justify-between gap-2 mb-4">
-                <span className="font-mono text-base font-black tracking-widest text-slateText-main">
-                  {cpn.code}
-                </span>
                 <button
                   type="button"
-                  onClick={() => handleCopy(cpn.code)}
-                  className="p-1.5 rounded-lg bg-white hover:bg-brand-50 text-slateText-muted hover:text-brand-600 border border-surface-border transition-colors shadow-soft-sm"
+                  onClick={() => handleCopy(coupon.code)}
+                  className="p-2 rounded-xl bg-surface-muted hover:bg-brand-50 text-slateText-muted hover:text-brand-600 transition-colors"
                   title="Copy Code"
                 >
-                  {copiedCode === cpn.code ? <Check className="w-4 h-4 text-emeraldGreen-500" /> : <Copy className="w-4 h-4" />}
+                  {copiedCode === coupon.code ? <Check className="w-4 h-4 text-emeraldGreen-500" /> : <Copy className="w-4 h-4" />}
                 </button>
               </div>
 
-              <p className="text-xs text-slateText-muted leading-relaxed font-medium">
-                {cpn.description || `Get ${cpn.discountValue}% off on minimum order of ₹${cpn.minOrderAmount}`}
-              </p>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slateText-muted font-medium">Discount Offer:</span>
+                  <span className="font-extrabold text-brand-600">
+                    {coupon.discountType === 'percentage' ? `${coupon.discountValue}% OFF` : formatCurrency(coupon.discountValue)}
+                  </span>
+                </div>
 
-              {/* Rules Breakdown */}
-              <div className="mt-4 pt-3 border-t border-surface-border/70 space-y-1.5 text-xs text-slateText-muted">
-                <div className="flex justify-between">
-                  <span>Min. Order Value:</span>
-                  <span className="font-bold text-slateText-main">{formatCurrency(cpn.minOrderAmount)}</span>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slateText-muted font-medium">Redemptions:</span>
+                  <span className="font-bold text-slateText-main">
+                    {coupon.usedCount} / {coupon.usageLimit} Used
+                  </span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Usage Count:</span>
-                  <span className="font-bold text-slateText-main">{cpn.usedCount} / {cpn.usageLimit}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Expires On:</span>
-                  <span className="font-bold text-slateText-main">{formatDate(cpn.expiryDate)}</span>
-                </div>
+
+                <p className="text-xs text-slateText-muted pt-2 border-t border-surface-border font-medium">
+                  {coupon.description}
+                </p>
               </div>
             </div>
 
-            <div className="mt-5 pt-3 border-t border-surface-border flex items-center justify-between">
-              <Button size="xs" variant="ghost" className="text-roseDanger-500 hover:bg-roseDanger-50" icon={Trash2} onClick={() => handleDelete(cpn._id)}>
+            <div className="flex items-center justify-between pt-4 mt-4 border-t border-surface-border text-xs">
+              <span className="text-slateText-muted font-medium">Expires: {coupon.expiryDate}</span>
+              <button
+                type="button"
+                onClick={() => handleDelete(coupon._id, coupon.code)}
+                className="text-roseDanger-500 hover:text-roseDanger-600 font-bold p-1 hover:bg-roseDanger-50 rounded-lg"
+              >
                 Delete
-              </Button>
-              <Button size="xs" variant="primary" onClick={() => handleCopy(cpn.code)}>
-                Copy Code
-              </Button>
+              </button>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Create Coupon Modal */}
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title="Create Discount Coupon">
         <form onSubmit={handleCreate} className="space-y-4">
           <div>
@@ -170,62 +211,70 @@ export const Coupons = () => {
               type="text"
               value={newCoupon.code}
               onChange={(e) => setNewCoupon({ ...newCoupon, code: e.target.value.toUpperCase() })}
-              placeholder="e.g. FESTIVE50"
+              placeholder="e.g. SUMMER50, FESTIVE30"
               required
-              className="w-full px-4 py-2.5 rounded-xl border text-sm font-mono uppercase font-bold outline-none focus:border-brand-500"
+              className="w-full px-4 py-2.5 rounded-xl border border-surface-border text-sm uppercase font-mono font-bold outline-none"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-bold text-slateText-main mb-1">Discount Type</label>
               <select
                 value={newCoupon.discountType}
                 onChange={(e) => setNewCoupon({ ...newCoupon, discountType: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border text-sm outline-none"
+                className="w-full px-4 py-2.5 rounded-xl border border-surface-border text-sm outline-none"
               >
                 <option value="percentage">Percentage (%)</option>
-                <option value="fixed">Fixed Amount (₹)</option>
-                <option value="shipping">Free Shipping</option>
+                <option value="flat">Flat Amount (₹)</option>
               </select>
             </div>
-
             <div>
               <label className="block text-xs font-bold text-slateText-main mb-1">Discount Value</label>
               <input
                 type="number"
                 value={newCoupon.discountValue}
-                onChange={(e) => setNewCoupon({ ...newCoupon, discountValue: Number(e.target.value) })}
-                className="w-full px-4 py-2.5 rounded-xl border text-sm font-bold outline-none"
+                onChange={(e) => setNewCoupon({ ...newCoupon, discountValue: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-xl border border-surface-border text-sm outline-none font-bold"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-slateText-main mb-1">Min. Order Value (₹)</label>
+              <label className="block text-xs font-bold text-slateText-main mb-1">Min Order Value (₹)</label>
               <input
                 type="number"
                 value={newCoupon.minOrderAmount}
-                onChange={(e) => setNewCoupon({ ...newCoupon, minOrderAmount: Number(e.target.value) })}
-                className="w-full px-4 py-2.5 rounded-xl border text-sm outline-none"
+                onChange={(e) => setNewCoupon({ ...newCoupon, minOrderAmount: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-xl border border-surface-border text-sm outline-none"
               />
             </div>
-
             <div>
-              <label className="block text-xs font-bold text-slateText-main mb-1">Expiry Date</label>
+              <label className="block text-xs font-bold text-slateText-main mb-1">Total Usage Limit</label>
               <input
-                type="date"
-                value={newCoupon.expiryDate}
-                onChange={(e) => setNewCoupon({ ...newCoupon, expiryDate: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border text-sm outline-none"
+                type="number"
+                value={newCoupon.usageLimit}
+                onChange={(e) => setNewCoupon({ ...newCoupon, usageLimit: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-xl border border-surface-border text-sm outline-none"
               />
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-3">
+          <div>
+            <label className="block text-xs font-bold text-slateText-main mb-1">Description</label>
+            <input
+              type="text"
+              value={newCoupon.description}
+              onChange={(e) => setNewCoupon({ ...newCoupon, description: e.target.value })}
+              placeholder="e.g. Applicable on all festive ethnic wear products..."
+              className="w-full px-4 py-2.5 rounded-xl border border-surface-border text-sm outline-none"
+            />
+          </div>
+
+          <div className="flex justify-end gap-3 pt-3 border-t border-surface-border">
             <Button variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
-            <Button variant="primary" type="submit">Create Voucher</Button>
+            <Button variant="primary" type="submit">Create Coupon</Button>
           </div>
         </form>
       </Modal>
