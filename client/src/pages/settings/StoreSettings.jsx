@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Store,
   Save,
@@ -22,7 +22,8 @@ import {
   Crown,
   Lock,
   Layers,
-  Image as ImageIcon
+  Image as ImageIcon,
+  RotateCcw
 } from 'lucide-react';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { settingsService } from '../../services/settingsService';
@@ -31,9 +32,11 @@ import { KiaanBrandLogo } from '../../components/common/KiaanLogo';
 
 export const StoreSettings = () => {
   const toast = useToast();
+  const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  const [logoUrl, setLogoUrl] = useState(() => localStorage.getItem('kiaan_store_custom_logo') || null);
 
   const [formData, setFormData] = useState({
     storeName: "Kiaan Luxe Emporium",
@@ -88,6 +91,35 @@ export const StoreSettings = () => {
     }));
   };
 
+  const handleLogoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select a valid image file (PNG, JPG, SVG, WebP)');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const result = event.target?.result;
+        if (result) {
+          setLogoUrl(result);
+          localStorage.setItem('kiaan_store_custom_logo', result);
+          setIsDirty(true);
+          toast.success('Official brand logo updated and previewed!');
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleResetLogo = () => {
+    setLogoUrl(null);
+    localStorage.removeItem('kiaan_store_custom_logo');
+    if (fileInputRef.current) fileInputRef.current.value = '';
+    setIsDirty(true);
+    toast.info('Restored default Kiaan Gold Emblem');
+  };
+
   const handleCopyLink = () => {
     navigator.clipboard.writeText(formData.storeUrl);
     toast.success('Storefront URL copied to clipboard!');
@@ -112,6 +144,15 @@ export const StoreSettings = () => {
 
   return (
     <div className="space-y-6 sm:space-y-7 animate-fade-in pb-12">
+      {/* Hidden File Input for Logo Upload */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleLogoUpload}
+        accept="image/png, image/jpeg, image/webp, image/svg+xml"
+        className="hidden"
+      />
+
       {/* 1. Page Header & Action Bar */}
       <PageHeader
         title="Store Profile & Settings"
@@ -156,22 +197,46 @@ export const StoreSettings = () => {
             {/* Brand Logo Display & Uploader */}
             <div className="p-4 rounded-2xl bg-[#F8F5FF] border border-[#E7E0F7] flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-3.5">
-                <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center p-2 shadow-soft-xs border border-purple-100">
-                  <KiaanBrandLogo size="md" showBadge={false} />
+                <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center p-1.5 shadow-soft-xs border border-purple-100 overflow-hidden">
+                  {logoUrl ? (
+                    <img src={logoUrl} alt="Uploaded Store Logo" className="w-full h-full object-contain rounded-xl" />
+                  ) : (
+                    <KiaanBrandLogo size="md" showBadge={false} />
+                  )}
                 </div>
                 <div>
-                  <h4 className="text-xs font-black text-slate-900">Official Brand Logo</h4>
+                  <h4 className="text-xs font-black text-slate-900 flex items-center gap-2">
+                    <span>Official Brand Logo</span>
+                    {logoUrl && (
+                      <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[9px] font-black">
+                        Custom Active
+                      </span>
+                    )}
+                  </h4>
                   <p className="text-[10px] text-slate-500 font-medium mt-0.5">Recommended: 512x512 PNG with transparent background</p>
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={() => toast.info('Logo updated with high-resolution Gold asset!')}
-                className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-[#E7E0F7] text-xs font-black shadow-soft-xs transition-colors shrink-0 cursor-pointer"
-              >
-                Change Logo
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-[#E7E0F7] text-xs font-black shadow-soft-xs transition-all hover:scale-105 shrink-0 cursor-pointer flex items-center gap-1.5"
+                >
+                  <UploadCloud className="w-3.5 h-3.5 text-brand-500" />
+                  <span>Change Logo</span>
+                </button>
+                {logoUrl && (
+                  <button
+                    type="button"
+                    onClick={handleResetLogo}
+                    className="p-1.5 rounded-xl text-slate-400 hover:text-roseDanger-600 hover:bg-roseDanger-50 transition-colors"
+                    title="Reset to default emblem"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Inputs Grid */}
