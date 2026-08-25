@@ -1,4 +1,4 @@
-﻿import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authService } from '../services/authService';
 
 const AuthContext = createContext(null);
@@ -71,6 +71,8 @@ export const AuthProvider = ({ children }) => {
     const demoToken = `demo_token_${role.toLowerCase()}_2026`;
     setToken(demoToken);
     localStorage.setItem('kiaan_auth_token', demoToken);
+    localStorage.removeItem('kiaan_sidebar_preview_role');
+    window.dispatchEvent(new Event('sidebar-preview-role-changed'));
 
     let newUser = null;
     if (role === 'Manager') {

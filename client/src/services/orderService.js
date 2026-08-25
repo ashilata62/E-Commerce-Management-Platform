@@ -6,26 +6,37 @@ export const orderService = {
     const { status, search } = params;
 
     if (status && status !== 'All') {
-      results = results.filter(o => o.orderStatus.toLowerCase() === status.toLowerCase());
+      const s = status.toLowerCase();
+      if (s === 'pending') {
+        results = results.filter(
+          o => o.orderStatus.toLowerCase() === 'pending' || o.paymentStatus.toLowerCase().includes('pending')
+        );
+      } else {
+        results = results.filter(o => o.orderStatus.toLowerCase() === s);
+      }
     }
 
     if (search) {
       const q = search.toLowerCase();
       results = results.filter(o =>
         o.orderNumber.toLowerCase().includes(q) ||
-        o.customer?.name.toLowerCase().includes(q)
+        o.customer?.name.toLowerCase().includes(q) ||
+        o.customer?.email?.toLowerCase().includes(q) ||
+        o.trackingNumber?.toLowerCase().includes(q)
       );
     }
 
     const statusCounts = {
       All: localStore.data.orders.length,
-      Pending: localStore.data.orders.filter(o => o.paymentStatus.includes('Pending')).length,
-      Confirmed: localStore.data.orders.filter(o => o.orderStatus === 'Confirmed').length,
-      Processing: localStore.data.orders.filter(o => o.orderStatus === 'Processing').length,
-      Shipped: localStore.data.orders.filter(o => o.orderStatus === 'Shipped').length,
-      Delivered: localStore.data.orders.filter(o => o.orderStatus === 'Delivered').length,
-      Cancelled: localStore.data.orders.filter(o => o.orderStatus === 'Cancelled').length,
-      Returned: localStore.data.orders.filter(o => o.orderStatus === 'Returned').length,
+      Pending: localStore.data.orders.filter(
+        o => o.orderStatus.toLowerCase() === 'pending' || o.paymentStatus.toLowerCase().includes('pending')
+      ).length,
+      Confirmed: localStore.data.orders.filter(o => o.orderStatus.toLowerCase() === 'confirmed').length,
+      Processing: localStore.data.orders.filter(o => o.orderStatus.toLowerCase() === 'processing').length,
+      Shipped: localStore.data.orders.filter(o => o.orderStatus.toLowerCase() === 'shipped').length,
+      Delivered: localStore.data.orders.filter(o => o.orderStatus.toLowerCase() === 'delivered').length,
+      Cancelled: localStore.data.orders.filter(o => o.orderStatus.toLowerCase() === 'cancelled').length,
+      Returned: localStore.data.orders.filter(o => o.orderStatus.toLowerCase() === 'returned').length,
     };
 
     return {

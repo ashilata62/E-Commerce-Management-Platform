@@ -14,7 +14,17 @@ export const productService = {
       );
     }
     if (category && category !== 'All') {
-      results = results.filter(p => p.category.toLowerCase() === category.toLowerCase());
+      const catKey = category.toLowerCase().trim();
+
+      if (catKey === 'girls' || catKey.includes('girl') || catKey.includes('women')) {
+        results = results.filter(p => p.targetGender === 'girls' || p.targetGender === 'kids_girl');
+      } else if (catKey === 'boys' || catKey.includes('boy') || catKey.includes('men')) {
+        results = results.filter(p => p.targetGender === 'boys' || p.targetGender === 'kids_boy');
+      } else if (catKey === 'kids' || catKey.includes('kid') || catKey.includes('bachhe')) {
+        results = results.filter(p => p.category === 'Kids Collection' || p.targetGender === 'kids_boy' || p.targetGender === 'kids_girl');
+      } else {
+        results = results.filter(p => p.category.toLowerCase() === catKey);
+      }
     }
     if (brand && brand !== 'All') {
       results = results.filter(p => p.brand.toLowerCase() === brand.toLowerCase());
@@ -26,7 +36,7 @@ export const productService = {
       results = results.filter(p => p.flashSale);
     }
     if (stockStatus) {
-      if (stockStatus === 'inStock') results = results.filter(p => p.stock > p.lowStockThreshold);
+      if (stockStatus === 'inStock') results = results.filter(p => p.stock > 0);
       else if (stockStatus === 'lowStock') results = results.filter(p => p.stock <= p.lowStockThreshold && p.stock > 0);
       else if (stockStatus === 'outOfStock') results = results.filter(p => p.stock === 0);
     }

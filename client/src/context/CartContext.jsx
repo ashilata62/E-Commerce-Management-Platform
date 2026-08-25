@@ -44,49 +44,65 @@ export const CartProvider = ({ children }) => {
   }, [cartItems]);
 
   const addToCart = (product, selectedSize = 'M', selectedColor = 'Default', qty = 1) => {
+    const productId = product._id || product.id;
+    const itemSize = product.size || selectedSize || 'M';
+    const itemColor = product.color || selectedColor || 'Default';
+    const itemQty = product.quantity || qty || 1;
+    const itemPrice = Number(product.price) || 0;
+    const itemOriginalPrice = Number(product.originalPrice || product.compareAtPrice) || Math.round(itemPrice * 1.5);
+    const itemImage = product.image || product.images?.[0] || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80';
+
     setCartItems(prev => {
       const existingIndex = prev.findIndex(
-        item => (item.id === (product._id || product.id)) && item.size === selectedSize
+        item => ((item.id === productId || item._id === productId) && item.size === itemSize)
       );
 
       if (existingIndex > -1) {
         const updated = [...prev];
-        updated[existingIndex].quantity += qty;
+        updated[existingIndex].quantity += itemQty;
         return updated;
       } else {
         return [
           ...prev,
           {
-            id: product._id || product.id,
+            id: productId,
+            _id: productId,
             name: product.name,
-            price: product.price,
-            originalPrice: product.compareAtPrice || product.originalPrice || Math.round(product.price * 1.5),
-            image: product.images?.[0] || product.image || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80',
-            size: selectedSize,
-            color: selectedColor,
-            quantity: qty,
+            price: itemPrice,
+            originalPrice: itemOriginalPrice,
+            image: itemImage,
+            size: itemSize,
+            color: itemColor,
+            quantity: itemQty,
           }
         ];
       }
     });
 
-    toast.success(`Added "${product.name}" (Size: ${selectedSize}) to Shopping Bag! 🛍️`);
+    toast.success(`Added "${product.name}" (${itemSize}) to Shopping Bag! 🛍️`);
     setIsCartOpen(true);
   };
 
   const removeFromCart = (id, size) => {
-    setCartItems(prev => prev.filter(item => !(item.id === id && item.size === size)));
+    setCartItems(prev => prev.filter(item => !((item.id === id || item._id === id) && item.size === size)));
     toast.info('Item removed from cart');
   };
 
   const updateQuantity = (id, size, delta) => {
-    setCartItems(prev => prev.map(item => {
-      if (item.id === id && item.size === size) {
-        const newQty = item.quantity + delta;
-        return newQty > 0 ? { ...item, quantity: newQty } : item;
-      }
-      return item;
-    }));
+    setCartItems(prev => {
+      const updated = prev.map(item => {
+        if ((item.id === id || item._id === id) && item.size === size) {
+          const newQty = item.quantity + delta;
+          if (newQty <= 0) {
+            toast.info(`Removed "${item.name}" from cart`);
+            return null;
+          }
+          return { ...item, quantity: newQty };
+        }
+        return item;
+      }).filter(Boolean);
+      return updated;
+    });
   };
 
   const clearCart = () => {
@@ -96,7 +112,9 @@ export const CartProvider = ({ children }) => {
   };
 
   const applyCouponCode = (code) => {
-    const cleanCode = code.toUpperCase().trim();
+    const cleanCode = (code || '').toUpperCase().trim();
+    if (!cleanCode) return false;
+
     if (cleanCode === 'WELCOME10' || cleanCode === 'KIAAN10') {
       const discount = Math.round(subtotal * 0.10);
       setAppliedCoupon({ code: cleanCode, discountPercent: 10 });
@@ -109,8 +127,18 @@ export const CartProvider = ({ children }) => {
       setDiscountAmount(discount);
       toast.success(`🎉 Mega Coupon "${cleanCode}" applied! You saved ₹${discount}`);
       return true;
+    } else if (cleanCode === 'FLAT500') {
+      const discount = 500;
+      setAppliedCoupon({ code: cleanCode, discountAmount: discount });
+      setDiscountAmount(discount);
+      toast.success(`🎉 Flat ₹500 OFF applied!`);
+      return true;
+    } else if (cleanCode === 'FREESHIP') {
+      setAppliedCoupon({ code: cleanCode, isFreeDelivery: true });
+      toast.success(`🎉 FREE BlueDart Express Shipping unlocked!`);
+      return true;
     } else {
-      toast.error('Invalid or expired coupon code. Try "WELCOME10" or "FESTIVE20"');
+      toast.error('Invalid coupon code. Try "FESTIVE20", "FLAT500" or "WELCOME10"');
       return false;
     }
   };
@@ -125,7 +153,8 @@ export const CartProvider = ({ children }) => {
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const totalMrp = cartItems.reduce((sum, item) => sum + (item.originalPrice * item.quantity), 0);
   const productDiscount = totalMrp - subtotal;
-  const deliveryFee = subtotal >= 999 || subtotal === 0 ? 0 : 99;
+  const isFreeDeliveryCoupon = appliedCoupon?.isFreeDelivery;
+  const deliveryFee = (subtotal >= 999 || subtotal === 0 || isFreeDeliveryCoupon) ? 0 : 99;
   const finalTotal = Math.max(0, subtotal - discountAmount + deliveryFee);
 
   return (
