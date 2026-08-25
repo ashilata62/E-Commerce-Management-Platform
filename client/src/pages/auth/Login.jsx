@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
@@ -36,7 +36,11 @@ export const Login = () => {
       const res = await login(email, password);
       if (res.success) {
         toast.success(`Welcome back, ${res.user.name}!`);
-        navigate('/dashboard');
+        if (res.user.role === 'Customer') {
+          navigate('/customer');
+        } else {
+          navigate('/dashboard');
+        }
       } else {
         toast.error(res.message || 'Login failed');
       }
@@ -49,8 +53,12 @@ export const Login = () => {
 
   const handleQuickDemo = (role) => {
     switchDemoRole(role);
-    toast.success(`Logged in instantly as ${role}!`);
-    navigate('/dashboard');
+    toast.success(`Logged in instantly as ${role === 'Customer' ? 'Customer (Shopper)' : role}!`);
+    if (role === 'Customer') {
+      navigate('/customer');
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   return (
@@ -237,30 +245,38 @@ export const Login = () => {
                 <span className="text-[10px] text-[#5B51D8] font-semibold bg-indigo-50 px-2 py-0.5 rounded-full">Instant Access</span>
               </div>
               
-              <div className="grid grid-cols-3 gap-2.5">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <button
                   type="button"
                   onClick={() => handleQuickDemo('Admin')}
-                  className="py-2.5 px-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-[#5B51D8] text-xs font-bold border border-indigo-200/80 transition-all text-center hover:shadow-md flex flex-col items-center gap-1"
+                  className="py-2.5 px-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-[#5B51D8] text-xs font-bold border border-indigo-200/80 transition-all text-center hover:shadow-md flex flex-col items-center gap-1 cursor-pointer"
                 >
-                  <span className="text-sm">👑</span>
+                  <span className="text-base">👑</span>
                   <span>Admin</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleQuickDemo('Manager')}
-                  className="py-2.5 px-2 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-700 text-xs font-bold border border-pink-200/80 transition-all text-center hover:shadow-md flex flex-col items-center gap-1"
+                  className="py-2.5 px-2 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-700 text-xs font-bold border border-pink-200/80 transition-all text-center hover:shadow-md flex flex-col items-center gap-1 cursor-pointer"
                 >
-                  <span className="text-sm">📊</span>
+                  <span className="text-base">📊</span>
                   <span>Manager</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleQuickDemo('Staff')}
-                  className="py-2.5 px-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold border border-amber-200/80 transition-all text-center hover:shadow-md flex flex-col items-center gap-1"
+                  className="py-2.5 px-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold border border-amber-200/80 transition-all text-center hover:shadow-md flex flex-col items-center gap-1 cursor-pointer"
                 >
-                  <span className="text-sm">📦</span>
+                  <span className="text-base">📦</span>
                   <span>Staff</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemo('Customer')}
+                  className="py-2.5 px-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold border border-emerald-200/80 transition-all text-center hover:shadow-md flex flex-col items-center gap-1 cursor-pointer"
+                >
+                  <span className="text-base">🛍️</span>
+                  <span>Customer</span>
                 </button>
               </div>
             </div>

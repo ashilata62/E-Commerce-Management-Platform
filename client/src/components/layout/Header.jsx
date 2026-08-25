@@ -89,28 +89,6 @@ export const Header = ({ onMenuClick }) => {
           <span className="w-2 h-2 rounded-full bg-emeraldGreen-500 status-dot-pulse shrink-0" />
           <span>● Store {storeStatus}</span>
         </button>
-
-        {/* 1-Click View Switcher Toggle Button */}
-        <button
-          type="button"
-          onClick={() => {
-            if (user?.role === 'Customer') {
-              switchDemoRole('Admin');
-              toast.success('Switched back to Admin OS Management View! 👑');
-            } else {
-              switchDemoRole('Customer');
-              toast.success('Switched to Customer Experience Dashboard! 🛍️');
-            }
-          }}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shadow-soft-sm cursor-pointer ${
-            user?.role === 'Customer'
-              ? 'bg-amber-50 text-amber-800 border border-amber-300 hover:bg-amber-100'
-              : 'bg-[#E4DAFA] text-[#6C4DF6] border border-[#D5C6F8] hover:bg-[#D5C6F8]'
-          }`}
-          title="Click to instantly toggle between Merchant Admin and Customer Dashboard"
-        >
-          <span>{user?.role === 'Customer' ? '👑 Back to Admin OS' : '🛍️ Customer View'}</span>
-        </button>
       </div>
 
       {/* Center: Large search bar */}
@@ -135,69 +113,71 @@ export const Header = ({ onMenuClick }) => {
 
       {/* Right: Quick actions, Notifications, Messages, User Profile */}
       <div className="flex items-center gap-2 sm:gap-3">
-        {/* Quick Actions Dropdown */}
-        <div className="relative" ref={quickActionsRef}>
-          <button
-            type="button"
-            onClick={() => setShowQuickActions(!showQuickActions)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#E4DAFA] hover:bg-[#D8CCF8] text-[#6C4DF6] text-xs sm:text-sm font-black transition-all shadow-soft-sm"
-          >
-            <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">Quick Action</span>
-            <ChevronDown className="w-3.5 h-3.5 text-[#6C4DF6]" />
-          </button>
+        {/* Quick Actions Dropdown (Merchant/Admin only) */}
+        {user?.role !== 'Customer' && (
+          <div className="relative" ref={quickActionsRef}>
+            <button
+              type="button"
+              onClick={() => setShowQuickActions(!showQuickActions)}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#E4DAFA] hover:bg-[#D8CCF8] text-[#6C4DF6] text-xs sm:text-sm font-black transition-all shadow-soft-sm cursor-pointer"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">Quick Action</span>
+              <ChevronDown className="w-3.5 h-3.5 text-[#6C4DF6]" />
+            </button>
 
-          {showQuickActions && (
-            <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-soft-xl border border-[#E7E0F7] p-2 z-50 animate-fade-in">
-              <div className="text-[10px] font-bold text-slateText-muted uppercase px-3 py-1.5">
-                Create New
+            {showQuickActions && (
+              <div className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-56 bg-white rounded-2xl shadow-soft-xl border border-[#E7E0F7] p-2 z-50 animate-fade-in">
+                <div className="text-[10px] font-bold text-slateText-muted uppercase px-3 py-1.5">
+                  Create New
+                </div>
+                <button
+                  onClick={() => {
+                    setShowQuickActions(false);
+                    navigate('/products/add');
+                  }}
+                  className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-slateText-main hover:bg-surface-muted rounded-xl transition-colors cursor-pointer"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-brand-50 text-brand-500 flex items-center justify-center">
+                    <ShoppingBag className="w-3.5 h-3.5" />
+                  </div>
+                  <span>Add Product</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setShowQuickActions(false);
+                    navigate('/campaigns');
+                  }}
+                  className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-slateText-main hover:bg-surface-muted rounded-xl transition-colors cursor-pointer"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-coral-50 text-coral-500 flex items-center justify-center">
+                    <Megaphone className="w-3.5 h-3.5" />
+                  </div>
+                  <span>New Campaign</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setShowQuickActions(false);
+                    navigate('/coupons');
+                  }}
+                  className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-slateText-main hover:bg-surface-muted rounded-xl transition-colors cursor-pointer"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-warm-50 text-warm-600 flex items-center justify-center">
+                    <Ticket className="w-3.5 h-3.5" />
+                  </div>
+                  <span>Create Coupon</span>
+                </button>
               </div>
-              <button
-                onClick={() => {
-                  setShowQuickActions(false);
-                  navigate('/products/add');
-                }}
-                className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-slateText-main hover:bg-surface-muted rounded-xl transition-colors"
-              >
-                <div className="w-7 h-7 rounded-lg bg-brand-50 text-brand-500 flex items-center justify-center">
-                  <ShoppingBag className="w-3.5 h-3.5" />
-                </div>
-                <span>Add Product</span>
-              </button>
-              <button
-                onClick={() => {
-                  setShowQuickActions(false);
-                  navigate('/campaigns');
-                }}
-                className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-slateText-main hover:bg-surface-muted rounded-xl transition-colors"
-              >
-                <div className="w-7 h-7 rounded-lg bg-coral-50 text-coral-500 flex items-center justify-center">
-                  <Megaphone className="w-3.5 h-3.5" />
-                </div>
-                <span>New Campaign</span>
-              </button>
-              <button
-                onClick={() => {
-                  setShowQuickActions(false);
-                  navigate('/coupons');
-                }}
-                className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-slateText-main hover:bg-surface-muted rounded-xl transition-colors"
-              >
-                <div className="w-7 h-7 rounded-lg bg-warm-50 text-warm-600 flex items-center justify-center">
-                  <Ticket className="w-3.5 h-3.5" />
-                </div>
-                <span>Create Coupon</span>
-              </button>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
-        {/* Notifications Button & Dropdown */}
+        {/* Notifications Button & Dropdown (Fixed on Mobile, Absolute on Desktop) */}
         <div className="relative" ref={notificationsRef}>
           <button
             type="button"
             onClick={() => setShowNotifications(!showNotifications)}
-            className="relative p-2.5 rounded-xl bg-surface-muted/60 hover:bg-surface-muted text-slateText-muted hover:text-slateText-main transition-colors"
+            className="relative p-2.5 rounded-xl bg-surface-muted/60 hover:bg-surface-muted text-slateText-muted hover:text-slateText-main transition-colors cursor-pointer"
             aria-label="View notifications"
           >
             <Bell className="w-4 h-4" />
@@ -207,41 +187,74 @@ export const Header = ({ onMenuClick }) => {
           </button>
 
           {showNotifications && (
-            <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-soft-xl border border-surface-border p-4 z-50 animate-fade-in">
+            <div className="fixed sm:absolute top-16 sm:top-auto left-3 right-3 sm:left-auto sm:right-0 mt-2 sm:w-80 md:w-96 bg-white rounded-3xl sm:rounded-2xl shadow-soft-xl border border-surface-border p-4 z-50 animate-fade-in max-h-[80vh] flex flex-col">
               <div className="flex items-center justify-between pb-3 border-b border-surface-border">
                 <div className="flex items-center gap-2">
-                  <h4 className="text-sm font-bold text-slateText-main">Notifications</h4>
+                  <h4 className="text-sm font-black text-slateText-main">Notifications</h4>
                   {unreadNotifications > 0 && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-coral-50 text-coral-500">
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-coral-50 text-coral-600 border border-coral-200">
                       {unreadNotifications} new
                     </span>
                   )}
                 </div>
                 <button
+                  type="button"
                   onClick={markAllAsRead}
-                  className="text-xs font-semibold text-brand-600 hover:text-brand-700"
+                  className="text-xs font-bold text-brand-600 hover:text-brand-700 cursor-pointer"
                 >
                   Mark all read
                 </button>
               </div>
 
-              <div className="mt-3 space-y-2.5 max-h-72 overflow-y-auto">
-                {notifications.map((item) => (
-                  <div
-                    key={item.id}
-                    className={`p-3 rounded-xl border transition-all ${
-                      item.read
-                        ? 'bg-white border-surface-border/60 text-slateText-muted'
-                        : 'bg-brand-50/40 border-brand-100 text-slateText-main'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="text-xs font-bold">{item.title}</p>
-                      <span className="text-[10px] text-slateText-muted shrink-0">{item.time}</span>
+              <div className="mt-3 space-y-2.5 overflow-y-auto max-h-72 pr-0.5">
+                {user?.role === 'Customer' ? (
+                  <>
+                    <div className="p-3 rounded-2xl bg-brand-50/50 border border-brand-100 text-slateText-main">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="text-xs font-bold text-brand-700">🚚 Order #ORD-89240 In Transit</p>
+                        <span className="text-[10px] text-slateText-muted shrink-0">10 mins ago</span>
+                      </div>
+                      <p className="text-xs text-slateText-muted mt-1 leading-snug">
+                        Your BlueDart package has departed the Mumbai Hub and will arrive tomorrow by 4:00 PM.
+                      </p>
                     </div>
-                    <p className="text-xs text-slateText-muted mt-1 leading-snug">{item.message}</p>
-                  </div>
-                ))}
+                    <div className="p-3 rounded-2xl bg-emerald-50/50 border border-emerald-100 text-slateText-main">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="text-xs font-bold text-emerald-700">🎁 ₹450 Kiaan Coins Credited</p>
+                        <span className="text-[10px] text-slateText-muted shrink-0">2 hours ago</span>
+                      </div>
+                      <p className="text-xs text-slateText-muted mt-1 leading-snug">
+                        Instant cashback from your recent purchase is ready to spend on your next outfit.
+                      </p>
+                    </div>
+                    <div className="p-3 rounded-2xl bg-white border border-surface-border text-slateText-muted">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="text-xs font-bold text-slateText-main">🏷️ Promo Code FESTIVE20 Unlocked</p>
+                        <span className="text-[10px] text-slateText-muted shrink-0">1 day ago</span>
+                      </div>
+                      <p className="text-xs text-slateText-muted mt-1 leading-snug">
+                        Enjoy Flat 20% Off on Ethnic Kurta Sets & Bridal Lehengas this festive week.
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  notifications.map((item) => (
+                    <div
+                      key={item.id}
+                      className={`p-3 rounded-2xl border transition-all ${
+                        item.read
+                          ? 'bg-white border-surface-border/60 text-slateText-muted'
+                          : 'bg-brand-50/40 border-brand-100 text-slateText-main'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="text-xs font-bold">{item.title}</p>
+                        <span className="text-[10px] text-slateText-muted shrink-0">{item.time}</span>
+                      </div>
+                      <p className="text-xs text-slateText-muted mt-1 leading-snug">{item.message}</p>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           )}
@@ -306,39 +319,14 @@ export const Header = ({ onMenuClick }) => {
                 </div>
               </div>
 
-              {/* Demo Switch Roles */}
-              <div className="space-y-1 mb-3 pb-3 border-b border-surface-border">
-                <p className="text-[10px] font-bold text-slateText-muted uppercase px-2">
-                  Switch Demo Role:
-                </p>
-                {['Admin', 'Manager', 'Staff', 'Customer'].map((role) => (
-                  <button
-                    key={role}
-                    onClick={() => {
-                      switchDemoRole(role);
-                      setShowUserMenu(false);
-                      toast.success(`Switched role profile to ${role}!`);
-                    }}
-                    className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-between ${
-                      user?.role === role
-                        ? 'bg-[#E4DAFA] text-[#6C4DF6] font-bold'
-                        : 'text-slateText-main hover:bg-[#F4F0FD]'
-                    }`}
-                  >
-                    <span>{role === 'Customer' ? '👤 Customer (Shopper)' : role}</span>
-                    {user?.role === role && <CheckCircle2 className="w-3.5 h-3.5 text-brand-500" />}
-                  </button>
-                ))}
-              </div>
-
               <button
                 onClick={() => {
                   setShowUserMenu(false);
                   logout();
-                  navigate('/');
-                  toast.info('Logged out of session');
+                  navigate('/login');
+                  toast.success('Logged out successfully. Please login to continue.');
                 }}
-                className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-roseDanger-500 hover:bg-roseDanger-50 rounded-xl transition-colors"
+                className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-bold text-roseDanger-600 hover:bg-roseDanger-50 rounded-xl transition-colors cursor-pointer"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Log Out</span>

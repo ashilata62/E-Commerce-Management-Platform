@@ -14,6 +14,11 @@ import {
   Layers,
   ArrowUpDown,
   ShoppingBag,
+  Heart,
+  Sparkles,
+  Check,
+  Flame,
+  ArrowRight
 } from 'lucide-react';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { Button } from '../../components/common/Button';
@@ -26,6 +31,8 @@ import { Pagination } from '../../components/common/Pagination';
 import { ConfirmDialog } from '../../components/common/ConfirmDialog';
 import { productService } from '../../services/productService';
 import { useToast } from '../../context/ToastContext';
+import { useAuth } from '../../context/AuthContext';
+import { useCart } from '../../context/CartContext';
 import { formatCurrency, formatNumber } from '../../utils/formatters';
 import { PRODUCT_CATEGORIES, PRODUCT_BRANDS } from '../../utils/constants';
 
@@ -33,11 +40,28 @@ export const Products = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const toast = useToast();
+  const { user } = useAuth();
+  const { addToCart } = useCart();
+
+  const isCustomer = user?.role === 'Customer';
 
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const [stats, setStats] = useState({ totalProducts: 0, inStock: 0, lowStock: 0, outOfStock: 0 });
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
+
+  // Wishlist state for customer
+  const [wishlist, setWishlist] = useState(['prd_001', 'prd_002', 'prd_004']);
+
+  const toggleWishlist = (id, name) => {
+    if (wishlist.includes(id)) {
+      setWishlist(prev => prev.filter(item => item !== id));
+      toast.info(`Removed ${name} from Wishlist`);
+    } else {
+      setWishlist(prev => [...prev, id]);
+      toast.success(`Saved ${name} to Wishlist ❤️`);
+    }
+  };
 
   // Filter States
   const [search, setSearch] = useState(searchParams.get('search') || '');
@@ -67,8 +91,8 @@ export const Products = () => {
         search: search || undefined,
         category: filters.category !== 'All' ? filters.category : undefined,
         brand: filters.brand !== 'All' ? filters.brand : undefined,
-        status: filters.status !== 'All' ? filters.status : undefined,
-        stockStatus: filters.stockStatus !== 'All' ? filters.stockStatus : undefined,
+        status: isCustomer ? 'Published' : (filters.status !== 'All' ? filters.status : undefined),
+        stockStatus: isCustomer ? undefined : (filters.stockStatus !== 'All' ? filters.stockStatus : undefined),
         sortBy: filters.sortBy,
         sortOrder: filters.sortOrder,
       };
@@ -121,7 +145,7 @@ export const Products = () => {
         fetchProducts();
       }
     } catch (error) {
-      toast.error('Failed to delete product');
+      toast.error('Error deleting product');
     } finally {
       setDeleting(false);
     }
@@ -131,268 +155,337 @@ export const Products = () => {
     ([k, v]) => !['sortBy', 'sortOrder'].includes(k) && v !== 'All'
   ).length + (search ? 1 : 0);
 
+  const customerQuickCategories = [
+    { label: '✨ All Outfits', value: 'All' },
+    { label: '👧 Girls & Women', value: 'Girls' },
+    { label: '👦 Boys & Men', value: 'Boys' },
+    { label: '👶 Kids', value: 'Kids' },
+  ];
+
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <PageHeader
-        title="Products Catalog"
-        subtitle="Manage inventory, pricing, variations, and marketplace listings"
-        breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Products' }]}
-        badge={`${totalCount} Active SKUs`}
-      >
-        <Button
-          variant="primary"
-          icon={Plus}
-          onClick={() => navigate('/products/add')}
-        >
-          Add Product
-        </Button>
-      </PageHeader>
-
-      {/* Catalog Quick Stats bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div
-          onClick={() => handleFilterChange('stockStatus', 'All')}
-          className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
-            filters.stockStatus === 'All'
-              ? 'bg-brand-50/50 border-brand-300 shadow-soft-sm'
-              : 'bg-white border-surface-border hover:bg-surface-muted'
-          }`}
-        >
-          <p className="text-[11px] font-bold text-slateText-muted uppercase">Total Catalog</p>
-          <p className="text-xl font-black text-slateText-main mt-0.5">{stats.totalProducts || products.length}</p>
+    <div className="space-y-6 max-w-7xl mx-auto pb-16">
+      {/* 1. Page Header (Role-Aware) */}
+      {isCustomer ? (
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white p-5 rounded-3xl border border-surface-border shadow-soft-xs">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-50 text-brand-700 text-xs font-bold">
+              <Sparkles className="w-3.5 h-3.5 text-brand-600" />
+              <span>Kiaan Premium Catalog</span>
+            </div>
+            <h1 className="text-xl sm:text-2xl font-black text-slateText-main">
+              Explore Latest Outfits & Styles
+            </h1>
+            <p className="text-xs text-slateText-muted">
+              Handpicked ethnic wear, bridal sets, casuals and festive collections
+            </p>
+          </div>
+          <span className="px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-700 font-extrabold text-xs border border-emerald-200 shrink-0">
+            {totalCount} Outfits Available
+          </span>
         </div>
-
-        <div
-          onClick={() => handleFilterChange('stockStatus', 'inStock')}
-          className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
-            filters.stockStatus === 'inStock'
-              ? 'bg-emeraldGreen-50/50 border-emeraldGreen-500/40 shadow-soft-sm'
-              : 'bg-white border-surface-border hover:bg-surface-muted'
-          }`}
+      ) : (
+        <PageHeader
+          title="Products Catalog"
+          subtitle="Manage inventory, pricing, variations, and marketplace listings"
+          breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Products' }]}
+          badge={`${totalCount} Active SKUs`}
         >
-          <p className="text-[11px] font-bold text-emeraldGreen-600 uppercase">In Stock</p>
-          <p className="text-xl font-black text-slateText-main mt-0.5">{stats.inStock}</p>
-        </div>
+          <Button
+            variant="primary"
+            icon={Plus}
+            onClick={() => navigate('/products/add')}
+          >
+            Add Product
+          </Button>
+        </PageHeader>
+      )}
 
-        <div
-          onClick={() => handleFilterChange('stockStatus', 'lowStock')}
-          className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
-            filters.stockStatus === 'lowStock'
-              ? 'bg-warm-50/50 border-warm-300 shadow-soft-sm'
-              : 'bg-white border-surface-border hover:bg-surface-muted'
-          }`}
-        >
-          <p className="text-[11px] font-bold text-warm-600 uppercase">Low Stock Alert</p>
-          <p className="text-xl font-black text-warm-700 mt-0.5">{stats.lowStock}</p>
+      {/* 2. Quick Filters / Category Tabs */}
+      {isCustomer ? (
+        /* Customer: Clean Girls, Boys, Kids Tabs with Active Highlight */
+        <div className="flex items-center gap-2.5 overflow-x-auto pb-1 scrollbar-none">
+          {customerQuickCategories.map((cat) => {
+            const isActive = filters.category === cat.value;
+            return (
+              <button
+                key={cat.value}
+                type="button"
+                onClick={() => handleFilterChange('category', cat.value)}
+                className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all shrink-0 cursor-pointer flex items-center gap-2 active:scale-95 border ${
+                  isActive
+                    ? 'bg-gradient-to-r from-brand-600 to-[#7854F7] text-white border-brand-600 shadow-purple-glow'
+                    : 'bg-white text-slateText-main hover:bg-surface-muted border-[#E7E0F7] shadow-soft-xs'
+                }`}
+              >
+                <span>{cat.label}</span>
+              </button>
+            );
+          })}
         </div>
+      ) : (
+        /* Admin / Merchant: Inventory Stats Bar */
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div
+            onClick={() => handleFilterChange('stockStatus', 'All')}
+            className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
+              filters.stockStatus === 'All'
+                ? 'bg-brand-50/50 border-brand-300 shadow-soft-sm'
+                : 'bg-white border-surface-border hover:bg-surface-muted'
+            }`}
+          >
+            <p className="text-[11px] font-bold text-slateText-muted uppercase">Total Catalog</p>
+            <p className="text-xl font-black text-slateText-main mt-0.5">{stats.totalProducts || products.length}</p>
+          </div>
 
-        <div
-          onClick={() => handleFilterChange('stockStatus', 'outOfStock')}
-          className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
-            filters.stockStatus === 'outOfStock'
-              ? 'bg-roseDanger-50/50 border-roseDanger-500/40 shadow-soft-sm'
-              : 'bg-white border-surface-border hover:bg-surface-muted'
-          }`}
-        >
-          <p className="text-[11px] font-bold text-roseDanger-500 uppercase">Out of Stock</p>
-          <p className="text-xl font-black text-roseDanger-500 mt-0.5">{stats.outOfStock}</p>
+          <div
+            onClick={() => handleFilterChange('stockStatus', 'inStock')}
+            className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
+              filters.stockStatus === 'inStock'
+                ? 'bg-emeraldGreen-50/50 border-emeraldGreen-500/40 shadow-soft-sm'
+                : 'bg-white border-surface-border hover:bg-surface-muted'
+            }`}
+          >
+            <p className="text-[11px] font-bold text-emeraldGreen-600 uppercase">In Stock</p>
+            <p className="text-xl font-black text-slateText-main mt-0.5">{stats.inStock}</p>
+          </div>
+
+          <div
+            onClick={() => handleFilterChange('stockStatus', 'lowStock')}
+            className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
+              filters.stockStatus === 'lowStock'
+                ? 'bg-warm-50/50 border-warm-300 shadow-soft-sm'
+                : 'bg-white border-surface-border hover:bg-surface-muted'
+            }`}
+          >
+            <p className="text-[11px] font-bold text-warm-600 uppercase">Low Stock Alert</p>
+            <p className="text-xl font-black text-warm-700 mt-0.5">{stats.lowStock}</p>
+          </div>
+
+          <div
+            onClick={() => handleFilterChange('stockStatus', 'outOfStock')}
+            className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
+              filters.stockStatus === 'outOfStock'
+                ? 'bg-roseDanger-50/50 border-roseDanger-500/40 shadow-soft-sm'
+                : 'bg-white border-surface-border hover:bg-surface-muted'
+            }`}
+          >
+            <p className="text-[11px] font-bold text-roseDanger-500 uppercase">Out of Stock</p>
+            <p className="text-xl font-black text-roseDanger-500 mt-0.5">{stats.outOfStock}</p>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Search & Filter Toolbar */}
+      {/* 3. Search & Filter Bar */}
       <div className="space-y-3">
         <div className="flex flex-col sm:flex-row items-center gap-3">
           <SearchBar
             value={search}
             onChange={setSearch}
-            placeholder="Search by product name, SKU, tags or brand..."
+            placeholder={isCustomer ? "Search kurtas, dresses, suits, shirts, watches..." : "Search by product name, SKU, tags or brand..."}
             className="flex-1"
           />
 
-          <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
-            {/* View Mode Toggle */}
-            <div className="flex items-center bg-surface-muted p-1 rounded-xl border border-surface-border">
-              <button
-                type="button"
-                onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-colors ${
-                  viewMode === 'grid'
-                    ? 'bg-white text-brand-600 shadow-soft-sm'
-                    : 'text-slateText-muted hover:text-slateText-main'
-                }`}
-                title="Grid View"
-              >
-                <LayoutGrid className="w-4 h-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-colors ${
-                  viewMode === 'list'
-                    ? 'bg-white text-brand-600 shadow-soft-sm'
-                    : 'text-slateText-muted hover:text-slateText-main'
-                }`}
-                title="List View"
-              >
-                <List className="w-4 h-4" />
-              </button>
+          {!isCustomer && (
+            <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+              {/* View Mode Toggle for Admin */}
+              <div className="flex items-center bg-surface-muted p-1 rounded-xl border border-surface-border">
+                <button
+                  type="button"
+                  onClick={() => setViewMode('grid')}
+                  className={`p-2 rounded-lg transition-colors ${
+                    viewMode === 'grid'
+                      ? 'bg-white text-brand-600 shadow-soft-sm'
+                      : 'text-slateText-muted hover:text-slateText-main'
+                  }`}
+                  title="Grid View"
+                >
+                  <LayoutGrid className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('list')}
+                  className={`p-2 rounded-lg transition-colors ${
+                    viewMode === 'list'
+                      ? 'bg-white text-brand-600 shadow-soft-sm'
+                      : 'text-slateText-muted hover:text-slateText-main'
+                  }`}
+                  title="List View"
+                >
+                  <List className="w-4 h-4" />
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
-        {/* Filter Dropdowns */}
-        <FilterBar
-          filters={filters}
-          options={{
-            category: PRODUCT_CATEGORIES,
-            brand: PRODUCT_BRANDS,
-            status: ['All', 'Published', 'Draft', 'Archived'],
-            sortBy: ['salesCount', 'price', 'stock', 'rating'],
-          }}
-          onChange={handleFilterChange}
-          onReset={handleResetFilters}
-          activeFiltersCount={activeFiltersCount}
-        />
+        {!isCustomer && (
+          <FilterBar
+            filters={filters}
+            options={{
+              category: PRODUCT_CATEGORIES,
+              brand: PRODUCT_BRANDS,
+              status: ['All', 'Published', 'Draft', 'Archived'],
+              sortBy: ['salesCount', 'price', 'stock', 'rating'],
+            }}
+            onChange={handleFilterChange}
+            onReset={handleResetFilters}
+            activeFiltersCount={activeFiltersCount}
+          />
+        )}
       </div>
 
-      {/* Content Rendering: Grid vs List vs Empty/Loading */}
+      {/* 4. Products Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
           <SkeletonLoader type="product" count={8} />
         </div>
       ) : products.length === 0 ? (
         <EmptyState
           icon={ShoppingBag}
-          title="No Products Found"
-          description="We couldn't find any products matching your active filters. Try searching for something else or add a new product."
-          actionText="Add New Product"
-          actionIcon={Plus}
-          onAction={() => navigate('/products/add')}
+          title="No Outfits Found"
+          description="We couldn't find any products matching your search. Try changing filters or search terms."
+          actionText={isCustomer ? "Show All Outfits" : "Add New Product"}
+          actionIcon={isCustomer ? ShoppingBag : Plus}
+          onAction={isCustomer ? handleResetFilters : () => navigate('/products/add')}
         />
-      ) : viewMode === 'grid' ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+      ) : (isCustomer || viewMode === 'grid') ? (
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-5">
           {products.map((product) => {
+            const prodId = product._id || product.id;
+            const isWish = wishlist.includes(prodId);
             const discountPercent = product.compareAtPrice
               ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
               : null;
 
             return (
               <div
-                key={product._id}
-                className="group commerce-card p-4 rounded-2xl flex flex-col justify-between"
+                key={prodId}
+                className="group commerce-card p-3 sm:p-4 rounded-2xl sm:rounded-3xl flex flex-col justify-between hover:shadow-soft-md transition-all relative overflow-hidden"
               >
                 <div>
-                  {/* Image Container with Badges & Hover Actions */}
-                  <div className="relative rounded-xl overflow-hidden aspect-[4/5] bg-surface-muted mb-3">
+                  {/* Image Container with Badges & Wishlist */}
+                  <div className="relative rounded-xl sm:rounded-2xl overflow-hidden aspect-[4/5] bg-surface-muted mb-3 cursor-pointer"
+                    onClick={() => navigate(`/products/${prodId}`)}
+                  >
                     <img
                       src={product.images?.[0] || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=400&q=80'}
                       alt={product.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
 
-                    {/* Badge top-left */}
-                    {product.badge && (
-                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-brand-500 text-white font-extrabold text-[10px] shadow-soft-sm">
-                        {product.badge}
-                      </span>
-                    )}
-
-                    {/* Discount top-right */}
+                    {/* Discount Badge */}
                     {discountPercent && discountPercent > 0 && (
-                      <span className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-coral-500 text-white font-extrabold text-[10px] shadow-soft-sm">
+                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-coral-500 text-white font-extrabold text-[10px] shadow-soft-xs">
                         {discountPercent}% OFF
                       </span>
                     )}
 
-                    {/* Stock indicator bottom-left */}
-                    <div className="absolute bottom-2 left-2">
-                      <span
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-md shadow-soft-sm ${
-                          product.stock <= product.lowStockThreshold
-                            ? 'bg-roseDanger-500 text-white'
-                            : 'bg-white/90 backdrop-blur-sm text-slateText-main'
-                        }`}
-                      >
-                        {product.stock <= product.lowStockThreshold
-                          ? `Low Stock: ${product.stock}`
-                          : `Stock: ${product.stock}`}
-                      </span>
-                    </div>
-
-                    {/* Hover action overlay */}
-                    <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    {/* Customer Wishlist Button */}
+                    {isCustomer ? (
                       <button
-                        onClick={() => navigate(`/products/${product._id}`)}
-                        className="w-9 h-9 rounded-xl bg-white text-slateText-main flex items-center justify-center hover:bg-brand-50 hover:text-brand-600 shadow-soft-md transition-colors"
-                        title="View Details"
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleWishlist(prodId, product.name);
+                        }}
+                        className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-slate-600 hover:text-coral-500 shadow-soft-xs transition-colors cursor-pointer active:scale-90"
+                        title="Save to Wishlist"
                       >
-                        <Eye className="w-4 h-4" />
+                        <Heart className={`w-4 h-4 ${isWish ? 'fill-coral-500 text-coral-500' : ''}`} />
                       </button>
-                      <button
-                        onClick={() => navigate(`/products/edit/${product._id}`)}
-                        className="w-9 h-9 rounded-xl bg-white text-slateText-main flex items-center justify-center hover:bg-brand-50 hover:text-brand-600 shadow-soft-md transition-colors"
-                        title="Edit Product"
-                      >
-                        <Edit3 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => setDeleteProductItem(product)}
-                        className="w-9 h-9 rounded-xl bg-white text-roseDanger-500 flex items-center justify-center hover:bg-roseDanger-50 shadow-soft-md transition-colors"
-                        title="Delete Product"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
+                    ) : (
+                      /* Admin Hover Action Overlay */
+                      <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/products/${prodId}`);
+                          }}
+                          className="w-9 h-9 rounded-xl bg-white text-slateText-main flex items-center justify-center hover:bg-brand-50 hover:text-brand-600 shadow-soft-md transition-colors cursor-pointer"
+                          title="View Details"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/products/edit/${prodId}`);
+                          }}
+                          className="w-9 h-9 rounded-xl bg-white text-slateText-main flex items-center justify-center hover:bg-brand-50 hover:text-brand-600 shadow-soft-md transition-colors cursor-pointer"
+                          title="Edit Product"
+                        >
+                          <Edit3 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDeleteProductItem(product);
+                          }}
+                          className="w-9 h-9 rounded-xl bg-white text-roseDanger-500 flex items-center justify-center hover:bg-roseDanger-50 shadow-soft-md transition-colors cursor-pointer"
+                          title="Delete Product"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {/* Brand & Category */}
-                  <div className="flex items-center justify-between text-[11px] font-semibold text-slateText-muted mb-1">
+                  <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-semibold text-slateText-muted mb-1">
                     <span className="uppercase text-brand-600 font-bold">{product.brand}</span>
                     <span>{product.category}</span>
                   </div>
 
-                  {/* Title & SKU */}
+                  {/* Title */}
                   <h4
-                    onClick={() => navigate(`/products/${product._id}`)}
-                    className="text-sm font-bold text-slateText-main truncate cursor-pointer hover:text-brand-600 transition-colors"
+                    onClick={() => navigate(`/products/${prodId}`)}
+                    className="text-xs sm:text-sm font-bold text-slateText-main line-clamp-1 cursor-pointer hover:text-brand-600 transition-colors"
                   >
                     {product.name}
                   </h4>
-                  <p className="text-[10px] font-mono text-slateText-muted mt-0.5">
-                    SKU: {product.sku}
-                  </p>
 
-                  {/* Price & Rating */}
-                  <div className="flex items-baseline gap-2 mt-2">
-                    <span className="text-base font-black text-slateText-main">
+                  {/* Price & Compare Price */}
+                  <div className="flex items-baseline gap-1.5 sm:gap-2 mt-1.5">
+                    <span className="text-sm sm:text-base font-black text-slateText-main">
                       {formatCurrency(product.price)}
                     </span>
                     {product.compareAtPrice && (
-                      <span className="text-xs text-slateText-muted line-through font-medium">
+                      <span className="text-[11px] text-slateText-muted line-through font-medium">
                         {formatCurrency(product.compareAtPrice)}
                       </span>
                     )}
                   </div>
                 </div>
 
-                {/* Card Footer with Rating and Status */}
-                <div className="flex items-center justify-between mt-3 pt-3 border-t border-surface-border">
-                  <div className="flex items-center gap-1 text-xs font-bold text-warm-600">
+                {/* Card Footer: Rating & Action */}
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-surface-border gap-2">
+                  <div className="flex items-center gap-1 text-[11px] sm:text-xs font-bold text-warm-600">
                     <Star className="w-3.5 h-3.5 fill-warm-500 text-warm-500" />
                     <span>{product.rating}</span>
-                    <span className="text-[10px] text-slateText-muted font-medium">
+                    <span className="text-[10px] text-slateText-muted font-normal">
                       ({product.reviewsCount})
                     </span>
                   </div>
-                  <StatusBadge status={product.status} size="sm" />
+
+                  {isCustomer ? (
+                    <button
+                      type="button"
+                      onClick={() => addToCart(product, 'M', 'Default', 1)}
+                      className="px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition-all flex items-center gap-1 shadow-soft-xs cursor-pointer active:scale-95"
+                    >
+                      <ShoppingBag className="w-3.5 h-3.5" />
+                      <span>Add</span>
+                    </button>
+                  ) : (
+                    <StatusBadge status={product.status} size="sm" />
+                  )}
                 </div>
               </div>
             );
           })}
         </div>
       ) : (
-        /* List View Table */
+        /* Admin List View Table */
         <div className="commerce-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -450,27 +543,27 @@ export const Products = () => {
                       {formatNumber(product.salesCount)} units
                     </td>
                     <td className="py-3 px-4">
-                      <StatusBadge status={product.status} size="sm" />
+                      <StatusBadge status={product.status} />
                     </td>
                     <td className="py-3 px-4 text-right">
-                      <div className="inline-flex items-center gap-1.5">
+                      <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => navigate(`/products/${product._id}`)}
-                          className="p-1.5 rounded-lg text-slateText-muted hover:text-brand-600 hover:bg-brand-50"
+                          className="p-1.5 rounded-lg text-slateText-muted hover:text-brand-600 hover:bg-brand-50 transition-colors cursor-pointer"
                           title="View"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => navigate(`/products/edit/${product._id}`)}
-                          className="p-1.5 rounded-lg text-slateText-muted hover:text-brand-600 hover:bg-brand-50"
+                          className="p-1.5 rounded-lg text-slateText-muted hover:text-brand-600 hover:bg-brand-50 transition-colors cursor-pointer"
                           title="Edit"
                         >
                           <Edit3 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => setDeleteProductItem(product)}
-                          className="p-1.5 rounded-lg text-slateText-muted hover:text-roseDanger-500 hover:bg-roseDanger-50"
+                          className="p-1.5 rounded-lg text-slateText-muted hover:text-roseDanger-600 hover:bg-roseDanger-50 transition-colors cursor-pointer"
                           title="Delete"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -485,26 +578,33 @@ export const Products = () => {
         </div>
       )}
 
-      {/* Pagination */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalItems={totalCount}
-        itemsPerPage={12}
-        onPageChange={setCurrentPage}
-      />
+      {/* 5. Pagination */}
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+          totalItems={totalCount}
+          pageSize={12}
+        />
+      )}
 
-      {/* Delete Confirmation Modal */}
-      <ConfirmDialog
-        isOpen={!!deleteProductItem}
-        onClose={() => setDeleteProductItem(null)}
-        onConfirm={handleDeleteConfirm}
-        title="Delete Product"
-        message={`Are you sure you want to remove "${deleteProductItem?.name}" from your active marketplace inventory?`}
-        confirmText="Delete Product"
-        type="danger"
-        loading={deleting}
-      />
+      {/* Admin Delete Confirmation Modal */}
+      {!isCustomer && (
+        <ConfirmDialog
+          isOpen={!!deleteProductItem}
+          title="Delete Product"
+          message={`Are you sure you want to delete "${deleteProductItem?.name}"? This action cannot be undone.`}
+          confirmText="Delete Product"
+          cancelText="Cancel"
+          variant="danger"
+          loading={deleting}
+          onConfirm={handleDeleteConfirm}
+          onCancel={() => setDeleteProductItem(null)}
+        />
+      )}
     </div>
   );
 };
+
+export default Products;

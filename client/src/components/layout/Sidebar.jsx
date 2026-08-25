@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -41,7 +41,58 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen, isCollapsed, toggleColl
   const toast = useToast();
   const location = useLocation();
 
-  const currentRole = user?.role || 'Admin';
+  const userRole = user?.role || 'Admin';
+
+  // Sidebar Preview Role (only active when Admin is on settings page to test visibility)
+  const [previewRole, setPreviewRole] = React.useState(() => {
+    try {
+      return localStorage.getItem('kiaan_sidebar_preview_role') || null;
+    } catch {
+      return null;
+    }
+  });
+
+  // Customer always gets Customer view. Preview only applies if real user is Admin on the users-roles page.
+  const isTestingPreview = userRole === 'Admin' && location.pathname.includes('/settings/users-roles');
+  const currentRole = (isTestingPreview && previewRole) ? previewRole : userRole;
+
+  // Dynamic RBAC Permissions Map from LocalStorage
+  const [customPermissions, setCustomPermissions] = React.useState(() => {
+    try {
+      const saved = localStorage.getItem('kiaan_rbac_permissions_map');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  // Listen for real-time permission checkbox updates and preview role switches
+  React.useEffect(() => {
+    const handlePermissionsUpdated = () => {
+      try {
+        const saved = localStorage.getItem('kiaan_rbac_permissions_map');
+        setCustomPermissions(saved ? JSON.parse(saved) : null);
+      } catch (e) {
+        console.error('Error updating sidebar permissions:', e);
+      }
+    };
+
+    const handleRolePreviewChange = () => {
+      try {
+        const p = localStorage.getItem('kiaan_sidebar_preview_role');
+        setPreviewRole(p || null);
+      } catch (e) {
+        console.error('Error updating preview role:', e);
+      }
+    };
+
+    window.addEventListener('rbac-permissions-updated', handlePermissionsUpdated);
+    window.addEventListener('sidebar-preview-role-changed', handleRolePreviewChange);
+    return () => {
+      window.removeEventListener('rbac-permissions-updated', handlePermissionsUpdated);
+      window.removeEventListener('sidebar-preview-role-changed', handleRolePreviewChange);
+    };
+  }, []);
 
   const customerNavSections = [
     {
@@ -298,7 +349,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen, isCollapsed, toggleColl
         },
         {
           label: 'Shipping',
-          desc: 'Courier Rates & Free Over â‚¹999',
+          desc: 'Courier Rates & Free Over ₹999',
           path: '/settings/shipping',
           icon: Truck,
           icon3D: 'bg-gradient-to-br from-blue-400 via-sky-500 to-indigo-600 shadow-blue-500/35',
@@ -316,13 +367,26 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen, isCollapsed, toggleColl
     },
   ];
 
-  // Dynamically filter sections and items according to the logged-in user's role
+  // Check if an item is permitted for currentRole dynamically
+  const isItemVisible = (item) => {
+    if (currentRole === 'Customer') {
+      return item.roles && item.roles.includes('Customer');
+    }
+    // Check if custom permission exists for this path
+    if (customPermissions && customPermissions[item.path]) {
+      return customPermissions[item.path].includes(currentRole);
+    }
+    // Fallback to default item.roles
+    return !item.roles || item.roles.includes(currentRole);
+  };
+
+  // Dynamically filter sections and items according to the logged-in user's role and RBAC checkbox state
   const navSections = currentRole === 'Customer'
     ? customerNavSections
     : allNavSections
         .map(section => ({
           ...section,
-          items: section.items.filter(item => !item.roles || item.roles.includes(currentRole)),
+          items: section.items.filter(isItemVisible),
         }))
         .filter(section => section.items.length > 0);
 
