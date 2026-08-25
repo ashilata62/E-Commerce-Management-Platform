@@ -6,10 +6,19 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem('kiaan_user_info');
-    return savedUser ? JSON.parse(savedUser) : null;
+    return savedUser ? JSON.parse(savedUser) : {
+      _id: 'usr_001',
+      name: 'Kiaan Sharma',
+      email: 'admin@kiaan.com',
+      role: 'Admin',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+      phone: '+91 98765 43210',
+      status: 'Active',
+      permissions: ['all'],
+    };
   });
 
-  const [token, setToken] = useState(() => localStorage.getItem('kiaan_auth_token') || null);
+  const [token, setToken] = useState(() => localStorage.getItem('kiaan_auth_token') || 'demo_token_admin_2026');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -39,7 +48,7 @@ export const AuthProvider = ({ children }) => {
       }
       return { success: false, message: data.message };
     } catch (err) {
-      // Fallback demo user login
+      // Fallback demo user login if API call fails
       const fallbackUser = {
         _id: 'usr_001',
         name: email ? email.split('@')[0] : 'Kiaan Sharma',
@@ -59,14 +68,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const switchDemoRole = (role) => {
-<<<<<<< HEAD
     const demoToken = `demo_token_${role.toLowerCase()}_2026`;
     setToken(demoToken);
     localStorage.setItem('kiaan_auth_token', demoToken);
 
-=======
     let newUser = null;
->>>>>>> c3c7f73981360ab942a12f5de940a444216ce156
     if (role === 'Manager') {
       newUser = {
         _id: 'usr_002',
@@ -117,7 +123,6 @@ export const AuthProvider = ({ children }) => {
       };
     }
     setUser(newUser);
-    setToken('demo_token_' + (newUser?.role || 'admin').toLowerCase());
   };
 
   const logout = () => {
@@ -128,17 +133,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        token,
-        loading,
-        login,
-        logout,
-        switchDemoRole,
-        isAuthenticated: !!token,
-      }}
-    >
+    <AuthContext.Provider value={{ user, token, loading, login, logout, switchDemoRole, isAuthenticated: !!token }}>
       {children}
     </AuthContext.Provider>
   );
