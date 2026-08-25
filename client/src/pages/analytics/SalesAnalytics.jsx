@@ -151,6 +151,28 @@ export const SalesAnalytics = () => {
     return null;
   };
 
+  // Custom sleek high-contrast tooltip for Bar chart
+  const CustomBarTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-slate-900/95 text-white p-3 rounded-2xl shadow-xl border border-slate-800 backdrop-blur-md space-y-1 min-w-[150px]">
+          <p className="text-xs font-black text-purple-300 border-b border-slate-700/60 pb-1">
+            {label}
+          </p>
+          <div className="flex items-center justify-between gap-3 text-xs pt-1">
+            <span className="text-slate-300 font-semibold flex items-center gap-1.5">
+              <ShoppingCart className="w-3.5 h-3.5 text-purple-400" /> Daily Volume:
+            </span>
+            <span className="font-mono font-bold text-emerald-400">
+              {payload[0]?.value} Orders
+            </span>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="space-y-6 sm:space-y-7 animate-fade-in pb-10">
       {/* 1. Header & Controls */}
@@ -468,18 +490,7 @@ export const SalesAnalytics = () => {
                   axisLine={false}
                   tickLine={false}
                 />
-                <Tooltip
-                  cursor={{ fill: '#F4F0FD' }}
-                  formatter={(value) => [`${value} Orders`, 'Daily Volume']}
-                  contentStyle={{
-                    backgroundColor: '#1E1B4B',
-                    borderRadius: '16px',
-                    color: '#fff',
-                    border: 'none',
-                    fontSize: '12px',
-                    fontWeight: 'bold',
-                  }}
-                />
+                <Tooltip cursor={{ fill: '#F4F0FD' }} content={<CustomBarTooltip />} />
                 <Bar dataKey="orders" radius={[8, 8, 0, 0]}>
                   {chartData7D.map((entry, index) => (
                     <Cell
