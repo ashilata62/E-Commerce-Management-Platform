@@ -524,36 +524,6 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen, isCollapsed, toggleColl
               </div>
             </div>
           )}
-
-          {/* Public Landing Page View */}
-          <NavLink
-            to="/landing"
-            title="Public Landing Page"
-            className={`flex items-center w-full rounded-xl text-xs font-semibold text-slateText-muted hover:text-brand-500 hover:bg-white/80 transition-colors ${
-              isCollapsed ? 'justify-center p-2' : 'justify-between px-3 py-2'
-            }`}
-          >
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-brand-500" />
-              {!isCollapsed && <span>Public Landing Page</span>}
-            </div>
-            {!isCollapsed && <ExternalLink className="w-3 h-3 text-brand-500" />}
-          </NavLink>
-
-          {/* Direct Store View Button */}
-          <NavLink
-            to="/"
-            title="Live Website View"
-            className={`flex items-center w-full rounded-xl text-xs font-semibold text-slateText-muted hover:text-brand-500 hover:bg-white/80 transition-colors ${
-              isCollapsed ? 'justify-center p-2' : 'justify-between px-3 py-2'
-            }`}
-          >
-            <div className="flex items-center gap-2">
-              <Store className="w-3.5 h-3.5" />
-              {!isCollapsed && <span>Live Website View</span>}
-            </div>
-            {!isCollapsed && <ExternalLink className="w-3 h-3" />}
-          </NavLink>
         </div>
       </aside>
     </>
