@@ -275,15 +275,6 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen, isCollapsed, toggleColl
           icon3D: 'bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 shadow-slate-500/35',
           roles: ['Admin']
         },
-        {
-          label: 'AI Insights',
-          desc: 'Smart Price & Restock Assistant',
-          path: '/ai-assistant',
-          icon: Sparkles,
-          icon3D: 'bg-gradient-to-tr from-purple-500 via-pink-500 to-amber-400 shadow-purple-500/40',
-          badge: 'AI',
-          roles: ['Admin', 'Manager']
-        },
       ],
     },
     {
