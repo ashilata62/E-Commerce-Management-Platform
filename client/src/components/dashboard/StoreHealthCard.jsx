@@ -1,7 +1,11 @@
 import React from 'react';
-import { ShieldCheck, Truck, Star, RotateCcw, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Truck, Star, RotateCcw } from 'lucide-react';
 
 export const StoreHealthCard = ({ healthScore = 85 }) => {
+  const radius = 42;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (healthScore / 100) * circumference;
+
   return (
     <div className="commerce-card p-6 flex flex-col justify-between">
       <div>
@@ -21,46 +25,46 @@ export const StoreHealthCard = ({ healthScore = 85 }) => {
           </span>
         </div>
 
-        {/* Semi-circular gauge visual */}
+        {/* Full Circular Progress Gauge */}
         <div className="my-5 flex flex-col items-center justify-center text-center">
-          <div className="relative w-36 h-20 flex items-end justify-center overflow-hidden">
-            {/* SVG Arc Gauge */}
-            <svg className="w-36 h-36 transform -rotate-90 origin-center" viewBox="0 0 100 100">
-              <circle
-                cx="50"
-                cy="50"
-                r="40"
-                fill="transparent"
-                stroke="#EAEAEF"
-                strokeWidth="10"
-                strokeDasharray="125.6"
-                strokeDashoffset="0"
-                strokeLinecap="round"
-              />
-              <circle
-                cx="50"
-                cy="50"
-                r="40"
-                fill="transparent"
-                stroke="url(#healthGradient)"
-                strokeWidth="10"
-                strokeDasharray="125.6"
-                strokeDashoffset="18"
-                strokeLinecap="round"
-              />
+          <div className="relative w-32 h-32 flex items-center justify-center">
+            {/* SVG Ring Gauge */}
+            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
               <defs>
                 <linearGradient id="healthGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#19A974" />
-                  <stop offset="100%" stopColor="#6C4DF6" />
+                  <stop offset="0%" stopColor="#10B981" />
+                  <stop offset="100%" stopColor="#635BFF" />
                 </linearGradient>
               </defs>
+              {/* Background Track Circle */}
+              <circle
+                cx="50"
+                cy="50"
+                r={radius}
+                fill="transparent"
+                stroke="#F1F5F9"
+                strokeWidth="8"
+              />
+              {/* Animated Progress Circle */}
+              <circle
+                cx="50"
+                cy="50"
+                r={radius}
+                fill="transparent"
+                stroke="url(#healthGradient)"
+                strokeWidth="8"
+                strokeDasharray={circumference}
+                strokeDashoffset={strokeDashoffset}
+                strokeLinecap="round"
+                className="transition-all duration-1000 ease-out"
+              />
             </svg>
-            <div className="absolute bottom-0 flex flex-col items-center">
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className="text-3xl font-black text-slateText-main tracking-tight leading-none">
                 {healthScore}%
               </span>
-              <span className="text-[11px] font-extrabold text-emeraldGreen-500 uppercase tracking-wider mt-1">
-                Excellent!
+              <span className="text-[10px] font-extrabold text-emeraldGreen-600 tracking-wider mt-1 uppercase">
+                EXCELLENT!
               </span>
             </div>
           </div>
@@ -83,7 +87,7 @@ export const StoreHealthCard = ({ healthScore = 85 }) => {
 
         <div className="flex items-center justify-between text-xs">
           <span className="flex items-center gap-1.5 text-slateText-muted font-medium">
-            <Star className="w-3.5 h-3.5 text-warm-500 fill-warm-500" />
+            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
             Positive Reviews
           </span>
           <span className="font-extrabold text-slateText-main">4.6 ★</span>

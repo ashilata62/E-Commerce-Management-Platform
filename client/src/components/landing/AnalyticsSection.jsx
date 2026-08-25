@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'framer-motion';
 
 export const AnalyticsSection = () => {
@@ -61,8 +61,8 @@ export const AnalyticsSection = () => {
            <div className="flex-[2] relative group w-full">
              <div className="absolute inset-0 bg-gradient-to-tr from-brand-500 to-emeraldGreen-500 rounded-[2rem] blur-xl opacity-30 group-hover:opacity-60 transition-opacity duration-500" />
              <img 
-                src="/images/ecommerce-features.jpg" 
-                alt="E-Commerce Shopping Features" 
+                src="/images/analytics-mockup.jpg" 
+                alt="E-Commerce Analytics Dashboard" 
                 className="w-full h-auto rounded-[2rem] relative z-10 border-4 border-white/10 shadow-2xl transition-transform duration-700 group-hover:scale-[1.02] object-cover"
              />
            </div>
@@ -72,3 +72,4 @@ export const AnalyticsSection = () => {
     </section>
   );
 };
+

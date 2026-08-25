@@ -1,5 +1,6 @@
 ﻿import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authService } from '../services/authService';
+import { customerService } from '../services/customerService';
 
 const AuthContext = createContext(null);
 
@@ -43,6 +44,7 @@ export const AuthProvider = ({ children }) => {
       const data = await authService.login({ email, password });
       if (data.success) {
         setUser(data.user);
+        if (data.user?.role === 'Customer') { customerService.registerCustomerLogin(data.user); }
         setToken(data.token);
         return { success: true, user: data.user };
       }
@@ -123,6 +125,7 @@ export const AuthProvider = ({ children }) => {
       };
     }
     setUser(newUser);
+    if (role === 'Customer') { customerService.registerCustomerLogin(newUser); }
   };
 
   const logout = () => {

@@ -1,7 +1,7 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ShoppingCart, TrendingUp } from 'lucide-react';
+import { ArrowRight, ShoppingCart, TrendingUp, ShoppingBag, Package } from 'lucide-react';
 
 export const Hero = () => {
   const fadeUp = {
@@ -31,15 +31,15 @@ export const Hero = () => {
           >
             <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 text-sm font-bold mb-8 border border-purple-200 shadow-sm">
               <span className="flex h-2.5 w-2.5 rounded-full bg-purple-500 animate-pulse"></span>
-              The Ultimate Shopping Experience
+              The Ultimate Clothing & Fashion Store OS
             </motion.div>
             
             <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-[1.1] text-slate-900">
-              Grow Your E-Commerce Brand <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400">Faster Than Ever</span>
+              Grow Your Clothing & Fashion Brand <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400">Faster Than Ever</span>
             </motion.h1>
             
             <motion.p variants={fadeUp} className="text-xl md:text-2xl text-slate-600 mb-10 leading-relaxed font-medium max-w-2xl mx-auto lg:mx-0">
-              Connect with your customers, manage your products effortlessly, and launch beautiful campaigns that drive massive sales.
+              Manage apparel inventory, track customer orders, view live sales reports, and launch high-converting fashion campaigns in one simple app.
             </motion.p>
             
             <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
@@ -52,7 +52,7 @@ export const Hero = () => {
             </motion.div>
             
             <motion.p variants={fadeUp} className="text-sm text-slate-500 mt-4">
-              Join 10,000+ vibrant brands. No credit card required.
+              Join 10,000+ fashion & clothing brands. No credit card required.
             </motion.p>
           </motion.div>
 
@@ -67,12 +67,24 @@ export const Hero = () => {
             <motion.div
                animate={{ y: [0, -15, 0] }}
                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+               className="relative"
             >
               <img 
-                src="/images/ecommerce-family.jpg" 
-                alt="E-Commerce Family Shopping" 
+                src="/images/ecommerce-features.jpg" 
+                alt="Clothing & Fashion E-Commerce Store Platform" 
                 className="w-full h-auto rounded-[3rem] relative z-10 border-4 border-white shadow-2xl object-cover aspect-square"
               />
+
+              {/* Floating Badges overlay explaining Clothing & Store Management */}
+              <div className="absolute top-6 left-6 z-20 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl border border-purple-100 flex items-center gap-2 text-xs font-extrabold text-slate-800">
+                <span className="text-base">👗</span>
+                <span>Fashion & Clothes Store</span>
+              </div>
+
+              <div className="absolute bottom-6 right-6 z-20 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl border border-pink-100 flex items-center gap-2 text-xs font-extrabold text-slate-800">
+                <span className="text-base">🚚</span>
+                <span>Live Order & Courier Tracking</span>
+              </div>
             </motion.div>
           </motion.div>
 

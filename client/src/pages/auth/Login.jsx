@@ -127,7 +127,7 @@ export const Login = () => {
             {/* 3D E-Commerce Shopping Showcase Image */}
             <div className="relative group rounded-2xl overflow-hidden border border-white/20 shadow-lg">
               <img 
-                src="/images/ecommerce-features.jpg" 
+                src="/images/ecommerce-family.jpg" 
                 alt="E-Commerce Shopping Features" 
                 className="w-full h-48 sm:h-56 object-cover object-center rounded-2xl transition-transform duration-700 group-hover:scale-105"
               />
@@ -272,3 +272,4 @@ export const Login = () => {
     </div>
   );
 };
+
