@@ -256,7 +256,7 @@ export const Products = () => {
     { label: '✨ All Outfits', value: 'All' },
     { label: '👧 Girls & Women', value: 'Girls' },
     { label: '👦 Boys & Men', value: 'Boys' },
-    { label: '👶 Kids (Chhote Bachhe)', value: 'Kids' },
+    { label: '👶 Kids', value: 'Kids' },
   ];
 
   return (

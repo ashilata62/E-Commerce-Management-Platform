@@ -140,8 +140,27 @@ const CUSTOMER_COUPONS = [
   },
 ];
 
+
+// Compress image for localStorage
+const compressImage = (dataUrl, maxWidth = 400, quality = 0.6) => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ratio = Math.min(maxWidth / img.width, maxWidth / img.height, 1);
+      canvas.width = img.width * ratio;
+      canvas.height = img.height * ratio;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+};
+
 export const CustomerDashboard = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const toast = useToast();
 
   // Active Screen / Tab: 'hub', 'addresses', 'profile', 'payments', 'coupons'
@@ -785,14 +804,28 @@ export const CustomerDashboard = () => {
               />
               <div className="space-y-1 flex-1">
                 <label className="block text-xs font-bold text-slateText-main">
-                  Avatar Photo URL
+                  Upload Avatar Photo
                 </label>
                 <input
-                  type="url"
-                  value={profileData.avatar}
-                  onChange={(e) => setProfileData({ ...profileData, avatar: e.target.value })}
-                  placeholder="https://..."
-                  className="w-full px-3 py-1.5 text-xs rounded-xl border border-surface-border bg-white outline-none focus:border-brand-500 font-medium"
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    if (!file.type.startsWith('image/')) {
+                      toast.error('Please select a valid image file');
+                      return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = async (event) => {
+                      const compressed = await compressImage(event.target.result, 200, 0.7);
+                      setProfileData({ ...profileData, avatar: compressed });
+                      toast.success('Avatar image uploaded!');
+                    };
+                    reader.readAsDataURL(file);
+                    e.target.value = '';
+                  }}
+                  className="w-full px-3 py-1 text-xs rounded-xl border border-surface-border bg-white outline-none focus:border-brand-500 font-medium file:mr-3 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 cursor-pointer"
                 />
               </div>
             </div>

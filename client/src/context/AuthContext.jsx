@@ -150,6 +150,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateUser = (userData) => {
+    setUser({ ...user, ...userData });
+  };
+
   const logout = () => {
     setUser(null);
     setToken(null);
@@ -158,7 +162,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout, switchDemoRole, isAuthenticated: !!token }}>
+    <AuthContext.Provider value={{ user, token, loading, login, register, logout, updateUser, switchDemoRole, isAuthenticated: !!token }}>
       {children}
     </AuthContext.Provider>
   );

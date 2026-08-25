@@ -80,11 +80,22 @@ export const Register = () => {
     toast.info(`Filled demo profile: ${demoName}`);
   };
 
-  return (
-    <div className="min-h-screen bg-[#0E0C22] text-slate-100 flex items-center justify-center p-4 sm:p-6 lg:p-8 relative overflow-hidden font-sans">
+    return (
+    <div 
+      className="min-h-screen text-slate-100 flex items-center justify-center p-4 sm:p-6 lg:p-8 relative overflow-hidden font-sans"
+      style={{
+        backgroundImage: 'url("https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      {/* Glassmorphism Overlay */}
+      <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-2xl pointer-events-none z-0" />
+
       {/* Dynamic Background Glows */}
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-brand-600/20 blur-[130px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-coral-500/15 blur-[140px] pointer-events-none" />
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-brand-600/30 blur-[130px] pointer-events-none z-0" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-coral-500/20 blur-[140px] pointer-events-none z-0" />
 
       <div className="w-full max-w-5xl bg-white text-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-100 grid grid-cols-1 lg:grid-cols-12 relative z-10">
         

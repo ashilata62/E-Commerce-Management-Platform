@@ -94,16 +94,16 @@ export const ProductAnalytics = () => {
 
           <div className="space-y-3">
             {data?.highMarginItems?.map((item) => (
-              <div key={item._id} className="p-3 bg-surface-muted/40 rounded-xl flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <img src={item.images?.[0]} alt={item.name} className="w-10 h-10 rounded-lg object-cover" />
-                  <div>
-                    <h4 className="text-xs font-bold text-slateText-main truncate max-w-[200px]">{item.name}</h4>
-                    <p className="text-[10px] text-slateText-muted">{item.category} • Cost: {formatCurrency(item.costPrice || 500)}</p>
+              <div key={item._id} className="p-3 bg-surface-muted/40 rounded-xl flex items-center justify-between gap-3 min-w-0">
+                <div className="flex items-center gap-3 min-w-0">
+                  <img src={item.images?.[0]} alt={item.name} className="w-10 h-10 rounded-lg object-cover shrink-0" />
+                  <div className="min-w-0">
+                    <h4 className="text-xs font-bold text-slateText-main truncate max-w-[120px] xs:max-w-[160px] sm:max-w-[240px] md:max-w-[340px] lg:max-w-[200px] xl:max-w-[280px]">{item.name}</h4>
+                    <p className="text-[10px] text-slateText-muted truncate">{item.category} • Cost: {formatCurrency(item.costPrice || 500)}</p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <span className="text-xs font-black text-emeraldGreen-600 bg-emeraldGreen-50 px-2 py-0.5 rounded-md">
+                <div className="text-right shrink-0">
+                  <span className="text-xs font-black text-emeraldGreen-600 bg-emeraldGreen-50 px-2 py-0.5 rounded-md whitespace-nowrap">
                     {item.marginPercent || 68}% Margin
                   </span>
                   <p className="text-[11px] font-bold text-slateText-main mt-0.5">{formatCurrency(item.price)}</p>

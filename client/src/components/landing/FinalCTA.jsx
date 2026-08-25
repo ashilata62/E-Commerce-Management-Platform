@@ -30,7 +30,7 @@ export const FinalCTA = () => {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-5xl md:text-6xl font-extrabold mb-6 text-slateText-main tracking-tight leading-tight"
         >
-          Ready to Turn Marketing <br className="hidden md:block"/> Into Growth?
+          Ready to Turn Marketing <span className="block md:inline">Into Growth?</span>
         </motion.h2>
         
         <motion.p 

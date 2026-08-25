@@ -99,7 +99,7 @@ export const ProductPreview = () => {
                                <div className="text-[10px] sm:text-xs text-slateText-muted font-bold">Revenue</div>
                                <div className="text-xs sm:text-sm font-bold text-slateText-main">{camp.rev}</div>
                              </div>
-                             <div className="hidden sm:block">
+                             <div className="block">
                                <div className="text-[10px] sm:text-xs text-slateText-muted font-bold">Conv.</div>
                                <div className="text-xs sm:text-sm font-bold text-slateText-main">{camp.conv}</div>
                              </div>
