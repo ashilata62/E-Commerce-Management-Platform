@@ -34,12 +34,12 @@ export const PageHeader = ({
           </nav>
         )}
 
-        <div className="flex items-center gap-2 sm:gap-3">
-          <h1 className="text-xl sm:text-3xl font-extrabold text-slateText-main tracking-tight">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slateText-main tracking-tight leading-tight">
             {title}
           </h1>
           {badge && (
-            <span className="text-[10px] sm:text-xs font-bold px-2 sm:px-2.5 py-0.5 rounded-full bg-brand-50 text-brand-600 border border-brand-200">
+            <span className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-black px-2.5 py-0.5 rounded-full bg-purple-50 text-[#6C4DF6] border border-purple-200 shadow-soft-xs shrink-0 whitespace-nowrap">
               {badge}
             </span>
           )}
