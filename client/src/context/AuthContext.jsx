@@ -6,19 +6,10 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem('kiaan_user_info');
-    return savedUser ? JSON.parse(savedUser) : {
-      _id: 'usr_001',
-      name: 'Kiaan Sharma',
-      email: 'admin@kiaan.com',
-      role: 'Admin',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-      phone: '+91 98765 43210',
-      status: 'Active',
-      permissions: ['all'],
-    };
+    return savedUser ? JSON.parse(savedUser) : null;
   });
 
-  const [token, setToken] = useState(() => localStorage.getItem('kiaan_auth_token') || 'demo_token_admin_2026');
+  const [token, setToken] = useState(() => localStorage.getItem('kiaan_auth_token') || null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -48,7 +39,7 @@ export const AuthProvider = ({ children }) => {
       }
       return { success: false, message: data.message };
     } catch (err) {
-      // Fallback demo user login if API call fails
+      // Fallback demo user login
       const fallbackUser = {
         _id: 'usr_001',
         name: email ? email.split('@')[0] : 'Kiaan Sharma',
@@ -68,12 +59,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   const switchDemoRole = (role) => {
+<<<<<<< HEAD
     const demoToken = `demo_token_${role.toLowerCase()}_2026`;
     setToken(demoToken);
     localStorage.setItem('kiaan_auth_token', demoToken);
 
+=======
+    let newUser = null;
+>>>>>>> c3c7f73981360ab942a12f5de940a444216ce156
     if (role === 'Manager') {
-      const managerUser = {
+      newUser = {
         _id: 'usr_002',
         name: 'Aarav Patel',
         email: 'manager@kiaan.com',
@@ -83,9 +78,8 @@ export const AuthProvider = ({ children }) => {
         status: 'Active',
         permissions: ['products', 'orders', 'customers', 'marketing'],
       };
-      setUser(managerUser);
     } else if (role === 'Staff') {
-      const staffUser = {
+      newUser = {
         _id: 'usr_003',
         name: 'Priya Verma',
         email: 'staff@kiaan.com',
@@ -95,9 +89,8 @@ export const AuthProvider = ({ children }) => {
         status: 'Active',
         permissions: ['orders'],
       };
-      setUser(staffUser);
     } else if (role === 'Customer') {
-      const customerUser = {
+      newUser = {
         _id: 'usr_004',
         name: 'Rohan Deshmukh',
         email: 'rohan.shopper@gmail.com',
@@ -111,9 +104,8 @@ export const AuthProvider = ({ children }) => {
         wishlistCount: 6,
         permissions: ['customer_portal'],
       };
-      setUser(customerUser);
     } else {
-      const adminUser = {
+      newUser = {
         _id: 'usr_001',
         name: 'Kiaan Sharma',
         email: 'admin@kiaan.com',
@@ -123,8 +115,9 @@ export const AuthProvider = ({ children }) => {
         status: 'Active',
         permissions: ['all'],
       };
-      setUser(adminUser);
     }
+    setUser(newUser);
+    setToken('demo_token_' + (newUser?.role || 'admin').toLowerCase());
   };
 
   const logout = () => {
@@ -135,7 +128,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, logout, switchDemoRole, isAuthenticated: !!token }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        loading,
+        login,
+        logout,
+        switchDemoRole,
+        isAuthenticated: !!token,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

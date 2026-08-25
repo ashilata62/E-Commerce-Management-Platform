@@ -43,7 +43,6 @@ import { SalesAnalytics } from '../pages/analytics/SalesAnalytics';
 import { ProductAnalytics } from '../pages/analytics/ProductAnalytics';
 import { CustomerAnalytics } from '../pages/analytics/CustomerAnalytics';
 import { Reports } from '../pages/analytics/Reports';
-import { AIAssistant } from '../pages/analytics/AIAssistant';
 
 // Settings
 import { StoreSettings } from '../pages/settings/StoreSettings';
@@ -77,6 +76,8 @@ export const AppRoutes = () => {
   return (
     <Routes>
       {/* Public Landing Page */}
+      <Route path="/landing" element={<LandingPage />} />
+      <Route path="/landing-page" element={<LandingPage />} />
       <Route path="/" element={<LandingPage />} />
 
       {/* Auth Public Routes */}
@@ -240,14 +241,6 @@ export const AppRoutes = () => {
           element={
             <RoleRoute allowedRoles={['Admin']}>
               <Reports />
-            </RoleRoute>
-          }
-        />
-        <Route
-          path="ai-assistant"
-          element={
-            <RoleRoute allowedRoles={['Admin', 'Manager']}>
-              <AIAssistant />
             </RoleRoute>
           }
         />

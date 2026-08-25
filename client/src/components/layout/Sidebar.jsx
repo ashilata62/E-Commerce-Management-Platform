@@ -275,15 +275,6 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen, isCollapsed, toggleColl
           icon3D: 'bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 shadow-slate-500/35',
           roles: ['Admin']
         },
-        {
-          label: 'AI Insights',
-          desc: 'Smart Price & Restock Assistant',
-          path: '/ai-assistant',
-          icon: Sparkles,
-          icon3D: 'bg-gradient-to-tr from-purple-500 via-pink-500 to-amber-400 shadow-purple-500/40',
-          badge: 'AI',
-          roles: ['Admin', 'Manager']
-        },
       ],
     },
     {
@@ -533,21 +524,6 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen, isCollapsed, toggleColl
               </div>
             </div>
           )}
-
-          {/* Direct Store View Button */}
-          <NavLink
-            to="/"
-            title="Live Website View"
-            className={`flex items-center w-full rounded-xl text-xs font-semibold text-slateText-muted hover:text-brand-500 hover:bg-white/80 transition-colors ${
-              isCollapsed ? 'justify-center p-2' : 'justify-between px-3 py-2'
-            }`}
-          >
-            <div className="flex items-center gap-2">
-              <Store className="w-3.5 h-3.5" />
-              {!isCollapsed && <span>Live Website View</span>}
-            </div>
-            {!isCollapsed && <ExternalLink className="w-3 h-3" />}
-          </NavLink>
         </div>
       </aside>
     </>
