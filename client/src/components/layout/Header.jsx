@@ -89,28 +89,6 @@ export const Header = ({ onMenuClick }) => {
           <span className="w-2 h-2 rounded-full bg-emeraldGreen-500 status-dot-pulse shrink-0" />
           <span>● Store {storeStatus}</span>
         </button>
-
-        {/* 1-Click View Switcher Toggle Button */}
-        <button
-          type="button"
-          onClick={() => {
-            if (user?.role === 'Customer') {
-              switchDemoRole('Admin');
-              toast.success('Switched back to Admin OS Management View! 👑');
-            } else {
-              switchDemoRole('Customer');
-              toast.success('Switched to Customer Experience Dashboard! 🛍️');
-            }
-          }}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shadow-soft-sm cursor-pointer ${
-            user?.role === 'Customer'
-              ? 'bg-amber-50 text-amber-800 border border-amber-300 hover:bg-amber-100'
-              : 'bg-[#E4DAFA] text-[#6C4DF6] border border-[#D5C6F8] hover:bg-[#D5C6F8]'
-          }`}
-          title="Click to instantly toggle between Merchant Admin and Customer Dashboard"
-        >
-          <span>{user?.role === 'Customer' ? '👑 Back to Admin OS' : '🛍️ Customer View'}</span>
-        </button>
       </div>
 
       {/* Center: Large search bar */}
@@ -306,39 +284,14 @@ export const Header = ({ onMenuClick }) => {
                 </div>
               </div>
 
-              {/* Demo Switch Roles */}
-              <div className="space-y-1 mb-3 pb-3 border-b border-surface-border">
-                <p className="text-[10px] font-bold text-slateText-muted uppercase px-2">
-                  Switch Demo Role:
-                </p>
-                {['Admin', 'Manager', 'Staff', 'Customer'].map((role) => (
-                  <button
-                    key={role}
-                    onClick={() => {
-                      switchDemoRole(role);
-                      setShowUserMenu(false);
-                      toast.success(`Switched role profile to ${role}!`);
-                    }}
-                    className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-between ${
-                      user?.role === role
-                        ? 'bg-[#E4DAFA] text-[#6C4DF6] font-bold'
-                        : 'text-slateText-main hover:bg-[#F4F0FD]'
-                    }`}
-                  >
-                    <span>{role === 'Customer' ? '👤 Customer (Shopper)' : role}</span>
-                    {user?.role === role && <CheckCircle2 className="w-3.5 h-3.5 text-brand-500" />}
-                  </button>
-                ))}
-              </div>
-
               <button
                 onClick={() => {
                   setShowUserMenu(false);
                   logout();
-                  navigate('/');
-                  toast.info('Logged out of session');
+                  navigate('/login');
+                  toast.success('Logged out successfully. Please login to continue.');
                 }}
-                className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-roseDanger-500 hover:bg-roseDanger-50 rounded-xl transition-colors"
+                className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-bold text-roseDanger-600 hover:bg-roseDanger-50 rounded-xl transition-colors cursor-pointer"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Log Out</span>
